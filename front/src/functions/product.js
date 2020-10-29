@@ -29,6 +29,7 @@ export const getProductBySubSub = async (slug) =>{
 // }
 
 export const getDetailProduct = (slug) => {
+  console.log("slug123",slug)
   return fetch(`${process.env.REACT_APP_API}/product/${slug}`, {
     method: 'GET',
   })

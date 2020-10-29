@@ -28,3 +28,13 @@ export const loadMenu = async (id) =>{
   });
 }
   
+export const removeCategory = async (slug,cateId,token,images) =>{
+  console.log("token",token);
+  await axios.post(`${process.env.REACT_APP_API}/category/${slug}`, {images,cateId},{
+    headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`
+    },
+  });
+}

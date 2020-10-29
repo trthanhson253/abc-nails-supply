@@ -6,7 +6,7 @@ import { createCategory } from "../../functions/category";
 import FileUpload from "./FileUpload";
 
 
-const CategoryCreateModal = ({ open,handleClose,loadCategories,token }) => {
+const CategoryCreateModal = ({ open,handleClose,loadCategories,token,removeImage,setRemoveImage }) => {
   const initialState = {
     images: [
       {
@@ -78,6 +78,8 @@ const CategoryCreateModal = ({ open,handleClose,loadCategories,token }) => {
                 setValues={setValues}
                 setLoading={setLoading} 
                 token={token}
+                removeImage={removeImage}
+                setRemoveImage={setRemoveImage}
                 />   )}
               
         </Modal>

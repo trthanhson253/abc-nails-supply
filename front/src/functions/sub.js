@@ -12,3 +12,12 @@ await axios.post(`${process.env.REACT_APP_API}/sub`, sub, {
     Authorization: `Bearer ${token}`
   },
 });
+
+export const removeSub = async (slug, subId, token) =>
+  await axios.delete(`${process.env.REACT_APP_API}/sub/${subId}/${slug}`, {
+    headers: {
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+    },
+  });

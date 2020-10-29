@@ -1,27 +1,32 @@
 import React, { useState,useEffect } from "react";
-import { Modal,Button,Spin} from "antd";
+import { Modal,Button,Avatar} from "antd";
 // import { LoadingOutlined } from '@ant-design/icons';
 import { toast } from "react-toastify";
 import { createCategory } from "../../functions/category";
 import FileUpload from "./FileUpload";
 import { getDetailProduct } from "../../functions/product";
+import renderHTML from 'react-render-html';
 
-const ProductDetailModal = ({ open,handleClose,slug }) => {
+const ProductDetailModal = ({ open,handleClose,product,content }) => {
  
-  const [value, setValue] = useState({});
-  const [loading, setLoading] = useState(false);
+  
+  // const [loading, setLoading] = useState(false);
+  // const [ content, setContent] = useState("");
+
+  // console.log("slug SON TRAN",slug);
+
+  // const loadDetailProduct= (slug) => {
+  //   getDetailProduct(slug).then(data => { 
+  //     // setValue(data.product);
+  //     console.log("STEP100",data);
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   setContent(product.description);
+  // }, [open]);
 
 
-  const loadDetailProduct= (slug) => {
-    getDetailProduct(slug).then(data => { 
-        console.log(data)
-    });
-  };
-
-  useEffect(() => {
-    loadDetailProduct(slug);
-    console.log("slug SON TRAN",slug)
-  }, []);
   return (
    <>
         <Modal
@@ -31,17 +36,63 @@ const ProductDetailModal = ({ open,handleClose,slug }) => {
         onCancel={handleClose}
         footer={[
           <>
-            <Button key="back" onClick={handleClose}>
+            <Button type="primary" onClick={handleClose}>
               Done
             </Button>, 
           </>
          
         ]}
         >
-              <div className="ty-control-group">
-                <label htmlFor="login_popup685" className="ty-login__filed-label ty-control-group__label cm-required cm-trim cm-email">Name</label>
-               
-              </div>    
+             
+              <label className="ty-login__filed-label ty-control-group__label cm-trim cm-email">SKU Number:</label>
+              <p>{product.item}</p>
+    
+              <label className="ty-login__filed-label ty-control-group__label cm-trim cm-email">Name:</label>
+              <p>{product.name}</p>
+
+              <label className="ty-login__filed-label ty-control-group__label cm-trim cm-email">Category:</label>
+              <p>{product.name}</p>
+
+              <label className="ty-login__filed-label ty-control-group__label cm-trim cm-email">Sub-Category:</label>
+              <p>{product.name}</p>
+
+              <label className="ty-login__filed-label ty-control-group__label cm-trim cm-email">Sub-Sub Category:</label>
+              <p>{product.name}</p>
+                            
+              <label className="ty-login__filed-label ty-control-group__label cm-trim cm-email">Quantity:</label>
+              <p>{product.quantity}</p>
+                            
+              <label className="ty-login__filed-label ty-control-group__label cm-trim cm-email">Sold:</label>
+              <p>{product.sold}</p>
+                            
+              <label className="ty-login__filed-label ty-control-group__label cm-trim cm-email">Status:</label>
+              <p>{product.status}</p>               
+              
+              <label className="ty-login__filed-label ty-control-group__label cm-trim cm-email">Views:</label>
+              <p>{product.clicks}</p>
+             
+              <label className="ty-login__filed-label ty-control-group__label cm-trim cm-email">Price:</label>
+              <p>{product.price}</p>
+                          
+            <label className="ty-login__filed-label ty-control-group__label cm-trim cm-email">Discount Price:</label>
+            <p>{product.discountPrice}</p>
+                        
+            <p><label className="ty-login__filed-label ty-control-group__label cm-trim cm-email">Image:</label></p>
+            <p>{product.image &&
+               ( 
+                  <Avatar
+                  src={product.image[1].url}
+                  size={200}
+                  
+              />                 
+               )}</p>
+           
+         
+         
+          <label className="ty-login__filed-label ty-control-group__label cm-trim cm-email">Description:</label>
+          <p> {renderHTML(content)}</p>
+         
+           
              
         </Modal>
 

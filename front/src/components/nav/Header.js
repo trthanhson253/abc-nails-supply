@@ -137,7 +137,7 @@ const Header = () => {
                             <li className="ty-menu__item cm-menu-item-responsive first-lvl ty-menu-item__nailpolishes">
                             <Link className="ty-menu__item-toggle ty-menu__menu-btn visible-phone cm-responsive-menu-toggle">
                               <i className="ut2-icon-outline-expand_more" />
-                            </Link><Link to={`/${c.slug}/product`} className="ty-menu__item-link a-first-lvl" onMouseOver={()=>activateMenu(c._id)}>
+                            </Link><Link to={`/${c.slug}/product`} className="ty-menu__item-link a-first-lvl" onClick={()=>activateMenu(c._id)}>
                               <div className="menu-lvl-ctn " ><span><bdi>{c.name}</bdi></span><i className="icon-right-dir ut2-icon-outline-arrow_forward" /></div>
                             </Link>
 

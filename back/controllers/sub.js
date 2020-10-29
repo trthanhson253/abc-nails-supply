@@ -1,5 +1,6 @@
 const Sub = require("../models/sub");
-// const Product = require("../models/product");
+const SubSub = require("../models/subSub");
+const Product = require("../models/product");
 const slugify = require("slugify");
 
 exports.create = async (req, res) => {
@@ -44,11 +45,15 @@ exports.list = async (req, res) =>
 //   }
 // };
 
-// exports.remove = async (req, res) => {
-//   try {
-//     const deleted = await Sub.findOneAndDelete({ slug: req.params.slug });
-//     res.json(deleted);
-//   } catch (err) {
-//     res.status(400).send("Sub delete failed");
-//   }
-// };
+exports.remove = async (req, res) => {
+  try {
+    console.log(req.params.subId);
+    console.log(req.params.slug);
+    await Product.deleteMany({ sub : req.params.subId});
+    await SubSub.deleteMany({ sub : req.params.subId});
+    const deletedSub = await Sub.findOneAndDelete({ slug: req.params.slug });
+    res.json(deletedSub);
+  } catch (err) {
+    res.status(400).send("Sub delete failed");
+  }
+};

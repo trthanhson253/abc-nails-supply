@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react";
 import AdminMenu from "../../../components/admin/AdminMenu";
 import SubCreateModal from "../../../components/admin/SubCreateModal";
-import { getSubs } from "../../../functions/sub";
+import { getSubs,removeSub } from "../../../functions/sub";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { Steps  } from 'antd';
@@ -31,6 +31,27 @@ const handleClose = () => {
       }
     });
   };
+
+  const handleRemove = async (slug,subId) => {
+    // let answer = window.confirm("Delete?");
+    // console.log(answer, slug);
+    if (window.confirm("ATTENTION! When this sub-category is deleted, all of its products will be deleted also. The data will be deleted permanently and cannot be recovered .Are you sure you want to continue this process ?")) {
+    //   setLoading(true);
+      removeSub(slug,subId,token)
+        .then((res) => {
+        //   setLoading(false);
+          toast.error(`${res.data.name} is deleted`);
+          loadSubs();
+        })
+        .catch((err) => {
+          if (err.response.status === 400) {
+            // setLoading(false);
+            toast.error(err.response.data);
+          }
+        });
+    }
+  };
+
   useEffect(() => {
     loadSubs();
   }, []);
@@ -92,7 +113,7 @@ const handleClose = () => {
                                 <td className="center">
                                 <div className="text-center">
                                 <button type="button" class="btn btn-primary btn-circle"><i class="fa fa-edit"></i></button>&nbsp;
-                                <button type="button" class="btn btn-danger btn-circle"><i class="fa fa-trash-o"></i></button></div>                            
+                                <button type="button" class="btn btn-danger btn-circle" onClick={() => handleRemove(c.slug,c._id)} ><i class="fa fa-trash-o"></i></button></div>                            
                                 </td>
                             </tr>
                           ))}          

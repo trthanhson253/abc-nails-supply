@@ -13,7 +13,7 @@ const {
   create,
 //   read,
 //   update,
-//   remove,
+  remove,
   list,
   getSubs,
   getSubSubs,
@@ -25,7 +25,7 @@ router.post("/category", categoryCreateValidator,runValidation,requireSignin,adm
 router.get("/categories", list);
 // router.get("/category/:slug", read);
 // router.put("/category/:slug", authCheck, adminCheck, update);
-// router.delete("/category/:slug", authCheck, adminCheck, remove);
+router.post("/category/:slug", requireSignin, adminCheck, remove);
 router.get("/category/subs/:_id", getSubs);
 router.get("/category/subs/subsubs/:_id", getSubSubs);
 

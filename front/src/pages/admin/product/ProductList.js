@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import AdminMenu from "../../../components/admin/AdminMenu";
-import { getProducts } from "../../../functions/product";
+import { getProducts,getDetailProduct } from "../../../functions/product";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { Steps,Avatar  } from 'antd';
@@ -10,11 +10,13 @@ import ProductDetailModal from "../../../components/admin/ProductDetailModal";
 const ProductList = ({ history }) => {
 
 const [products, setProducts] = useState([]);
-const { Step } = Steps;
+const [product, setProduct] = useState({});
+// const { Step } = Steps;
 const { user } = useSelector((state) => ({ ...state }));
 const token = user.token;
 const [open, setOpen] = useState(false);
-const [slug, setSlug] = useState("");
+// const [slug, setSlug] = useState("");
+const [ content, setContent] = useState("");
 
 const handleClickOpen = () => {
     history.push("/admin/product/create");
@@ -22,9 +24,19 @@ const handleClickOpen = () => {
 
 function handleClickDetailOpen(slg) {
     setOpen(true);
-    setSlug(slg);
+    // setSlug(slg);
+    loadDetailProduct(slg);
     // console.log("slug SON TRAN",slg)
 };
+
+const loadDetailProduct= (slug) => {
+    getDetailProduct(slug).then(data => { 
+      // setValue(data.product);
+      console.log("STEP100",data.product);
+      setProduct(data.product);
+      setContent(data.product.description);
+    });
+  };
 const handleClose = () => {
     setOpen(false);
   };
@@ -49,7 +61,7 @@ const loadProducts= () => {
    
    <AdminMenu />
    <div id="page-wrapper">
-   <ProductDetailModal open={open} handleClose={handleClose} slug={slug}/>
+   <ProductDetailModal open={open} handleClose={handleClose} product={product} content={content} />
    <div className="container-fluid">
        <div className="row">
            <div className="col-lg-12">
@@ -86,8 +98,7 @@ const loadProducts= () => {
                                    <th>Category</th>
                                    <th>Sub Category</th>
                                    <th>Sub-Sub Category</th>                                  
-                                   <th>Image</th>
-                                   <th>Description</th>         
+                                   <th>Image</th>      
                                    <th>Action</th>
                                   
                                </tr>
@@ -118,7 +129,7 @@ const loadProducts= () => {
                                     /></>
                                         
                                      ))}</td>
-                                <td>{renderHTML(p.description)}</td>  
+                                
                                      
                                 
                                 <td className="center">

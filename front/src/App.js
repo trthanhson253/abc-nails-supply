@@ -22,6 +22,7 @@ import UserRoute from "./components/routes/UserRoute";
 import AdminRoute from "./components/routes/AdminRoute";
 
 import Home from "./pages/Home";
+import Error from "./pages/Error";
 
 import SubSubHome from "./pages/home/SubSubHome";
 import ProductDetailHome from "./pages/home/ProductDetailHome";
@@ -119,6 +120,8 @@ function App() {
             <AdminRoute exact path="/admin/coupon/list" component={CouponList} />
             <AdminRoute exact path="/admin/product/list" component={ProductList} />
             <AdminRoute exact path="/admin/product/create" component={ProductCreate} />
+
+            <Route component={Error} />
 
           </Switch>
           <Footer />

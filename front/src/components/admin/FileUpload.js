@@ -7,7 +7,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { UploadOutlined } from '@ant-design/icons';
 
-const FileUpload = ({values, setValues,setLoading,loading,token}) => {
+const FileUpload = ({values, setValues,setLoading,loading,token,removeImage,setRemoveImage}) => {
   const { user } = useSelector((state) => ({ ...state }));
   let token1= user ? token :"";
   const fileUploadAndResize = (e) => {
@@ -58,6 +58,7 @@ const FileUpload = ({values, setValues,setLoading,loading,token}) => {
     // set url to images[] in the parent component state - ProductCreate
   };
 
+
   const handleImageRemove = (public_id) => {
     // setLoading(true);
     // console.log("remove image", public_id);
@@ -85,6 +86,19 @@ const FileUpload = ({values, setValues,setLoading,loading,token}) => {
       });
   };
 
+  if(removeImage && values.images[1]){
+    handleImageRemove(values.images[1].public_id);
+    setRemoveImage(false);
+  }
+  
+  // const checkRemove = () => {
+  //   if(removeImage && values.images[1]){
+  //     handleImageRemove(values.images[1].public_id);
+  //   }
+  // };
+  // useEffect(() => {
+  //  loadCategories();
+  // }, []);
 
   return (
    <>

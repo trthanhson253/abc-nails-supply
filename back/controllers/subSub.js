@@ -1,6 +1,6 @@
 const SubSub = require("../models/subSub");
 const Sub = require("../models/sub");
-// const Product = require("../models/product");
+const Product = require("../models/product");
 const slugify = require("slugify");
 
 exports.create = (req, res) => {
@@ -35,3 +35,15 @@ exports.list = async (req, res) =>
   .populate("sub", "name")
   .collation({locale:'en',strength: 2}).sort({ category:1,sub:1,name: 1, })  
   .sort({ createdAt: -1 }).exec());
+
+
+  exports.remove = async (req, res) => {
+    try {     
+      await Product.deleteMany({ subSub : req.params.subSubId});   
+      const deletedSubSub = await SubSub.findOneAndDelete({ slug: req.params.slug });
+      res.json(deletedSubSub);
+    } catch (err) {
+      res.status(400).send("Sub-Sub delete failed");
+    }
+  };
+  

@@ -3,6 +3,7 @@ const Product = require("../models/product");
 const Sub = require("../models/sub");
 const SubSub = require("../models/subSub");
 const slugify = require("slugify");
+const cloudinary = require("cloudinary");
 
 exports.create = async (req, res) => {
   try {
@@ -16,7 +17,9 @@ exports.create = async (req, res) => {
 };
 
 exports.list = async (req, res) =>
-  res.json(await Category.find({}).collation({locale:'en',strength: 2}).sort({ name: 1 }).exec());
+  res.json(await Category.find({})
+  .select('_id name slug images')
+  .collation({locale:'en',strength: 2}).sort({ name: 1 }).exec());
 
 // exports.read = async (req, res) => {
 //   let category = await Category.findOne({ slug: req.params.slug }).exec();
@@ -43,14 +46,28 @@ exports.list = async (req, res) =>
 //   }
 // };
 
-// exports.remove = async (req, res) => {
-//   try {
-//     const deleted = await Category.findOneAndDelete({ slug: req.params.slug });
-//     res.json(deleted);
-//   } catch (err) {
-//     res.status(400).send("Category delete failed");
-//   }
-// };
+exports.remove = async (req, res) => {
+  try {
+    const { images,cateId } = req.body;
+    
+    await Product.deleteMany({ category : cateId});
+    await SubSub.deleteMany({ category : cateId});
+    await Sub.deleteMany({ category : cateId});  
+    const deletedCategory = await Category.findOneAndDelete({ slug: req.params.slug }); 
+    // res.json(deletedCategory);
+    if(images.length == 2){
+      console.log(images[1])
+      cloudinary.uploader.destroy(images[1].public_id, (err, result) => {
+        if (err) return res.json({ success: false, err });
+        res.send("ok");
+      });
+    }else{
+      res.json(deletedCategory);
+    }
+  } catch (err) {
+    res.status(400).send("Category delete failed");
+  }
+};
 
 exports.getSubs = (req, res) => {
   // console.log(req.params._id);

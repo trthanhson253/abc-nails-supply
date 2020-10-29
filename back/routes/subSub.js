@@ -10,15 +10,16 @@ const {
 
 // controller
 const { create, 
-    // read, update, remove, 
+    // read, update, 
+    remove, 
     list 
 } = require("../controllers/subSub");
 
 // routes
 router.post("/subSub", subSubCreateValidator,runValidation, requireSignin, adminCheck, create);
 router.get("/subSubs", list);
-// router.get("/sub/:slug", read);
-// router.put("/sub/:slug", authCheck, adminCheck, update);
-// router.delete("/sub/:slug", authCheck, adminCheck, remove);
+// router.get("/subSub/:slug", read);
+// router.put("/subSub/:slug", authCheck, adminCheck, update);
+router.delete("/subSub/:subSubId/:slug", requireSignin, adminCheck, remove);
 
 module.exports = router;

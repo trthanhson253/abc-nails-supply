@@ -10,11 +10,11 @@ const ProductDetailHome = props => {
   const [ content, setContent] = useState("");
   const { TabPane } = Tabs;
 
-  const render = require('react-render-html');
+  // const render = require('react-render-html');
 
   const loadDetailProduct= (pslug) => {
     getDetailProduct(pslug).then((data) => { 
-        console.log(data.product);
+        console.log(data);
         setProduct(data.product);
         setContent(data.product.description);
     });

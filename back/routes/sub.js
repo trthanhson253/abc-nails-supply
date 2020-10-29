@@ -10,7 +10,8 @@ const {
 
 // controller
 const { create,
-    // read, update, remove, 
+    // read, update, 
+    remove, 
     list,
 } = require("../controllers/sub");
 
@@ -19,6 +20,6 @@ router.post("/sub",subCreateValidator,runValidation,requireSignin,adminCheck,cre
 router.get("/subs", list);
 // router.get("/sub/:slug", read);
 // router.put("/sub/:slug", authCheck, adminCheck, update);
-// router.delete("/sub/:slug", authCheck, adminCheck, remove);
+router.delete("/sub/:subId/:slug", requireSignin, adminCheck, remove);
 
 module.exports = router;
