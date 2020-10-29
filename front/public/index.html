@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="We offers newly brand name professional quality nail care and beauty products at a reasonable price."
+    />
+    <meta
+      name="keywords"
+      content="Nail Supply Store, Beauty Supply, Nail Supplies, Manicures and Pedicures, Nail Electric Files, Nail Drills, Nail Tools, Nail Equipment, Nail Arts, Rhinestones, Decorations, Body Waxing, Nail Treatments"
+    />
+
+    <meta name="format-detection" content="telephone=no" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="ABC Nails Supply" />
+    <meta
+      property="og:description"
+      content="We offers newly brand name professional quality nail care and beauty products at a reasonable price."
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link
+      rel="stylesheet"
+      href="%PUBLIC_URL%/static/css/standalone.6493549c078968fc989aa692a81f7bbc1603131547.css"
+    />
+    <link rel="stylesheet" href="%PUBLIC_URL%/static/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="%PUBLIC_URL%/static/css/metisMenu.min.css" />
+
+    <link
+      rel="stylesheet"
+      href="%PUBLIC_URL%/static/css/dataTables.bootstrap.css"
+    />
+    <link
+      rel="stylesheet"
+      href="%PUBLIC_URL%/static/css/dataTables.responsive.css"
+    />
+    <link rel="stylesheet" href="%PUBLIC_URL%/static/css/startmin.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+
+    <title>ABC Nail Supply</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+
+    <script src="%PUBLIC_URL%/static/js/jquery-3.5.1.min.js"></script>
+
+    <!-- <script src="%PUBLIC_URL%/static/js/jquery.min.js"></script> -->
+
+    <script src="%PUBLIC_URL%/static/js/bootstrap.min.js"></script>
+
+    <script src="%PUBLIC_URL%/static/js/metisMenu.min.js"></script>
+
+    <script src="%PUBLIC_URL%/static/js/jquery.dataTables.min.js"></script>
+
+    <script src="%PUBLIC_URL%/static/js/dataTables.bootstrap.min.js"></script>
+
+    <script src="%PUBLIC_URL%/static/js/startmin.js"></script>
+
+    <script src="%PUBLIC_URL%/static/js/jquery-migrate-3.3.0.min.js"></script>
+
+    <script src="%PUBLIC_URL%/static/js/scripts-32ad5fc91e3c28e6fde85502ccf6baad1603131547.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        $('#dataTables-example').DataTable({
+          responsive: true,
+        });
+      });
+    </script>
+
+    <script type="text/javascript">
+      (function (_, $) {
+        _.tr({
+          cannot_buy: 'You cannot buy the product with these option variants',
+          no_products_selected: 'No products selected',
+          error_no_items_selected:
+            'No items selected! At least one check box must be selected to perform this action.',
+          delete_confirmation:
+            'Are you sure you want to delete the selected items?',
+          text_out_of_stock: 'Out of stock',
+          items: 'item(s)',
+          text_required_group_product:
+            'Please select a product for the required group [group_name]',
+          save: 'Save',
+          close: 'Close',
+          notice: 'Notice',
+          warning: 'Warning',
+          error: 'Error',
+          empty: 'Empty',
+          text_are_you_sure_to_proceed: 'Are you sure you want to proceed?',
+          text_invalid_url: 'You have entered an invalid URL',
+          error_validator_email:
+            'The email address in the <b>[field]<\/b> field is invalid.',
+          error_validator_phone:
+            'The phone number in the <b>[field]<\/b> field is invalid. The correct format is (555) 555-55-55 or 55 55 555 5555.',
+          error_validator_phone_mask:
+            'The phone number in the <b>[field]<\/b> field is invalid.',
+          error_validator_integer:
+            'The value of the <b>[field]<\/b> field is invalid. It should be integer.',
+          error_validator_multiple:
+            'The <b>[field]<\/b> field does not contain the selected options.',
+          error_validator_password:
+            'The passwords in the <b>[field2]<\/b> and <b>[field]<\/b> fields do not match.',
+          error_validator_required: 'The <b>[field]<\/b> field is mandatory.',
+          error_validator_zipcode:
+            'The ZIP / Postal code in the <b>[field]<\/b> field is incorrect. The correct format is [extra].',
+          error_validator_message:
+            'The value of the <b>[field]<\/b> field is invalid.',
+          text_page_loading:
+            'Loading... Your request is being processed, please wait.',
+          error_ajax: 'Oops, something went wrong ([error]). Please try again.',
+          text_changes_not_saved: 'Your changes have not been saved.',
+          text_data_changed:
+            'Your changes have not been saved.Press OK to continue, or Cancel to stay on the current page.',
+          placing_order: 'Placing the order',
+          file_browser: 'File browser',
+          browse: 'Browse...',
+          more: 'More',
+          text_no_products_found: 'No products found',
+          cookie_is_disabled:
+            'For a complete shopping experience, please <a href="http://www.wikihow.com/Enable-Cookies-in-Your-Internet-Web-Browser" target="_blank">set your browser to accept cookies<\/a>',
+          insert_image: 'Insert image',
+          image_url: 'Image URL',
+          loading: 'Loading...',
+        });
+
+        $.extend(_, {
+          index_script: 'index.php',
+          changes_warning: /*'Y'*/ 'N',
+          currencies: {
+            primary: {
+              decimals_separator: '.',
+              thousands_separator: ',',
+              decimals: '2',
+            },
+            secondary: {
+              decimals_separator: '.',
+              thousands_separator: ',',
+              decimals: '2',
+              coefficient: '1.00000',
+            },
+          },
+          default_editor: 'redactor2',
+          default_previewer: 'swiper',
+          current_path: '',
+          current_location: 'https://www.happynailsupply.com',
+          images_dir:
+            'https://www.happynailsupply.com/design/themes/responsive/media/images',
+          notice_displaying_time: 5,
+          cart_language: 'en',
+          language_direction: 'ltr',
+          default_language: 'en',
+          cart_prices_w_taxes: false,
+          regexp: [],
+          current_url: 'https://www.happynailsupply.com/',
+          current_host: 'www.happynailsupply.com',
+          init_context: '',
+          phone_validation_mode: 'any_digits',
+        });
+
+        $(document).ready(function () {
+          $.runCart('C');
+        });
+
+        _.security_hash = '9015f7214ad6c5db7036646ea0b626ad';
+      })(Tygh, Tygh.$);
+    </script>
+    <script type="text/javascript">
+      (function (_, $) {
+        $.extend(_, {
+          abt__ut2: {
+            settings: {
+              general: {
+                brand_feature_id: '1',
+                blog_page_id: '',
+                menu_min_height: '475px',
+                enable_fixed_header_panel: 'N',
+              },
+              category: {
+                show_subcategories: 'Y',
+                description_position: 'none',
+              },
+              features: { description_position: 'bottom' },
+              product_list: {
+                show_gallery: 'N',
+                lazy_load: 'Y',
+                limit_product_variations: '10',
+                decolorate_out_of_stock_products: 'N',
+                products_multicolumns: {
+                  grid_item_height: {
+                    desktop: '440',
+                    tablet: '',
+                    mobile: '340',
+                  },
+                  show_sku: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_qty: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_buttons: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_buttons_on_hover: {
+                    desktop: 'Y',
+                    tablet: 'N',
+                    mobile: 'N',
+                  },
+                  grid_item_bottom_content: {
+                    desktop: 'none',
+                    tablet: 'none',
+                    mobile: 'none',
+                  },
+                  show_brand_logo: { desktop: 'N', tablet: 'N', mobile: 'N' },
+                  show_you_save: { desktop: 'N', tablet: 'N', mobile: 'N' },
+                },
+                products_without_options: {
+                  show_sku: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_amount: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_qty: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  grid_item_bottom_content: {
+                    desktop: 'features_and_variations',
+                    tablet: 'none',
+                    mobile: 'none',
+                  },
+                  show_options: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_brand_logo: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                },
+                short_list: {
+                  show_sku: { desktop: 'Y', tablet: 'Y', mobile: 'N' },
+                  show_qty: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_button: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_button_quick_view: {
+                    desktop: 'N',
+                    tablet: 'N',
+                    mobile: 'N',
+                  },
+                  show_button_wishlist: {
+                    desktop: 'Y',
+                    tablet: 'Y',
+                    mobile: 'Y',
+                  },
+                  show_button_compare: {
+                    desktop: 'Y',
+                    tablet: 'N',
+                    mobile: 'N',
+                  },
+                },
+                show_fixed_filters_button: {
+                  desktop: 'N',
+                  tablet: 'N',
+                  mobile: 'Y',
+                },
+                max_features: { desktop: '4', tablet: '4', mobile: '4' },
+                price_display_format: 'col',
+                show_rating: 'Y',
+              },
+              products: {
+                view: {
+                  show_qty: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_sku: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_features: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_short_description: {
+                    desktop: 'N',
+                    tablet: 'N',
+                    mobile: 'N',
+                  },
+                  show_sticky_add_to_cart: {
+                    desktop: 'N',
+                    tablet: 'N',
+                    mobile: 'Y',
+                  },
+                  show_brand_logo: { desktop: 'Y', tablet: 'Y', mobile: 'N' },
+                  brand_link_behavior: 'to_category_with_filter',
+                },
+                custom_block_id: '',
+                addon_buy_together: { view: 'as_block_above_tabs' },
+                addon_required_products: {
+                  list_type: {
+                    desktop: 'grid_list',
+                    tablet: 'grid_list',
+                    mobile: 'grid_list',
+                  },
+                  item_quantity: { desktop: '4', tablet: 2, mobile: 2 },
+                },
+                addon_social_buttons: {
+                  view: { desktop: 'Y', tablet: 'N', mobile: 'N' },
+                },
+              },
+              load_more: {
+                product_list: 'Y',
+                blog: 'Y',
+                mode: 'on_button_click',
+                before_end: '300px',
+              },
+              addons: {
+                wishlist_products: {
+                  item_quantity: { desktop: '4', tablet: 2, mobile: 2 },
+                },
+              },
+            },
+            controller: 'index',
+            mode: 'index',
+            device: 'desktop',
+          },
+        });
+      })(Tygh, Tygh.$);
+    </script>
+    <script type="text/javascript">
+      var letters_to_start = 3;
+      var ls_search_delay = 500;
+      var ls_show_ajax_loader = false;
+      var ls_search_motivation = [];
+    </script>
+    <script type="text/javascript">
+      Tygh.tr(
+        'buy_together_fill_the_mandatory_fields',
+        'Please specify product options before adding this product combination to the cart.'
+      );
+    </script>
+    <script type="text/javascript">
+      (function (_, $) {
+        _.geo_maps = {
+          provider: 'google',
+          api_key: '',
+          yandex_commercial: false,
+          language: 'en',
+        };
+
+        _.tr({
+          geo_maps_google_search_bar_placeholder: 'Search',
+          geo_maps_cannot_select_location:
+            "This location couldn't be selected due to technical reasons. If you encounter any difficulties when placing an order, please contact us.",
+        });
+      })(Tygh, Tygh.$);
+    </script>
+    <script type="text/javascript">
+      (function (_, $) {
+        $.extend(_, {
+          ab__dotd: {
+            current_dispatch: 'index.index',
+            current_promotion_id: 0,
+            max_height: '250',
+            more: 'More',
+            less: 'Less',
+          },
+        });
+      })(Tygh, Tygh.$);
+    </script>
+    <script type="text/javascript">
+      (function (_, $) {
+        $.extend(_, {
+          ab__stt: {
+            settings: {
+              position: 'bottom_right',
+              transition: '600',
+              icon: 'arrow_3',
+              margin_top: '0',
+              margin_right: '10',
+              margin_bottom: '10',
+              margin_left: '0',
+              font_size: '50',
+              units: 'px',
+              font_weight: 'normal',
+              color: 'color.tpl',
+              hide_on_mobile: 'N',
+              show_in_admin_panel: 'N',
+              ab__stt_color: '#7f2680',
+              code: 'ABA-0WLpvCT1j0laEkZh0yANW',
+              build: '602',
+              status: 'A',
+              priority: '2016',
+              unmanaged: '0',
+            },
+            units: 'px',
+            transition: 600,
+          },
+        });
+      })(Tygh, Tygh.$);
+    </script>
+    <script type="text/javascript">
+      (function (_, $) {
+        _.tr({
+          'ab__sm.random_char': 'abcdefghijklmnopqrstuvwxyz',
+        });
+
+        $.extend(_, {
+          ab__sm: {
+            phrases: [],
+            delay: 0,
+          },
+        });
+      })(Tygh, Tygh.$);
+    </script>
+    <script type="text/javascript">
+      (function (_, $) {
+        $.extend(_, {
+          ab__smc: {
+            max_height: '250',
+            description_element_classes: '',
+            additional_classes_for_parent: '',
+            additional_classes: 'ab-smc',
+            show_button: false,
+            transition: 0.01,
+            exclude: { parent_selectors: [], selectors_in_content: [] },
+            selector: '.ab-smc',
+            additional_selector: { parent_selectors: [] },
+          },
+        });
+        _.tr({ 'ab__smc.more': 'More', 'ab__smc.less': 'Less' });
+      })(Tygh, Tygh.$);
+    </script>
+    <script type="text/javascript">
+      (function (_, $) {
+        $.extend(_, {
+          ab__fn: {
+            settings: {
+              load_by_ajax: 'Y',
+            },
+            blocks: {},
+            scrollers_settings: {},
+          },
+        });
+
+        _.tr({
+          'ab__fn.delimeter_text': 'Show more [x] of [y]',
+        });
+      })(Tygh, Tygh.$);
+    </script>
+    <script type="text/javascript">
+      (function (_, $) {
+        $.extend(_, {
+          ab__stickers: {
+            timeouts: {},
+            runtime: {
+              controller_mode: 'index.index',
+              caching: Boolean(1),
+              addon_version: '1.1.0',
+            },
+          },
+        });
+      })(Tygh, Tygh.$);
+    </script>
+
+    <!-- Inline scripts -->
+    <script type="text/javascript">
+      (function (_, $) {
+        $.ceEvent('on', 'ce.commoninit', function (context) {
+          var slider = context.find('#banner_slider_1147');
+          if (slider.length) {
+            slider.owlCarousel({
+              direction: 'ltr',
+              items: 1,
+              singleItem: true,
+              slideSpeed: 400,
+              autoPlay: '5000',
+              stopOnHover: true,
+              pagination: false,
+            });
+          }
+        });
+      })(Tygh, Tygh.$);
+    </script>
+    <script type="text/javascript">
+      (function (_, $) {
+        $.ceEvent('on', 'ce.commoninit', function (context) {
+          var slider = context.find('#banner_slider_1148');
+          if (slider.length) {
+            slider.owlCarousel({
+              direction: 'ltr',
+              items: 1,
+              singleItem: true,
+              slideSpeed: 400,
+              autoPlay: '12000',
+              stopOnHover: true,
+              pagination: false,
+            });
+          }
+        });
+      })(Tygh, Tygh.$);
+    </script>
+    <script type="text/javascript">
+      (function (_, $) {
+        $.ceEvent('on', 'ce.commoninit', function (context) {
+          var slider = context.find('#banner_slider_1149');
+          if (slider.length) {
+            slider.owlCarousel({
+              direction: 'ltr',
+              items: 1,
+              singleItem: true,
+              slideSpeed: 400,
+              autoPlay: '3000',
+              stopOnHover: true,
+              pagination: true,
+            });
+          }
+        });
+      })(Tygh, Tygh.$);
+    </script>
+    <script
+      type="text/javascript"
+      src="%PUBLIC_URL%/static/js/ab__fn_customer.min.js"
+    ></script>
+    <script>
+      (function (_, $) {
+        _.ab__fn.blocks['700_145'] = {
+          block_type: 'ab__fast_navigation',
+          columns: {
+            number_of_columns_desktop: 6,
+            number_of_columns_desktop_small: 6,
+            number_of_columns_tablet: 5,
+            number_of_columns_tablet_small: 3,
+            number_of_columns_mobile: 3,
+          },
+          first_level_scroller: { init_scrollbar: Boolean(), inited: false },
+        };
+      })(Tygh, Tygh.$);
+    </script>
+    <script
+      type="text/javascript"
+      src="%PUBLIC_URL%/static/js/owl.carousel.min.js"
+    ></script>
+    <script>
+      (function (_, $) {
+        $.ceEvent('on', 'ce.commoninit', function (context) {
+          var elm = context.find('#scroll_list_148');
+
+          if (elm.length) {
+            $(
+              '.ty-float-left:contains(.ty-scroller-list),.ty-float-right:contains(.ty-scroller-list)'
+            ).css('width', '100%');
+
+            var item = 5,
+              itemsDesktop = 5,
+              itemsDesktopSmall = 4;
+            itemsTablet = 4;
+            itemsTabletSmall = 2;
+            itemsMobile = 1;
+
+            if (item > 3) {
+              itemsDesktop = item;
+              itemsDesktopSmall = item - 1;
+              itemsTablet = item - 2;
+            } else if (item == 1) {
+              itemsDesktop = itemsDesktopSmall = itemsTablet = 1;
+            } else {
+              itemsDesktop = item;
+              itemsDesktopSmall = itemsTablet = item - 1;
+            }
+
+            var desktop = [1199, itemsDesktop],
+              desktopSmall = [1023, itemsDesktopSmall],
+              tablet = [767, itemsTablet],
+              tabletSmall = [479, itemsTabletSmall];
+            mobile = [319, itemsMobile];
+
+            elm.owlCarousel({
+              direction: 'ltr',
+              items: item,
+              itemsDesktop: desktop,
+              itemsDesktopSmall: desktopSmall,
+              itemsTablet: tablet,
+              itemsTabletSmall: tabletSmall,
+              itemsMobile: mobile,
+              autoPlay: '3000',
+              lazyLoad: true,
+              slideSpeed: 400,
+              stopOnHover: true,
+              navigation: true,
+              navigationText: [
+                '<i class="ty-icon-left-open-thin"></i>',
+                '<i class="ty-icon-right-open-thin"></i>',
+              ],
+              pagination: false,
+
+              afterUpdate: function () {
+                fn_abt__ut2_calc_cell('afterUpdate');
+              },
+            });
+          }
+        });
+      })(Tygh, Tygh.$);
+    </script>
+    <script>
+      (function (_, $) {
+        $.ceEvent('on', 'ce.commoninit', function (context) {
+          var elm = context.find('#scroll_list_149');
+
+          if (elm.length) {
+            $(
+              '.ty-float-left:contains(.ty-scroller-list),.ty-float-right:contains(.ty-scroller-list)'
+            ).css('width', '100%');
+
+            var item = 5,
+              itemsDesktop = 5,
+              itemsDesktopSmall = 4;
+            itemsTablet = 4;
+            itemsTabletSmall = 2;
+            itemsMobile = 1;
+
+            if (item > 3) {
+              itemsDesktop = item;
+              itemsDesktopSmall = item - 1;
+              itemsTablet = item - 2;
+            } else if (item == 1) {
+              itemsDesktop = itemsDesktopSmall = itemsTablet = 1;
+            } else {
+              itemsDesktop = item;
+              itemsDesktopSmall = itemsTablet = item - 1;
+            }
+
+            var desktop = [1199, itemsDesktop],
+              desktopSmall = [1023, itemsDesktopSmall],
+              tablet = [767, itemsTablet],
+              tabletSmall = [479, itemsTabletSmall];
+            mobile = [319, itemsMobile];
+
+            elm.owlCarousel({
+              direction: 'ltr',
+              items: item,
+              itemsDesktop: desktop,
+              itemsDesktopSmall: desktopSmall,
+              itemsTablet: tablet,
+              itemsTabletSmall: tabletSmall,
+              itemsMobile: mobile,
+              autoPlay: '3000',
+              lazyLoad: true,
+              slideSpeed: 400,
+              stopOnHover: true,
+              navigation: true,
+              navigationText: [
+                '<i class="ty-icon-left-open-thin"></i>',
+                '<i class="ty-icon-right-open-thin"></i>',
+              ],
+              pagination: false,
+
+              afterUpdate: function () {
+                fn_abt__ut2_calc_cell('afterUpdate');
+              },
+            });
+          }
+        });
+      })(Tygh, Tygh.$);
+    </script>
+    <script>
+      (function (_, $) {
+        $.ceEvent('on', 'ce.commoninit', function (context) {
+          var elm = context.find('#scroll_list_147');
+
+          if (elm.length) {
+            $(
+              '.ty-float-left:contains(.ty-scroller-list),.ty-float-right:contains(.ty-scroller-list)'
+            ).css('width', '100%');
+
+            var item = 5,
+              itemsDesktop = 5,
+              itemsDesktopSmall = 4;
+            itemsTablet = 4;
+            itemsTabletSmall = 2;
+            itemsMobile = 1;
+
+            if (item > 3) {
+              itemsDesktop = item;
+              itemsDesktopSmall = item - 1;
+              itemsTablet = item - 2;
+            } else if (item == 1) {
+              itemsDesktop = itemsDesktopSmall = itemsTablet = 1;
+            } else {
+              itemsDesktop = item;
+              itemsDesktopSmall = itemsTablet = item - 1;
+            }
+
+            var desktop = [1199, itemsDesktop],
+              desktopSmall = [1023, itemsDesktopSmall],
+              tablet = [767, itemsTablet],
+              tabletSmall = [479, itemsTabletSmall];
+            mobile = [319, itemsMobile];
+
+            elm.owlCarousel({
+              direction: 'ltr',
+              items: item,
+              itemsDesktop: desktop,
+              itemsDesktopSmall: desktopSmall,
+              itemsTablet: tablet,
+              itemsTabletSmall: tabletSmall,
+              itemsMobile: mobile,
+              autoPlay: '3000',
+              lazyLoad: true,
+              slideSpeed: 400,
+              stopOnHover: true,
+              navigation: true,
+              navigationText: [
+                '<i class="ty-icon-left-open-thin"></i>',
+                '<i class="ty-icon-right-open-thin"></i>',
+              ],
+              pagination: false,
+
+              afterUpdate: function () {
+                fn_abt__ut2_calc_cell('afterUpdate');
+              },
+            });
+          }
+        });
+      })(Tygh, Tygh.$);
+    </script>
+  </body>
+</html>
