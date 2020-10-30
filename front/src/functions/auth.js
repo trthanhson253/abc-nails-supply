@@ -31,6 +31,7 @@ export const currentUser = async (userId,token) => {
   );
 };
 
+
 export const currentAdmin = async (token) => {
   return await axios.post(
     `${process.env.REACT_APP_API}/current-admin`,
@@ -42,6 +43,12 @@ export const currentAdmin = async (token) => {
         Authorization: `Bearer ${token}`
       },
     }
+  );
+};
+
+export const registerActivate = async (token) => {
+  return await axios.get(
+    `${process.env.REACT_APP_API}/register/activate/${token}`
   );
 };
 

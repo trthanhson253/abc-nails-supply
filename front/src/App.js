@@ -18,6 +18,8 @@ import ProductCreate from "./pages/admin/product/ProductCreate";
 
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import RegisterComplete from "./pages/auth/RegisterComplete";
+
 import UserRoute from "./components/routes/UserRoute";
 import AdminRoute from "./components/routes/AdminRoute";
 
@@ -34,6 +36,7 @@ import { currentUser } from "./functions/auth";
 import { useDispatch } from "react-redux";
 
 import { getCookie } from "./functions/auth";
+
 
 
 // import Nhap from "./pages/Nhap";
@@ -102,7 +105,7 @@ function App() {
             <Route exact path="/" component={Home} />
             <Route exact path="/register" component={Register} />
             <Route exact path="/login" component={Login} />
-          
+            <Route exact path="/auth/activate/:token" component={RegisterComplete} />
 
             <Route exact path="/:cslug/:sslug/:ssslug/product" component={SubSubHome} />
             <Route exact path="/:cslug/:sslug/:ssslug/:pslug/product" component={ProductDetailHome} />

@@ -29,7 +29,7 @@ exports.register = (req, res) => {
         }
         // generate token with user name email and password
         const token = jwt.sign({ name,email, password }, process.env.JWT_ACCOUNT_ACTIVATION, {
-            expiresIn: '20m'
+            expiresIn: '3d'
         });
 
         // send email
@@ -59,7 +59,7 @@ exports.registerActivate = (req, res) => {
     jwt.verify(token, process.env.JWT_ACCOUNT_ACTIVATION, function(err, decoded) {
         if (err) {
             return res.status(401).json({
-                error: 'Expired link. Try again'
+                error: 'This link is already expired. Please register again'
             });
         }
 
@@ -68,7 +68,7 @@ exports.registerActivate = (req, res) => {
         User.findOne({ email }).exec((err, user) => {
             if (user) {
                 return res.status(401).json({
-                    error: 'The link is already used.'
+                    error: 'Your account is already activated. Please sign in.'
                 });
             }
 
@@ -85,7 +85,7 @@ exports.registerActivate = (req, res) => {
                 ses.sendEmail(params).promise();
 
                 return res.json({
-                    message: 'Registration success. Please login.'
+                    message: 'Congratulations ! Your account is activated.'
                 });
             });
         });

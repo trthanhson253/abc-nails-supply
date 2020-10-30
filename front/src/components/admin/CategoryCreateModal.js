@@ -37,7 +37,8 @@ const CategoryCreateModal = ({ open,handleClose,loadCategories,token,removeImage
       },] });
       toast.success("Created Successfully!");
       handleClose();
-      loadCategories();          
+      loadCategories(); 
+      setRemoveImage(false);         
       }).catch((err)=>{
         console.log(err)
         toast.error(err.response.data.error);

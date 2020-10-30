@@ -6,8 +6,10 @@ const Error = () => {
 
   return (
    <>
-    <center>
+    <center style={{padding: '20px'}}>
+    <h3>This link does not exist.</h3>
     <img src={require('../assets/img/error.png')} alt="error" />
+    
     </center>
    </>
   );

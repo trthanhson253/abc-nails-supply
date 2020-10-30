@@ -111,7 +111,7 @@ const FileMultipleUpload = ({values, setValues,setLoading,loading,token}) => {
     ))}
    </div>
    <div className="ty-control-group">
-   <input type="file" accept="images/*" multiple className="ty-login__input cm-focus" onChange={fileUploadAndResize} disabled={values.images[1]} />
+   <input type="file" accept="images/*" className="ty-login__input cm-focus" onChange={fileUploadAndResize} disabled={values.images[1]} />
      
    </div>            
    </>

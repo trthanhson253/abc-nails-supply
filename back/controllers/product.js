@@ -4,6 +4,7 @@ const slugify = require("slugify");
 const Sub = require("../models/sub");
 const SubSub = require("../models/subSub");
 const formidable = require("formidable");
+const cloudinary = require("cloudinary");
 
 exports.create =  (req, res) => {
  
@@ -99,17 +100,35 @@ exports.listProductBySubSub = (req, res) => {
 
 
 
-// exports.remove = async (req, res) => {
-//   try {
-//     const deleted = await Product.findOneAndRemove({
-//       slug: req.params.slug,
-//     }).exec();
-//     res.json(deleted);
-//   } catch (err) {
-//     console.log(err);
-//     return res.staus(400).send("Product delete failed");
-//   }
-// };
+exports.remove = async (req, res) => {
+  try {
+    const { image } = req.body;
+
+    const deletedProduct = await Product.findOneAndDelete({ slug: req.params.slug }); 
+    // res.json(deletedCategory);
+    if(image.length == 2){
+      // console.log(images[1])
+      cloudinary.uploader.destroy(image[1].public_id, (err, result) => {
+        if (err) return res.json({ success: false, err });
+        res.send("ok");
+      });
+    }else{
+      res.json(deletedProduct);
+    }
+  } catch (err) {
+    res.status(400).send("Product delete failed");
+  }
+
+  try {
+    const deleted = await Product.findOneAndRemove({
+      slug: req.params.slug,
+    }).exec();
+    res.json(deleted);
+  } catch (err) {
+    console.log(err);
+    return res.staus(400).send("Product delete failed");
+  }
+};
 
 exports.read = async (req, res) => {
   const product = await Product.findOne({ slug: req.params.slug })

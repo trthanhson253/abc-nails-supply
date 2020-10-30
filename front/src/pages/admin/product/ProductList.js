@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import AdminMenu from "../../../components/admin/AdminMenu";
-import { getProducts,getDetailProduct } from "../../../functions/product";
+import { getProducts,getDetailProduct,removeProduct } from "../../../functions/product";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { Steps,Avatar  } from 'antd';
@@ -46,11 +46,32 @@ const loadProducts= () => {
       if (data.error) {
         toast.error(data.error);
       } else {
-        //   console.log(data.data)
+          console.log(data.data)
         setProducts(data.data);
       }
     });
   };
+
+  const handleRemove = async (slug,productId,image) => {
+    // let answer = window.confirm("Delete?");
+    // console.log(answer, slug);
+    if (window.confirm("ATTENTION! This product will be deleted permanently and cannot be recovered .Are you sure you want to continue this process ?")) {
+    //   setLoading(true);
+      removeProduct(slug,token,image)
+        .then((res) => {
+        //   setLoading(false); ${res.data.name}
+          toast.error(`This Product is deleted`);
+          loadProducts();
+        })
+        .catch((err) => {    
+          if (err.response.status === 400) {
+            // setLoading(false);
+            toast.error(err.response.data);
+          }
+        });
+    }
+  };
+
   useEffect(() => {
     loadProducts();
   }, []);
@@ -135,7 +156,7 @@ const loadProducts= () => {
                                 <td className="center">
                                 <div className="text-center"> <button type="button" class="btn btn-default btn-circle" onClick={()=>handleClickDetailOpen(p.slug)}><i class="fa fa-eye"></i></button>&nbsp;
                                 <button type="button" class="btn btn-primary btn-circle"><i class="fa fa-edit"></i></button>&nbsp;
-                                <button type="button" class="btn btn-danger btn-circle"><i class="fa fa-trash-o"></i></button></div>                            
+                                <button type="button" class="btn btn-danger btn-circle" onClick={() => handleRemove(p.slug,p._id,p.image)}><i class="fa fa-trash-o"></i></button></div>                            
                                 </td>
                             </tr>
                           ))}          

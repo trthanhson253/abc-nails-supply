@@ -14,7 +14,6 @@ import { Spin} from "antd";
 import CKEditor from 'ckeditor4-react';
 
 
-
 const ProductCreate = ({ history }) => {
   const initialState = {
     item:"",

@@ -20,7 +20,7 @@ export const getCategorySubSubs = async (_id) =>
   await axios.get(`${process.env.REACT_APP_API}/category/subs/subsubs/${_id}`);
 
 export const loadMenu = async (id) =>{
-  return await axios.post(`${process.env.REACT_APP_API}/category/load-menu`, {id},{
+  return await axios.post(`${process.env.REACT_APP_API}/loading/category/load-menu`, {id},{
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"
@@ -29,7 +29,7 @@ export const loadMenu = async (id) =>{
 }
   
 export const removeCategory = async (slug,cateId,token,images) =>{
-  console.log("token",token);
+  // console.log("token",token);
   await axios.post(`${process.env.REACT_APP_API}/category/${slug}`, {images,cateId},{
     headers: {
     Accept: "application/json",

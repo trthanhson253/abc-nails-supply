@@ -29,6 +29,6 @@ router.post("/category/:slug", requireSignin, adminCheck, remove);
 router.get("/category/subs/:_id", getSubs);
 router.get("/category/subs/subsubs/:_id", getSubSubs);
 
-router.post("/category/load-menu", loadMenu);
+router.post("/loading/category/load-menu", loadMenu);
 
 module.exports = router;

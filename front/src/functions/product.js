@@ -39,3 +39,13 @@ export const getDetailProduct = (slug) => {
     .catch((err) => console.log(err));
 };
   
+export const removeProduct = async (slug,token,image) =>{
+  // console.log("token",token);
+  await axios.post(`${process.env.REACT_APP_API}/product/${slug}`, {image},{
+    headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`
+    },
+  });
+}

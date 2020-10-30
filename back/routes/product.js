@@ -15,7 +15,7 @@ const {
   listAll,
   listProductBySubSub,
   listDetailProduct,
-//   remove,
+  remove,
   read,
 //   update,
 //   list,
@@ -32,7 +32,7 @@ router.post("/product", productCreateValidator,runValidation,requireSignin,admin
 router.get("/products", listAll); // products/100
 router.get("/products/subSub/:slug", listProductBySubSub);
 
-// router.delete("/product/:slug", authCheck, adminCheck, remove);
+router.post("/product/:slug", requireSignin,adminCheck, remove);
 router.get("/product/:slug", read);
 // router.put("/product/:slug", authCheck, adminCheck, update);
 
