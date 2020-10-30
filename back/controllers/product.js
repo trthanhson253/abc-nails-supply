@@ -72,6 +72,24 @@ exports.listAll = async (req, res) => {
   res.json(products);
 };
 
+
+exports.listRecentlyProducts = async (req, res) => {
+  const {recentlyProduct,pslug1}=req.body
+  // console.log("recentlyProduct",recentlyProduct)
+  let currentProduct = await Product.findOne({ slug: pslug1 });
+  // console.log("currentProduct",currentProduct);
+  var notPresentInArray  = recentlyProduct.filter(val => 
+    (!(val.includes(currentProduct._id))))
+      // (obj._id == currentProduct._id))
+  
+  // console.log("notPresentInArray",notPresentInArray);
+ 
+  let products = await Product.find().where('_id').
+  in(notPresentInArray).exec();
+  // console.log(products)
+  res.json(products);
+};
+
 exports.listProductBySubSub = (req, res) => {
   // const slug1 = req.params.slug;
   SubSub.find({ slug:req.params.slug }).populate("category")
@@ -260,17 +278,17 @@ exports.read = async (req, res) => {
 //   res.json(related);
 // };
 
-// // SERACH / FILTER
+// SEARCH / FILTER
 
-// const handleQuery = async (req, res, query) => {
-//   const products = await Product.find({ $text: { $search: query } })
-//     .populate("category", "_id name")
-//     .populate("subs", "_id name")
-//     .populate("postedBy", "_id name")
-//     .exec();
+const handleQuery = async (req, res, query) => {
+  const products = await Product.find({ $text: { $search: query } })
+    .populate("category", "_id name")
+    .populate("sub", "_id name")
+    .populate("subSub", "_id name")
+    .exec();
 
-//   res.json(products);
-// };
+  res.json(products);
+};
 
 // const handlePrice = async (req, res, price) => {
 //   try {
@@ -372,56 +390,56 @@ exports.read = async (req, res) => {
 //   res.json(products);
 // };
 
-// exports.searchFilters = async (req, res) => {
-//   const {
-//     query,
-//     price,
-//     category,
-//     stars,
-//     sub,
-//     shipping,
-//     color,
-//     brand,
-//   } = req.body;
+exports.searchFilters = async (req, res) => {
+  const {
+    query,
+    // price,
+    // category,
+    // stars,
+    // sub,
+    // shipping,
+    // color,
+    // brand,
+  } = req.body;
 
-//   if (query) {
-//     console.log("query --->", query);
-//     await handleQuery(req, res, query);
-//   }
+  if (query) {
+    console.log("query --->", query);
+    await handleQuery(req, res, query);
+  }
 
-//   // price [20, 200]
-//   if (price !== undefined) {
-//     console.log("price ---> ", price);
-//     await handlePrice(req, res, price);
-//   }
+  // price [20, 200]
+  // if (price !== undefined) {
+  //   console.log("price ---> ", price);
+  //   await handlePrice(req, res, price);
+  // }
 
-//   if (category) {
-//     console.log("category ---> ", category);
-//     await handleCategory(req, res, category);
-//   }
+  // if (category) {
+  //   console.log("category ---> ", category);
+  //   await handleCategory(req, res, category);
+  // }
 
-//   if (stars) {
-//     console.log("stars ---> ", stars);
-//     await handleStar(req, res, stars);
-//   }
+  // if (stars) {
+  //   console.log("stars ---> ", stars);
+  //   await handleStar(req, res, stars);
+  // }
 
-//   if (sub) {
-//     console.log("sub ---> ", sub);
-//     await handleSub(req, res, sub);
-//   }
+  // if (sub) {
+  //   console.log("sub ---> ", sub);
+  //   await handleSub(req, res, sub);
+  // }
 
-//   if (shipping) {
-//     console.log("shipping ---> ", shipping);
-//     await handleShipping(req, res, shipping);
-//   }
+  // if (shipping) {
+  //   console.log("shipping ---> ", shipping);
+  //   await handleShipping(req, res, shipping);
+  // }
 
-//   if (color) {
-//     console.log("color ---> ", color);
-//     await handleColor(req, res, color);
-//   }
+  // if (color) {
+  //   console.log("color ---> ", color);
+  //   await handleColor(req, res, color);
+  // }
 
-//   if (brand) {
-//     console.log("brand ---> ", brand);
-//     await handleBrand(req, res, brand);
-//   }
-// };
+  // if (brand) {
+  //   console.log("brand ---> ", brand);
+  //   await handleBrand(req, res, brand);
+  // }
+};

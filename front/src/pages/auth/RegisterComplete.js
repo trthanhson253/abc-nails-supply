@@ -4,7 +4,7 @@ import React, { useState,useEffect } from "react";
 import { Result, Button } from 'antd';
 import { useHistory } from "react-router-dom";
 import Spinner from "../../components/Spinner"
-import { registerActivate } from "../../functions/auth";
+import { registerActivate,removeCookie,getCookie } from "../../functions/auth";
 
 const RegisterComplete = (props) => {
 
@@ -24,7 +24,10 @@ const loadPage= (token) => {
         setState({
             ...state,
             success: res.data.message,
-          });     
+          });
+        if(getCookie("emailForRegistration")){
+          removeCookie("emailForRegistration")
+        }     
     }).catch((error) => {
         // console.log("Son",error.response);
           setLoading(false); 

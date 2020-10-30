@@ -1,27 +1,60 @@
 import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Image,Tabs  } from 'antd';
-import { getDetailProduct } from "../../functions/product";
+import { getDetailProduct,getRecentlyView } from "../../functions/product";
+import { setCookie,getCookie } from "../../functions/auth";
 import renderHTML from 'react-render-html';
+import ProductCardRelate from "../../components/cards/ProductCardRelate";
+import moment from 'moment';
 
 const ProductDetailHome = props => {
   
   const [ product, setProduct] = useState({});
   const [ content, setContent] = useState("");
+  const [ recentProducts, setRecentProducts] = useState([]);
   const { TabPane } = Tabs;
 
   // const render = require('react-render-html');
-
+  
   const loadDetailProduct= (pslug) => {
     getDetailProduct(pslug).then((data) => { 
-        console.log(data);
+        
         setProduct(data.product);
         setContent(data.product.description);
+        // var date = new Date();
+
+        var currentProductId = data.product._id;
+        var howManyItems = 5;
+        // currentValues=[];
+        if(currentProductId  && !getCookie("lastVisited")){
+          setCookie("lastVisited",data.product._id)
+        }else{
+          var currentValues = getCookie("lastVisited");
+          
+          if(!currentValues.includes(currentProductId)){
+              currentValues+="-"+currentProductId;
+          }
+                     
+            setCookie("lastVisited",currentValues);                   
+        }      
     });
   };
 
+   const loadRecentlyView= (recentlyProduct,pslug1) => {
+    getRecentlyView(recentlyProduct,pslug1).then((res) => { 
+        setRecentProducts(res.data)
+    });
+  };
+
+  // console.log("SPLIT",getCookie("lastVisited").split("-").slice(-2));
+
   useEffect(() => {
     const pslug1 = props.match.params.pslug;
+    if(getCookie("lastVisited")){
+      const recentlyProduct= getCookie("lastVisited").split("-").slice(-5);
+      loadRecentlyView(recentlyProduct,pslug1)
+    } 
+    // console.log("SPLIT",recently);
     loadDetailProduct(pslug1);
   }, [props]);
 
@@ -199,6 +232,7 @@ ut2-add-to-compare cm-ajax cm-ajax-full-render label cm-tooltip" title="Add to c
               </TabPane>
               <TabPane tab={<span><i className="fa fa-comments fa-fw" /> Reviews</span>} key="3">
                 Write A Review
+                <img src="../../assets/img/comment.png" />
               </TabPane>
             </Tabs>
 
@@ -210,109 +244,40 @@ ut2-add-to-compare cm-ajax cm-ajax-full-render label cm-tooltip" title="Add to c
          </div>
        </div>
      </div>
+
+
+
+
      <div className="container-fluid-row container-fluid-row-full-width new-popular-special">
-       <div className="row-fluid ">        <div className="span16 ut2-top-bottom">
-           <div className="row-fluid ">        <div className="span16  ">
-               <div className="ty-tabs cm-j-tabs cm-j-tabs-disable-convertation clearfix"><ul className="ty-tabs__list"><li id="abt__ut2_grid_tab_722_147_717_products_7797" data-block="722_147_717_products_7797" className="abt__ut2_grid_tabs ty-tabs__item cm-js cm-ajax active"><span className="ty-tabs__span">Special</span></li><li id="abt__ut2_grid_tab_722_149_718_products_7797" data-block="722_149_718_products_7797" className="abt__ut2_grid_tabs ty-tabs__item cm-js cm-ajax"><span className="ty-tabs__span">Popular</span></li></ul></div>
-               <div className="cm-tabs-content ty-tabs__content clearfix">
-                 <div id="content_abt__ut2_grid_tab_722_147_717_products_7797" className>        
-                   <div id="scroll_list_147" className="owl-carousel ty-scroller-list owl-theme" style={{height: '320px', opacity: 1, display: 'block'}}>
-                    
-
-
-                   <div className="owl-wrapper-outer"><div className="owl-wrapper" style={{width: '9600px', left: '0px', display: 'block', transition: 'all 800ms ease 0s', transform: 'translate3d(-960px, 0px, 0px)'}}>
-                    <div className="owl-item" style={{width: '240px'}}><div className="ty-scroller-list__item">
-                             <div className="ty-scroller-list__img-block">
-                               <a href="https://www.happynailsupply.com/nail-polishes/base-and-top-coats/base-coats/china-glaze-strong-adhesion-base-coat-0.5oz/"><img className="ty-pict lazyOwl cm-image abt-ut2-lazy-loaded" src="https://res.cloudinary.com/dtopnho1y/image/upload/v1603821087/rf7pivjg7yto50hfdz1a.jpg" alt="" title style={{opacity: 1}} />
-                               </a>
-                             </div>
-                             <div className="ty-scroller-list__description">
-                               <div className="ty-simple-list clearfix">
-                                 <form action="https://www.happynailsupply.com/" method="post" name="product_form_147000scr_147000722" encType="multipart/form-data" className="cm-disable-empty-files cm-ajax cm-ajax-full-render cm-ajax-status-middle cm-processed-form">
-                                   <input type="hidden" name="result_ids" defaultValue="cart_status*,wish_list*,checkout*,account_info*,abt__ut2_wishlist_count" />
-                                   <input type="hidden" name="redirect_url" defaultValue="index.php?dispatch=products.view&product_id=7797" />
-                                   <input type="hidden" name="product_data[722][product_id]" defaultValue={722} />
-                                   <div className="ty-product-labels ty-product-labels--top-right   cm-reload-147000scr_147000722" id="product_labels_update_147000scr_147000722">
-                                     <div className="ty-product-labels__item   ty-product-labels__item--discount">
-                                       <div className="ty-product-labels__content">Save <em>73%</em></div>
-                                     </div>
-                                     {/*product_labels_update_147000scr_147000722*/}</div>
-                                   <div className="ty-simple-list__rating no-rating">
-                                     <span className="ty-nowrap ty-stars"><i className="ty-icon-star-empty" /><i className="ty-icon-star-empty" /><i className="ty-icon-star-empty" /><i className="ty-icon-star-empty" /><i className="ty-icon-star-empty" /></span>
-                                   </div>
-                                   <bdi>
-                                     <a href="https://www.happynailsupply.com/nail-polishes/base-and-top-coats/base-coats/china-glaze-strong-adhesion-base-coat-0.5oz/" className="product-title" title="China Glaze - Strong Adhesion Base Coat 0.5oz">China Glaze - Strong Adhesion Base Coat 0.5oz</a>    
-                                   </bdi>
-                                   <div className="ty-simple-list__price pr-col pr-color">
-                                     <div>
-                                       <span className="cm-reload-147000scr_147000722" id="old_price_update_147000scr_147000722">
-                                         <span className="ty-list-price ty-nowrap" id="line_list_price_147000scr_147000722"><span className="ty-strike"><bdi><span className="ty-list-price ty-nowrap">$</span><span id="sec_list_price_147000scr_147000722" className="ty-list-price ty-nowrap">6.50</span></bdi></span></span>
-                                         {/*old_price_update_147000scr_147000722*/}</span>
-                                       <span className="cm-reload-147000scr_147000722 ty-price-update" id="price_update_147000scr_147000722">
-                                         <input type="hidden" name="appearance[show_price_values]" defaultValue={1} />
-                                         <input type="hidden" name="appearance[show_price]" defaultValue={1} />
-                                         <span className="ty-price" id="line_discounted_price_147000scr_147000722"><bdi><span className="ty-price-num">$</span><span id="sec_discounted_price_147000scr_147000722" className="ty-price-num">1.75</span></bdi></span>
-                                         {/*price_update_147000scr_147000722*/}</span>
-                                     </div>
-                                   </div>
-                                   <input type="hidden" name="security_hash" className="cm-no-hide-input" defaultValue="c2b522e73c660178a57674e055b61005" /></form>
-                               </div>
-                             </div>
-                           </div>
-                        </div>
- {/* CHO THÊM HÌNH VÀO ĐÂY */}
-
-                      </div>
-                    </div>
-                     </div>
-                   {/* Inline script moved to the bottom of the page */}
-                   {/* Inline script moved to the bottom of the page */}
-                 </div>
-                 <div id="content_abt__ut2_grid_tab_722_149_718_products_7797" className="hidden"><div id="scroll_list_149" className="owl-carousel ty-scroller-list owl-theme" style={{height: '320px', opacity: 0, display: 'block'}}>
-                     <div className="owl-wrapper-outer">
-                      <div className="owl-wrapper" style={{width: '0px', left: '0px', display: 'block'}}>
-                        <div className="owl-item" style={{width: '0px'}}>
-                          <div className="ty-scroller-list__item">
-                             <div className="ty-scroller-list__img-block">
-                               <a href="https://www.happynailsupply.com/tools-and-equipments/drills-and-bits/replacement-parts/medicool-propower-20k-control-box-replacement-battery/"><img className="ty-pict lazyOwl cm-image abt-ut2-lazy-loaded" src="./Detail_files/medicool-propower-20k-replacement-battery-only-green.jpg" alt="" title style={{opacity: 1}} />
-                               </a>
-                             </div>
-                             <div className="ty-scroller-list__description">
-                               <div className="ty-simple-list clearfix">
-                                 <form action="https://www.happynailsupply.com/" method="post" name="product_form_149000scr_1490005373" encType="multipart/form-data" className="cm-disable-empty-files cm-ajax cm-ajax-full-render cm-ajax-status-middle cm-processed-form">
-                                   <input type="hidden" name="result_ids" defaultValue="cart_status*,wish_list*,checkout*,account_info*,abt__ut2_wishlist_count" />
-                                   <input type="hidden" name="redirect_url" defaultValue="index.php?dispatch=abt__ut2_grid_tabs.load" />
-                                   <input type="hidden" name="product_data[5373][product_id]" defaultValue={5373} />
-                                   <div className="ty-simple-list__rating no-rating">
-                                     <span className="ty-nowrap ty-stars"><i className="ty-icon-star-empty" /><i className="ty-icon-star-empty" /><i className="ty-icon-star-empty" /><i className="ty-icon-star-empty" /><i className="ty-icon-star-empty" /></span>
-                                   </div>
-                                   <bdi>
-                                     <a href="https://www.happynailsupply.com/tools-and-equipments/drills-and-bits/replacement-parts/medicool-propower-20k-control-box-replacement-battery/" className="product-title" title="Medicool ProPower 20K Control Box Replacement Battery">Medicool ProPower 20K Control Box Replacement Battery</a>    
-                                   </bdi>
-                                   <div className="ty-simple-list__price pr-col">
-                                     <div>
-                                       <span className="cm-reload-149000scr_1490005373" id="old_price_update_149000scr_1490005373">
-                                         {/*old_price_update_149000scr_1490005373*/}</span>
-                                       <span className="cm-reload-149000scr_1490005373 ty-price-update" id="price_update_149000scr_1490005373">
-                                         <input type="hidden" name="appearance[show_price_values]" defaultValue={1} />
-                                         <input type="hidden" name="appearance[show_price]" defaultValue={1} />
-                                         <span className="ty-price" id="line_discounted_price_149000scr_1490005373"><bdi><span className="ty-price-num">$</span><span id="sec_discounted_price_149000scr_1490005373" className="ty-price-num">65.00</span></bdi></span>
-                                         {/*price_update_149000scr_1490005373*/}</span>
-                                     </div>
-                                   </div>
-                                   <input type="hidden" name="security_hash" className="cm-no-hide-input" defaultValue="c2b522e73c660178a57674e055b61005" /></form>
-                               </div>
-                             </div>
-                           </div>
-                           </div>
-
-                           </div></div>
-                     <div className="owl-controls clickable"><div className="owl-buttons"><div className="owl-prev"><i className="ty-icon-left-open-thin" /></div><div className="owl-next"><i className="ty-icon-right-open-thin" /></div></div></div></div>
-                 </div>
+       <div className="row-fluid ">        
+      
+      
+       <div className="panel-body">
+           {/* Nav tabs */}
+           <ul className="nav nav-pills">
+               <li className="active"><a href="#home-pills" data-toggle="tab" aria-expanded="true">Recently Products You Viewed</a></li>
+               <li className><a href="#profile-pills" data-toggle="tab" aria-expanded="false">Related Products</a></li>
+               
+           </ul>
+           {/* Tab panes */}
+           <div className="tab-content">
+               <div className="tab-pane fade active in" id="home-pills">
+               {recentProducts.map((c)=>(
+                    <ProductCardRelate sanpham={c}/>
+               ))}
+               
+               
+              
                </div>
-             </div>
+               <div className="tab-pane fade" id="profile-pills">
+              
+               </div>
+              
+              
            </div>
-         </div>
+       </div>
+
+         
        </div>
      </div>
    </div>

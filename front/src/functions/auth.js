@@ -71,3 +71,4 @@ export const removeCookie = key => {
       cookie.remove(key);
   }
 };
+

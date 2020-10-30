@@ -2,9 +2,9 @@ import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { login,setCookie } from "../../functions/auth";
+import { login,setCookie,getCookie } from "../../functions/auth";
 import Spinner from "../../components/Spinner";
-
+import { message } from 'antd';
 const Login = ({ history }) => {
     const [state, setState] = useState({
         email: '',
@@ -56,6 +56,10 @@ const Login = ({ history }) => {
       const handleSubmit = async (e) => {
         e.preventDefault();    
         setLoading(true);
+        if(email === getCookie("emailForRegistration")){
+          // toast.error("Your account has not been activated yet. Please check your email.");
+          message.warning('Your account has not been activated yet. Please check your email.', 15);
+        }
         login(email,password)
             .then((res) => {
               // console.log("RES",res)

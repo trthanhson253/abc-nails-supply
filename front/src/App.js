@@ -29,13 +29,14 @@ import Error from "./pages/Error";
 import SubSubHome from "./pages/home/SubSubHome";
 import ProductDetailHome from "./pages/home/ProductDetailHome";
 import Checkout from "./pages/home/Checkout";
-
+import Shop from "./pages/Shop";
 
 // import { useSelector } from "react-redux";
 import { currentUser } from "./functions/auth";
 import { useDispatch } from "react-redux";
 
 import { getCookie } from "./functions/auth";
+
 
 
 
@@ -112,6 +113,7 @@ function App() {
 
             <Route exact path="/detail" component={ProductDetailHome} />
             <Route exact path="/checkout" component={Checkout} />
+            <Route exact path="/shop" component={Shop} />
             
             <AdminRoute exact path="/admin" component={AdminDashboard} />
             <AdminRoute exact path="/admin/category/list" component={categoryList} />

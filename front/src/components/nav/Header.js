@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import { removeCookie } from "../../functions/auth";
 import { toast } from "react-toastify";
 import { getCategories,loadMenu } from "../../functions/category";
+import Search from "../forms/Search";
 
 const Header = () => {
 
@@ -137,7 +138,7 @@ const Header = () => {
                             <li className="ty-menu__item cm-menu-item-responsive first-lvl ty-menu-item__nailpolishes">
                             <Link className="ty-menu__item-toggle ty-menu__menu-btn visible-phone cm-responsive-menu-toggle">
                               <i className="ut2-icon-outline-expand_more" />
-                            </Link><Link to={`/${c.slug}/product`} className="ty-menu__item-link a-first-lvl" onClick={()=>activateMenu(c._id)}>
+                            </Link><Link to={`/${c.slug}/product`} className="ty-menu__item-link a-first-lvl" onMouseMove={()=>activateMenu(c._id)}>
                               <div className="menu-lvl-ctn " ><span><bdi>{c.name}</bdi></span><i className="icon-right-dir ut2-icon-outline-arrow_forward" /></div>
                             </Link>
 
@@ -181,23 +182,7 @@ const Header = () => {
                   <div className="span10 search-grid ">
                     <div className="top-search ">
                       <div className="ty-search-block">
-                        <form action="https://www.ABCnailsupply.com/" name="search_form" method="get">
-                          <input type="hidden" name="match" defaultValue="all" />
-                          <input type="hidden" name="subcats" defaultValue="Y" />
-                          <input type="hidden" name="pcode_from_q" defaultValue="Y" />
-                          <input type="hidden" name="pshort" defaultValue="Y" />
-                          <input type="hidden" name="pfull" defaultValue="Y" />
-                          <input type="hidden" name="pname" defaultValue="Y" />
-                          <input type="hidden" name="pkeywords" defaultValue="Y" />
-                          <input type="hidden" name="search_performed" defaultValue="Y" />
-                          <div id="live_reload_box">
-                            {/*live_reload_box*/}</div>
-                          <div id="cp_ls_ajax_loader" className="live-search-loader-wrap" style={{display: 'none'}}>
-                            <img src="https://www.ABCnailsupply.com/design/themes/responsive/media/images/addons/cp_live_search/loaders/loader_1.png" />
-                          </div>
-                          <input type="text" name="q" defaultValue id="search_input" title="Search products" className="ty-search-block__input cm-hint" /><button title="Search" className="ty-search-magnifier" type="submit"><i className="ty-icon-search" /></button>
-                          <input type="hidden" name="dispatch" defaultValue="products.search" />
-                          <input type="hidden" name="security_hash" className="cm-no-hide-input" defaultValue="9015f7214ad6c5db7036646ea0b626ad" /></form>
+                       <Search />
                       </div>
                     </div>
                   </div>

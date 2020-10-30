@@ -17,12 +17,13 @@ const {
   listDetailProduct,
   remove,
   read,
+  listRecentlyProducts,
 //   update,
 //   list,
 //   productsCount,
 //   productStar,
 //   listRelated,
-//   searchFilters,
+  searchFilters,
 } = require("../controllers/product");
 
 // routes
@@ -30,6 +31,8 @@ router.post("/product", productCreateValidator,runValidation,requireSignin,admin
 // router.get("/products/total", productsCount);
 
 router.get("/products", listAll); // products/100
+router.post("/products/recentlyProduct", listRecentlyProducts);
+
 router.get("/products/subSub/:slug", listProductBySubSub);
 
 router.post("/product/:slug", requireSignin,adminCheck, remove);
@@ -42,6 +45,6 @@ router.get("/product/:slug", read);
 // related
 // router.get("/product/related/:productId", listRelated);
 // search
-// router.post("/search/filters", searchFilters);
+router.post("/search/filters", searchFilters);
 
 module.exports = router;

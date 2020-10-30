@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
-import { register } from "../../functions/auth";
+import { getCookie, register,removeCookie,setCookie } from "../../functions/auth";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { Result, Button } from 'antd';
@@ -45,7 +45,11 @@ const Register = ({ history }) => {
                success:res.data.message,
                show:true
               }); 
-              window.localStorage.setItem("emailForRegistration", email);
+            //   window.localStorage.setItem("emailForRegistration", email);
+            if(getCookie("emailForRegistration")){
+                removeCookie("emailForRegistration");
+            }
+              setCookie("emailForRegistration", email);
             })
             .catch((error) => {
                 setState({
@@ -57,16 +61,19 @@ const Register = ({ history }) => {
                 toast.error(error.response.data.error);
             });
     };
+    const goHome = () => (
+        history.push("/")
+    ); 
     const showSuccessMessage = (success) => (
         <Result
             status="success"
             title="Thank you for registering with us! But we still have one more step ...!"
             subTitle={success}
-            // extra={[
-            // <Button type="primary" key="console">
-            //     Go to Homepage
-            // </Button>,
-            // ]}
+            extra={[
+            <Button type="primary" key="console"  onClick={goHome}>
+            Back Home
+            </Button>,
+            ]}
         />
       );
   return (
