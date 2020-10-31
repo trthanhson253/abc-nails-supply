@@ -126,10 +126,7 @@ exports.remove = async (req, res) => {
     // res.json(deletedCategory);
     if(image.length == 2){
       // console.log(images[1])
-      cloudinary.uploader.destroy(image[1].public_id, (err, result) => {
-        if (err) return res.json({ success: false, err });
-        res.send("ok");
-      });
+      await cloudinary.uploader.destroy(image[1].public_id);
     }else{
       res.json(deletedProduct);
     }

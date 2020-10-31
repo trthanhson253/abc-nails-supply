@@ -3199,9 +3199,9 @@ body .ui-tooltip {
 .ty-icon-up-open:before {
   content: url(../img/arrowUp.png);
 }
-.ty-icon-down-micro:before {
+/* .ty-icon-down-micro:before {
   content: '\e01d';
-}
+} */
 .ty-icon-up-micro:before {
   content: '\e01e';
 }

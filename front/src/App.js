@@ -30,12 +30,14 @@ import SubSubHome from "./pages/home/SubSubHome";
 import ProductDetailHome from "./pages/home/ProductDetailHome";
 import Checkout from "./pages/home/Checkout";
 import Shop from "./pages/Shop";
+import Cart from "./pages/Cart";
 
 // import { useSelector } from "react-redux";
 import { currentUser } from "./functions/auth";
 import { useDispatch } from "react-redux";
 
 import { getCookie } from "./functions/auth";
+import WishList from "./pages/WishList";
 
 
 
@@ -114,6 +116,10 @@ function App() {
             <Route exact path="/detail" component={ProductDetailHome} />
             <Route exact path="/checkout" component={Checkout} />
             <Route exact path="/shop" component={Shop} />
+            <Route exact path="/cart" component={Cart} />
+
+            // wishlist nên bỏ vô trong userRoute
+            <Route exact path="/wishlist" component={WishList} />
             
             <AdminRoute exact path="/admin" component={AdminDashboard} />
             <AdminRoute exact path="/admin/category/list" component={categoryList} />

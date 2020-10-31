@@ -1,28 +1,34 @@
 import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Image,Tabs  } from 'antd';
+import { Image,Tabs,Tooltip,message,Spin  } from 'antd';
 import { getDetailProduct,getRecentlyView } from "../../functions/product";
 import { setCookie,getCookie } from "../../functions/auth";
 import renderHTML from 'react-render-html';
 import ProductCardRelate from "../../components/cards/ProductCardRelate";
 import moment from 'moment';
+import { useSelector, useDispatch } from "react-redux";
+import _ from "lodash";
+import { LoadingOutlined } from '@ant-design/icons';
 
 const ProductDetailHome = props => {
   
   const [ product, setProduct] = useState({});
+  const [ loading, setLoading] = useState(false);
   const [ content, setContent] = useState("");
   const [ recentProducts, setRecentProducts] = useState([]);
   const { TabPane } = Tabs;
+  const { user, cart } = useSelector((state) => ({ ...state }));
+  const dispatch = useDispatch();
+  const [tooltip, setTooltip] = useState("Click to add this product");
+  const antIcon = <LoadingOutlined style={{ fontSize: 36 }} spin />;
 
   // const render = require('react-render-html');
   
   const loadDetailProduct= (pslug) => {
-    getDetailProduct(pslug).then((data) => { 
-        
+    getDetailProduct(pslug).then((data) => {         
         setProduct(data.product);
         setContent(data.product.description);
         // var date = new Date();
-
         var currentProductId = data.product._id;
         var howManyItems = 5;
         // currentValues=[];
@@ -33,8 +39,7 @@ const ProductDetailHome = props => {
           
           if(!currentValues.includes(currentProductId)){
               currentValues+="-"+currentProductId;
-          }
-                     
+          }                   
             setCookie("lastVisited",currentValues);                   
         }      
     });
@@ -46,7 +51,45 @@ const ProductDetailHome = props => {
     });
   };
 
-  // console.log("SPLIT",getCookie("lastVisited").split("-").slice(-2));
+const handleAddToCart = () => {
+    // create cart array
+    let cart = [];
+    if (typeof window !== "undefined") {
+      // if cart is in local storage GET it
+      if (localStorage.getItem("cart")) {
+        cart = JSON.parse(localStorage.getItem("cart"));
+      }
+      // push new product to cart
+      cart.push({
+        ...product,
+        count: 1,
+      });
+      // remove duplicates
+      let unique = _.uniqWith(cart, _.isEqual);
+      // save to local storage
+      // console.log('unique', unique)
+      localStorage.setItem("cart", JSON.stringify(unique));
+      // show tooltip
+      setTooltip("You already added this product.");
+      
+      setLoading(true);
+      const delayed = setTimeout(() => {
+        setLoading(false);
+        message.success('This product is added to cart successfully');
+      }, 2000);
+      
+      // add to reeux state
+      dispatch({
+        type: "ADD_TO_CART",
+        payload: unique,
+      });
+      // show cart items in side drawer
+      dispatch({
+        type: "SET_VISIBLE",
+        payload: true,
+      });
+    }
+  };
 
   useEffect(() => {
     const pslug1 = props.match.params.pslug;
@@ -96,7 +139,7 @@ const ProductDetailHome = props => {
                  
                </div>
                <div className="ut2-pb__right">
-                 <form  name="product_form_7797" className="cm-disable-empty-files cm-ajax cm-ajax-full-render cm-ajax-status-middle cm-processed-form">
+                
                    
                    <div className="top-product-layer">
                      <div className="ut2-pb__rating">
@@ -121,19 +164,17 @@ const ProductDetailHome = props => {
                              </span>
                            <div className="ut2-pb__price-actual">
                              <span className="cm-reload-7797 ty-price-update" id="price_update_7797">
-                               <input type="hidden" name="appearance[show_price_values]" defaultValue={1} />
-                               <input type="hidden" name="appearance[show_price]" defaultValue={1} />
+                             
                                <span className="ty-price" id="line_discounted_price_7797"><bdi><span className="ty-price-num">$</span><span id="sec_discounted_price_7797" className="ty-price-num">{product.price}</span></bdi></span>
                                </span>
                            </div>
                            <span className="cm-reload-7797" id="line_discount_update_7797">
-                             <input type="hidden" name="appearance[show_price_values]" defaultValue={1} />
-                             <input type="hidden" name="appearance[show_list_discount]" defaultValue={1} />
+                           
                              </span>
                          </div>
                        </div>
                        <div className="cm-reload-7797 stock-wrap" id="product_amount_update_7797">
-                         <input type="hidden" name="appearance[show_product_amount]" defaultValue={1} />
+                        
                          <div className="ty-control-group product-list-field">
                            <span className="ty-qty-in-stock ty-control-group__item" id="in_stock_info_7797">
                              {product.quantity > 0 ? (<><i className="ty-icon-ok" />In stock</>):(<><i className="ty-icon-ok" />Out of stock</>)}
@@ -148,21 +189,29 @@ const ProductDetailHome = props => {
                        </div>
                        <div className="ut2-qty__wrap  ut2-pb__field-group">
                          <div className="cm-reload-7797" id="qty_update_7797">
-                           <input type="hidden" name="appearance[show_qty]" defaultValue={1} />
-                           <input type="hidden" name="appearance[capture_options_vs_qty]" defaultValue />
+                         
                            <div className="ty-qty clearfix changer" id="qty_7797">
                              <label className="ty-control-group__label" htmlFor="qty_count_7797">Quantity:</label>                                <div className="ty-center ty-value-changer cm-value-changer">
                                <a className="cm-increase ty-value-changer__increase">+</a>
-                               <input type="text" size={5} className="ty-value-changer__input cm-amount" id="qty_count_7797" name="product_data[7797][amount]" defaultValue={1} data-ca-min-qty={1} />
+                               
                                <a className="cm-decrease ty-value-changer__decrease">−</a>
                              </div>
                            </div>
                         </div>
                        </div>
+                       {loading ? (<center><Spin indicator={antIcon} /></center>):(
                        <div className="ut2-pb__button ty-product-block__button">
                          <div className="cm-reload-7797 " id="add_to_cart_update_7797">
-                           
-                           <button id="button_cart_7797" className="ty-btn__primary ty-btn__add-to-cart cm-form-dialog-closer ty-btn" type="submit" name="dispatch[checkout.add..7797]"><span><i className="ut2-icon-outline-cart" /><span>Add to cart</span></span></button>
+                         
+                          <Tooltip title={tooltip}>
+                          <button id="button_cart_7797" className="ty-btn__primary ty-btn__add-to-cart cm-form-dialog-closer ty-btn" onClick={handleAddToCart}>
+                            <span><i className="ut2-icon-outline-cart" />
+                            <span>Add to cart</span></span>
+                         </button>
+                         </Tooltip>
+                        
+                          
+                          
                            <a className="
 ut2-add-to-wish label	cm-submit	cm-tooltip" title="Add to wishlist" id="button_wishlist_7797" data-ca-dispatch="dispatch[wishlist.add..7797]">
                              <i className="ut2-icon-baseline-favorite" />    Add to wish list</a>
@@ -171,6 +220,8 @@ ut2-add-to-compare cm-ajax cm-ajax-full-render label cm-tooltip" title="Add to c
                              <i className="ut2-icon-baseline-equalizer" />    Compare  </a>
                            {/*add_to_cart_update_7797*/}</div>
                        </div>
+                       )}
+
                      </div>
                      <div className="col-right">
                        <div className="brand ut2-pb__product-brand">
@@ -180,7 +231,7 @@ ut2-add-to-compare cm-ajax cm-ajax-full-render label cm-tooltip" title="Add to c
                        </div>
                      </div>
                    </div>
-                   <input type="hidden" name="security_hash" className="cm-no-hide-input" defaultValue="c2b522e73c660178a57674e055b61005" /></form>
+                   
                </div>
              </div>
              {/* Inline script moved to the bottom of the page */}
@@ -255,16 +306,17 @@ ut2-add-to-compare cm-ajax cm-ajax-full-render label cm-tooltip" title="Add to c
        <div className="panel-body">
            {/* Nav tabs */}
            <ul className="nav nav-pills">
-               <li className="active"><a href="#home-pills" data-toggle="tab" aria-expanded="true">Recently Products You Viewed</a></li>
+               <li className="active"><a href="#home-pills" data-toggle="tab" aria-expanded="true">You Recently Viewed</a></li>
                <li className><a href="#profile-pills" data-toggle="tab" aria-expanded="false">Related Products</a></li>
                
            </ul>
            {/* Tab panes */}
            <div className="tab-content">
+           
                <div className="tab-pane fade active in" id="home-pills">
-               {recentProducts.map((c)=>(
+               {getCookie("lastVisited") ? (<>{recentProducts.map((c)=>(
                     <ProductCardRelate sanpham={c}/>
-               ))}
+               ))}</>):(<h4>No currently products found.</h4>)} 
                
                
               

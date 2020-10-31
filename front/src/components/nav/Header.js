@@ -53,9 +53,10 @@ const Header = () => {
     loadCategories();
   }, []);
 
-  let { user } = useSelector((state) => ({ ...state }));
+  let { user,cart } = useSelector((state) => ({ ...state }));
   let history = useHistory();
   let dispatch = useDispatch();
+
   const signout = () => {
     removeCookie('token');
     removeCookie('_id');
@@ -193,7 +194,7 @@ const Header = () => {
                   <div className="ty-dropdown-box" id="cart_status_684">
                     <div id="sw_dropdown_684" className="ty-dropdown-box__title cm-combination">
                       <Link to="https://www.ABCnailsupply.com/cart/" className="ac-title ty-hand">
-                        <i className="ut2-icon-outline-cart empty"><span className="ty-minicart-count ty-hand empty">0</span></i><span>Cart<i className="ut2-icon-outline-expand_more" /></span>
+                        <i className="ut2-icon-outline-cart empty"><span className="ty-minicart-count ty-hand empty">{cart.length}</span></i><span>Cart<i className="ut2-icon-outline-expand_more" /></span>
                       </Link>
                     </div>
                     <div id="dropdown_684" className="cm-popup-box ty-dropdown-box__content hidden">
