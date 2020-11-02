@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import React, { useState,useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ModalImage from "react-modal-image";
+import {message} from 'antd';
+import { toast } from "react-toastify";
+import { InputNumber } from 'antd';
+import { userCart } from "../functions/user";
 
 const Cart = ({ history }) => {
 
@@ -15,13 +19,79 @@ const Cart = ({ history }) => {
   };
   const saveOrderToDb = () => {
     // console.log("cart", JSON.stringify(cart, null, 4));
-    // userCart(cart, user.token)
-    //   .then((res) => {
-    //     console.log("CART POST RES", res);
-    //     if (res.data.ok) history.push("/checkout");
-    //   })
-    //   .catch((err) => console.log("cart save err", err));
+    userCart(cart, user.token)
+      .then((res) => {
+        console.log("CART POST RES", res);
+        if (res.data.ok) history.push("/checkout");
+      })
+      .catch((err) => console.log("cart save err", err));
   };
+
+  const handleQuantityChange =(p)=> (e)=>{
+    let count = e < 1 ? 1 : e;
+
+    if (count > p.quantity) {
+      toast.error(`Max available quantity: ${p.quantity}`);
+      return;
+    }
+
+    let cart = [];
+
+    if (typeof window !== "undefined") {
+      if (localStorage.getItem("cart")) {
+        cart = JSON.parse(localStorage.getItem("cart"));
+      }
+
+      cart.map((product, i) => {
+        if (product._id == p._id) {
+          cart[i].count = count;
+        }
+      });
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      dispatch({
+        type: "ADD_TO_CART",
+        payload: cart,
+      });
+    }
+  };
+
+  const clearCart = () => {
+    // remove from local storage
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("cart");
+    }
+    // remove from redux
+    dispatch({
+      type: "ADD_TO_CART",
+      payload: [],
+    });
+   message.success("Your cart is empty")
+  };
+
+  const handleRemove =(p)=> (e)=> {
+    // console.log(p._id, "to remove");
+    let cart = [];
+
+    if (typeof window !== "undefined") {
+      if (localStorage.getItem("cart")) {
+        cart = JSON.parse(localStorage.getItem("cart"));
+      }
+      // [1,2,3,4,5]
+      cart.map((product, i) => {
+        if (product._id === p._id) {
+          cart.splice(i, 1);
+        }
+      });
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      dispatch({
+        type: "ADD_TO_CART",
+        payload: cart,
+      });
+    }
+  };
+
   return (
    <>
   
@@ -44,17 +114,18 @@ const Cart = ({ history }) => {
          <div className="ty-mainbox-container clearfix">
            <div className="ty-mainbox-body">
            {cart.length ? (<>
-            <form name="checkout_form" className="cm-check-changes cm-ajax cm-ajax-full-render cm-processed-form" id="checkout_form">
+         
            
             <h1 className="ty-mainbox-title">Cart contents</h1>
             <div className="buttons-container ty-cart-content__top-buttons clearfix">
               <div className="ty-float-left ty-cart-content__left-buttons">
                 <a href="https://www.happynailsupply.com/gel-soak-off/base-and-top-coats/top-coats/" className="ty-btn ty-btn__secondary "><span>Continue shopping</span></a>
+                {cart.length ? (<div className="ty-btn ty-btn__tertiary text-button " onClick={clearCart}>Clear cart</div>):(<></>)}
               </div>
               <div className="ty-float-right ty-cart-content__right-buttons">
               {user ? (<Link className=" cm-dialog-auto-size ty-btn ty-btn__primary" to="/checkout">
                   Proceed to checkout
-                </Link>):( <Link className=" cm-dialog-auto-size ty-btn ty-btn__primary" to="/login" >
+                </Link>):( <Link className=" ty-btn ty-btn__tertiary text-button" to="/login" >
                 Signin to checkout
                 </Link>)}
               </div>
@@ -84,7 +155,8 @@ const Cart = ({ history }) => {
                           </div>
                         </td>
                         <td className="ty-cart-content__product-elem ty-cart-content__description" style={{width: '50%'}}>
-                          <a href="https://www.happynailsupply.com/gel-soak-off/base-and-top-coats/top-coats/dnd-dc-matte-top-gel-0.6oz/" className="ty-cart-content__product-title">{c.name}</a><a className=" ty-cart-content__product-delete ty-delete-big" href="https://www.happynailsupply.com/index.php?dispatch=checkout.delete&cart_id=2107916490&redirect_mode=cart" data-ca-target-id="cart_items,checkout_totals,cart_status*,checkout_steps,checkout_cart" title="Remove">&nbsp;<i className="ty-delete-big__icon ty-icon-cancel-circle" /></a>                            
+                          <Link to="#" className="ty-cart-content__product-title">{c.name}</Link>
+                          <div className=" ty-cart-content__product-delete ty-delete-big" onClick={handleRemove(c)} style={{cursor:'pointer'}}><i class="fa fa-remove" />&nbsp;Delete</div>                            
                           <div className="ty-cart-content__sku ty-sku cm-hidden-wrapper" id="sku_2107916490">
                             Item #: <span className="cm-reload-2107916490" id="product_code_update_2107916490">{c.item}{/*product_code_update_2107916490*/}</span>
                           </div>
@@ -97,9 +169,10 @@ const Cart = ({ history }) => {
                             
                             <label htmlFor="amount_2107916490" />
                             <div className="ty-center ty-value-changer cm-value-changer">
-                              <a className="cm-increase ty-value-changer__increase">+</a>
-                              <input type="text" size={3} id="amount_2107916490" name="cart_products[2107916490][amount]" value={c.count} className="ty-value-changer__input cm-amount" data-ca-min-qty={1} />
-                              <a className="cm-decrease ty-value-changer__decrease">−</a>
+                              
+                              
+                              <InputNumber min={1} max={100} defaultValue={c.count} onChange={handleQuantityChange(c)} />
+                              
                             </div>
                             </div>
                         </td>
@@ -113,9 +186,7 @@ const Cart = ({ history }) => {
                   {/*cart_items*/}</div>
               </div>
             </div>
-            {/*checkout_form*/}
-            
-            </form>
+   
 
           
            
@@ -161,14 +232,14 @@ const Cart = ({ history }) => {
              <div className="buttons-container ty-cart-content__bottom-buttons clearfix">
                <div className="ty-float-left ty-cart-content__left-buttons">
                  <a href="https://www.happynailsupply.com/gel-soak-off/base-and-top-coats/top-coats/" className="ty-btn ty-btn__secondary "><span>Continue shopping</span></a>
-                 {cart.length ? (<a className="ty-btn ty-btn__tertiary text-button " href="https://www.happynailsupply.com/index.php?dispatch=checkout.clear">Clear cart</a>):(<></>)}
+                 {cart.length ? (<div className="ty-btn ty-btn__tertiary text-button " onClick={clearCart}>Clear cart</div>):(<></>)}
                </div>
                <div className="ty-float-right ty-cart-content__right-buttons">
                { user && cart.length ? (<Link onClick={saveOrderToDb} className="cm-dialog-auto-size ty-btn ty-btn__primary" to="/checkout">
                Proceed to checkout
                </Link>
         
-               ):( <Link className="cm-dialog-auto-size ty-btn ty-btn__primary" to={{
+               ):( <Link className="ty-btn ty-btn__tertiary text-button " to={{
                   pathname: "/login",
                   state: { from: "cart" },
                 }} >

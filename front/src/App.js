@@ -38,6 +38,7 @@ import { useDispatch } from "react-redux";
 
 import { getCookie } from "./functions/auth";
 import WishList from "./pages/WishList";
+import SideDrawer from "./components/drawer/SideDrawer";
 
 
 
@@ -97,13 +98,13 @@ function App() {
   return (
     <>
     <div className="ty-tygh   bp-tygh-container" id="tygh_container">
-    <div id="ajax_overlay" className="ty-ajax-overlay" />
-    <div id="ajax_loading_box" className="ty-ajax-loading-box" />
-    <div className="cm-notification-container notification-container">
-    </div>
+     <div id="ajax_overlay" className="ty-ajax-overlay" />
+      <div id="ajax_loading_box" className="ty-ajax-loading-box" />
+    
     <div className="ty-helper-container " id="tygh_main_container">
           <Header />
           <ToastContainer />
+          <SideDrawer />
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/register" component={Register} />
@@ -113,8 +114,7 @@ function App() {
             <Route exact path="/:cslug/:sslug/:ssslug/product" component={SubSubHome} />
             <Route exact path="/:cslug/:sslug/:ssslug/:pslug/product" component={ProductDetailHome} />
 
-            <Route exact path="/detail" component={ProductDetailHome} />
-            <Route exact path="/checkout" component={Checkout} />
+            <Route exact path="/detail" component={ProductDetailHome} />           
             <Route exact path="/shop" component={Shop} />
             <Route exact path="/cart" component={Cart} />
 
@@ -131,6 +131,8 @@ function App() {
             <AdminRoute exact path="/admin/coupon/list" component={CouponList} />
             <AdminRoute exact path="/admin/product/list" component={ProductList} />
             <AdminRoute exact path="/admin/product/create" component={ProductCreate} />
+
+            <UserRoute exact path="/checkout" component={Checkout} />
 
             <Route component={Error} />
 

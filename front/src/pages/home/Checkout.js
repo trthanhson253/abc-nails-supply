@@ -1,8 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import {
+    getUserCart,
+    emptyUserCart,
+    // saveUserAddress,
+    // applyCoupon,
+  } from "../../functions/user";
+import {message} from 'antd';
 
-const Checkout = () => {
- 
+const Checkout = ({ history }) => {
+    const [products, setProducts] = useState([]);
+    const [total, setTotal] = useState(0);
+
+    const dispatch = useDispatch();
+    const { user } = useSelector((state) => ({ ...state }));
+  
+    useEffect(() => {
+      getUserCart(user.token).then((res) => {
+        console.log("user cart res", JSON.stringify(res.data, null, 4));
+        setProducts(res.data.products);
+        setTotal(res.data.cartTotal);
+      });
+    }, []);
+
+const emptyCart = () => {
+        // remove from local storage
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("cart");
+        }
+        // remove from redux
+        dispatch({
+          type: "ADD_TO_CART",
+          payload: [],
+        });
+        // remove from backend
+        emptyUserCart(user.token).then((res) => {
+          setProducts([]);
+          setTotal(0);
+        //   setTotalAfterDiscount(0);
+        //   setCoupon("");
+          message.success("Your Cart is empty.");
+        });
+      };
 
   return (
    <>
@@ -25,18 +65,14 @@ const Checkout = () => {
                <div className="span16 main-content-grid ">
                    <div className="ty-mainbox-container clearfix">
                        <h1 className="ty-mainbox-title">
-                           <span className="ty-checkout__title">Secure checkout<i className="ty-checkout__title-icon ty-icon-lock" /></span>
+                           <span className="ty-checkout__title">Secure checkout <i class="fa fa-lock" /></span>
                        </h1>
                        <div className="ty-mainbox-body">
                            {/* Inline script moved to the bottom of the page */} {/* Inline script moved to the bottom of the page */}
                            <a name="checkout_top" />
                            {/* Inline script moved to the bottom of the page */}
                            <div className="cm-save-fields row-fluid clearfix" id="onestepcheckout">
-                               <div className="checkout-login-form clearfix">
-                                   <div className="checkout-inside-block">
-                                       <a href="https://www.happynailsupply.com/index.php?dispatch=onestepcheckout.change_login" className="account relogin">Sign in as a different user</a>
-                                   </div>
-                               </div>
+                              
                                <form name="onestepcheckout_form" action="https://www.happynailsupply.com/" method="post" className="cm-processed-form">
                                    <div className="span5">
                                        <div className="ty-step__container-active ty-step-one" data-ct-checkout="user_info" id="step_one">
@@ -628,76 +664,41 @@ const Checkout = () => {
                                                                </tr>
                                                            </thead>
                                                            <tbody className="tbody">
-                                                               <tr>
-                                                                   <td width="18%">
-                                                                       <a href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/china-glaze-pilates-please-0.5oz/">
-                                                                           <img
-                                                                               className="ty-pict lazyOwl cm-image abt-ut2-lazy-loaded"
-                                                                               id="det_img_1958655224"
-                                                                               src="./Checkout_files/1594_china_glaze_pilates_please-84149(1).jpg"
-                                                                               data-src="https://www.happynailsupply.com/images/thumbnails/75/75/detailed/15/1594_china_glaze_pilates_please-84149.jpg"
-                                                                               alt=""
-                                                                               title
-                                                                               style={{opacity:'1'}}
-                                                                               
-                                                                           />
-                                                                       </a>
-                                                                   </td>
-                                                                   <td width="42%">
-                                                                       <a href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/china-glaze-pilates-please-0.5oz/" className="product-name">
-                                                                           China Glaze - Pilates Please 0.5oz
-                                                                       </a>
-                                                                       <a
-                                                                           data-ca-dispatch="delete_cart_item"
-                                                                           href="https://www.happynailsupply.com/index.php?dispatch=checkout.delete&cart_id=3685074084&redirect_mode=checkout"
-                                                                           className="ty-order-products__item-delete delete"
-                                                                           data-ca-target-id="cart_status*"
-                                                                       >
-                                                                           <i title="Remove" className="ty-icon-cancel-circle" />
-                                                                       </a>
-                                                                   </td>
-                                                                   <td width="10%" className="center">
-                                                                       1
-                                                                   </td>
-                                                                   <td width="20%" className="product-subtotal right">
-                                                                       <bdi><span className="price">$</span><span className="price">3.25</span></bdi>
-                                                                   </td>
-                                                               </tr>
-                                                               <tr>
-                                                                   <td width="18%">
-                                                                       <a href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/china-glaze-i-truly-azure-you-0.5oz-1521/">
-                                                                           <img
-                                                                               className="ty-pict lazyOwl cm-image abt-ut2-lazy-loaded"
-                                                                               id="det_img_1312363184"
-                                                                               src="./Checkout_files/80016-china-glaze-i-truly-azure-you-1521(1).jpg"
-                                                                               data-src="https://www.happynailsupply.com/images/thumbnails/75/75/detailed/2/80016-china-glaze-i-truly-azure-you-1521.jpg"
-                                                                               alt=""
-                                                                               title
-                                                                               style={{opacity:'1'}}
-                                                                               
-                                                                           />
-                                                                       </a>
-                                                                   </td>
-                                                                   <td width="42%">
-                                                                       <a href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/china-glaze-i-truly-azure-you-0.5oz-1521/" className="product-name">
-                                                                           China Glaze - I Truly Azure You 0.5oz #1521
-                                                                       </a>
-                                                                       <a
-                                                                           data-ca-dispatch="delete_cart_item"
-                                                                           href="https://www.happynailsupply.com/index.php?dispatch=checkout.delete&cart_id=694417660&redirect_mode=checkout"
-                                                                           className="ty-order-products__item-delete delete"
-                                                                           data-ca-target-id="cart_status*"
-                                                                       >
-                                                                           <i title="Remove" className="ty-icon-cancel-circle" />
-                                                                       </a>
-                                                                   </td>
-                                                                   <td width="10%" className="center">
-                                                                       1
-                                                                   </td>
-                                                                   <td width="20%" className="product-subtotal right">
-                                                                       <bdi><span className="price">$</span><span className="price">3.25</span></bdi>
-                                                                   </td>
-                                                               </tr>
+                                                           {products.map((p, i) => (
+
+                                                            <tr>
+                                                            <td width="18%">
+                                                                <Link to="#">
+                                                                    <img
+                                                                        className="ty-pict lazyOwl cm-image abt-ut2-lazy-loaded"
+                                                                        src="./Checkout_files/1594_china_glaze_pilates_please-84149(1).jpg"
+                                                                        alt= {p.product.name}
+                                                                        style={{opacity:'1'}}     
+                                                                    />
+                                                                </Link>
+                                                            </td>
+                                                            <td width="42%">
+                                                                <Link to="#" className="product-name">
+                                                                {p.product.name}
+                                                                </Link>
+                                                                <a
+                                                                    
+                                                                    className="ty-order-products__item-delete delete"
+                                                                    
+                                                                >
+                                                                    <i title="Remove" class="fa fa-remove" />
+                                                                </a>
+                                                            </td>
+                                                            <td width="10%" className="center">
+                                                            {p.count}
+                                                            </td>
+                                                            <td width="20%" className="product-subtotal right">
+                                                                <bdi><span className="price">$</span><span className="price">{p.product.price * p.count}</span></bdi>
+                                                            </td>
+                                                        </tr>
+                                                           ))};
+                                                              
+                                                         
                                                            </tbody>
                                                            <tfoot>
                                                                <tr>

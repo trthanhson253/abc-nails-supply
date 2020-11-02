@@ -20,7 +20,7 @@ const ProductDetailHome = props => {
   const { user, cart } = useSelector((state) => ({ ...state }));
   const dispatch = useDispatch();
   const [tooltip, setTooltip] = useState("Click to add this product");
-  const antIcon = <LoadingOutlined style={{ fontSize: 36 }} spin />;
+  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
   // const render = require('react-render-html');
   
@@ -51,7 +51,7 @@ const ProductDetailHome = props => {
     });
   };
 
-const handleAddToCart = () => {
+const handleAddToCart = (p) => {
     // create cart array
     let cart = [];
     if (typeof window !== "undefined") {
@@ -64,18 +64,29 @@ const handleAddToCart = () => {
         ...product,
         count: 1,
       });
+
+      cart.map((item, i) => {
+        if (item._id == p._id) {
+          cart[i].count++;
+        }
+      });
       // remove duplicates
       let unique = _.uniqWith(cart, _.isEqual);
       // save to local storage
       // console.log('unique', unique)
       localStorage.setItem("cart", JSON.stringify(unique));
       // show tooltip
-      setTooltip("You already added this product.");
+      
       
       setLoading(true);
       const delayed = setTimeout(() => {
         setLoading(false);
+        dispatch({
+          type: "SET_VISIBLE",
+          payload: true,
+        });
         message.success('This product is added to cart successfully');
+        setTooltip("You already added this product.");
       }, 2000);
       
       // add to reeux state
@@ -84,10 +95,7 @@ const handleAddToCart = () => {
         payload: unique,
       });
       // show cart items in side drawer
-      dispatch({
-        type: "SET_VISIBLE",
-        payload: true,
-      });
+    
     }
   };
 
@@ -190,24 +198,19 @@ const handleAddToCart = () => {
                        <div className="ut2-qty__wrap  ut2-pb__field-group">
                          <div className="cm-reload-7797" id="qty_update_7797">
                          
-                           <div className="ty-qty clearfix changer" id="qty_7797">
-                             <label className="ty-control-group__label" htmlFor="qty_count_7797">Quantity:</label>                                <div className="ty-center ty-value-changer cm-value-changer">
-                               <a className="cm-increase ty-value-changer__increase">+</a>
-                               
-                               <a className="cm-decrease ty-value-changer__decrease">−</a>
-                             </div>
-                           </div>
+                           
                         </div>
                        </div>
-                       {loading ? (<center><Spin indicator={antIcon} /></center>):(
+                       
                        <div className="ut2-pb__button ty-product-block__button">
                          <div className="cm-reload-7797 " id="add_to_cart_update_7797">
                          
                           <Tooltip title={tooltip}>
-                          <button id="button_cart_7797" className="ty-btn__primary ty-btn__add-to-cart cm-form-dialog-closer ty-btn" onClick={handleAddToCart}>
-                            <span><i className="ut2-icon-outline-cart" />
-                            <span>Add to cart</span></span>
-                         </button>
+                          <a className="ty-btn__primary ty-btn__add-to-cart cm-ajax cm-ajax-full-render ty-btn" href="/cart" onClick={()=>handleAddToCart(product)}>
+                                                   
+                            {loading ? (<center><Spin indicator={antIcon} /></center>):( <span>
+                              <i className="fa fa-shopping-cart fa-fw" /><span>Add to cart</span></span>)}                         
+                         </a>
                          </Tooltip>
                         
                           
@@ -220,7 +223,7 @@ ut2-add-to-compare cm-ajax cm-ajax-full-render label cm-tooltip" title="Add to c
                              <i className="ut2-icon-baseline-equalizer" />    Compare  </a>
                            {/*add_to_cart_update_7797*/}</div>
                        </div>
-                       )}
+                       
 
                      </div>
                      <div className="col-right">

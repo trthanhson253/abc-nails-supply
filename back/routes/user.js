@@ -1,27 +1,29 @@
-// const express = require("express");
+const express = require("express");
 
-// const router = express.Router();
+const router = express.Router();
 
-// // middlewares
-// const { authCheck } = require("../middlewares/auth");
-// // controllers
-// const {
-//   userCart,
-//   getUserCart,
-//   emptyCart,
-//   saveAddress,
-//   applyCouponToUserCart,
-//   createOrder,
-//   orders,
-//   addToWishlist,
-//   wishlist,
-//   removeFromWishlist,
-//   createCashOrder,
-// } = require("../controllers/user");
+// middlewares
 
-// router.post("/user/cart", authCheck, userCart); // save cart
-// router.get("/user/cart", authCheck, getUserCart); // get cart
-// router.delete("/user/cart", authCheck, emptyCart); // empty cart
+const { requireSignin, adminCheck } = require("../middlewares/auth");
+
+// controllers
+const {
+  userCart,
+  getUserCart,
+  emptyCart,
+  // saveAddress,
+  // applyCouponToUserCart,
+  // createOrder,
+  // orders,
+  // addToWishlist,
+  // wishlist,
+  // removeFromWishlist,
+  // createCashOrder,
+} = require("../controllers/user");
+
+router.post("/user/cart", adminCheck, userCart); // save cart
+router.get("/user/cart", adminCheck, getUserCart); // get cart
+router.delete("/user/cart", authCheck, emptyCart); // empty cart
 // router.post("/user/address", authCheck, saveAddress);
 
 // router.post("/user/order", authCheck, createOrder); // stripe
