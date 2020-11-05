@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema;
 
 const productSchema = new mongoose.Schema(
@@ -18,7 +18,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       trim: true,
       text: true,
-      required: true
+      required: true,
     },
     description: {
       type: {},
@@ -31,22 +31,22 @@ const productSchema = new mongoose.Schema(
       maxlength: 32,
     },
     discountPrice: {
-        type: Number,
-        trim: true,
-        maxlength: 32,
+      type: Number,
+      trim: true,
+      maxlength: 32,
     },
     category: {
       type: ObjectId,
-      ref: "Category",
-      required: true
+      ref: 'Category',
+      required: true,
     },
     sub: {
       type: ObjectId,
-      ref: "Sub",
+      ref: 'Sub',
     },
     subSub: {
       type: ObjectId,
-      ref: "subSub",
+      ref: 'subSub',
     },
     quantity: {
       type: Number,
@@ -61,37 +61,34 @@ const productSchema = new mongoose.Schema(
     },
     shipping: {
       type: Number,
-      default: 0, 
+      default: 0,
       //0: Yes
       //1: No
     },
     status: {
       type: Number,
-      default: 0, 
+      default: 0,
       //0: Show
       //1: Hide
     },
     color: {
-        type: ObjectId,
-        ref: "Color",
+      type: String,
     },
     size: {
-        type: ObjectId,
-        ref: "Size",
+      type: String,
     },
     brand: {
-        type: ObjectId,
-        ref: "Brand",
+      type: String,
     },
     clicks: { type: Number, default: 0 },
     ratings: [
       {
         star: Number,
-        postedBy: { type: ObjectId, ref: "User" },
+        postedBy: { type: ObjectId, ref: 'User' },
       },
     ],
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.model('Product', productSchema);
