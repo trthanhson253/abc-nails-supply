@@ -287,24 +287,24 @@ const handleQuery = async (req, res, query) => {
   res.json(products);
 };
 
-// const handlePrice = async (req, res, price) => {
-//   try {
-//     let products = await Product.find({
-//       price: {
-//         $gte: price[0],
-//         $lte: price[1],
-//       },
-//     })
-//       .populate("category", "_id name")
-//       .populate("subs", "_id name")
-//       .populate("postedBy", "_id name")
-//       .exec();
+const handlePrice = async (req, res, price) => {
+  try {
+    let products = await Product.find({
+      price: {
+        $gte: price[0],
+        $lte: price[1],
+      },
+    })
+      .populate("category", "_id name")
+      .populate("subs", "_id name")
+      .populate("postedBy", "_id name")
+      .exec();
 
-//     res.json(products);
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
+    res.json(products);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 // const handleCategory = async (req, res, category) => {
 //   try {
@@ -377,26 +377,26 @@ const handleQuery = async (req, res, query) => {
 //   res.json(products);
 // };
 
-// const handleBrand = async (req, res, brand) => {
-//   const products = await Product.find({ brand })
-//     .populate("category", "_id name")
-//     .populate("subs", "_id name")
-//     .populate("postedBy", "_id name")
-//     .exec();
+const handleBrand = async (req, res, brand) => {
+  const products = await Product.find({ brand })
+    .populate("category", "_id name")
+    .populate("subs", "_id name")
+    .populate("postedBy", "_id name")
+    .exec();
 
-//   res.json(products);
-// };
+  res.json(products);
+};
 
 exports.searchFilters = async (req, res) => {
   const {
     query,
-    // price,
+    price,
     // category,
     // stars,
     // sub,
     // shipping,
     // color,
-    // brand,
+    brand,
   } = req.body;
 
   if (query) {
@@ -405,10 +405,10 @@ exports.searchFilters = async (req, res) => {
   }
 
   // price [20, 200]
-  // if (price !== undefined) {
-  //   console.log("price ---> ", price);
-  //   await handlePrice(req, res, price);
-  // }
+  if (price !== undefined) {
+    // console.log("price ---> ", price);
+    await handlePrice(req, res, price);
+  }
 
   // if (category) {
   //   console.log("category ---> ", category);
@@ -435,8 +435,8 @@ exports.searchFilters = async (req, res) => {
   //   await handleColor(req, res, color);
   // }
 
-  // if (brand) {
-  //   console.log("brand ---> ", brand);
-  //   await handleBrand(req, res, brand);
-  // }
+  if (brand) {
+    console.log("brand ---> ", brand);
+    await handleBrand(req, res, brand);
+  }
 };

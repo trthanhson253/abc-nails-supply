@@ -29,7 +29,7 @@ import Error from "./pages/Error";
 import SubSubHome from "./pages/home/SubSubHome";
 import ProductDetailHome from "./pages/home/ProductDetailHome";
 import Checkout from "./pages/home/Checkout";
-import Shop from "./pages/Shop";
+import Search from "./pages/Search";
 import Cart from "./pages/Cart";
 
 // import { useSelector } from "react-redux";
@@ -115,11 +115,9 @@ function App() {
             <Route exact path="/:cslug/:sslug/:ssslug/:pslug/product" component={ProductDetailHome} />
 
             <Route exact path="/detail" component={ProductDetailHome} />           
-            <Route exact path="/shop" component={Shop} />
+            <Route exact path="/search" component={Search} />
             <Route exact path="/cart" component={Cart} />
-
-            // wishlist nên bỏ vô trong userRoute
-            <Route exact path="/wishlist" component={WishList} />
+      
             
             <AdminRoute exact path="/admin" component={AdminDashboard} />
             <AdminRoute exact path="/admin/category/list" component={categoryList} />
@@ -133,6 +131,7 @@ function App() {
             <AdminRoute exact path="/admin/product/create" component={ProductCreate} />
 
             <UserRoute exact path="/checkout" component={Checkout} />
+            <UserRoute exact path="/wishlist" component={WishList} />
 
             <Route component={Error} />
 

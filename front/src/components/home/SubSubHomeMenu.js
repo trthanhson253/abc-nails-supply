@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import React, { useState,useEffect } from "react";
-
+import { Menu, Slider, Checkbox, Radio } from "antd"; 
 const SubSubHomeMenu = () => {
 
   return (
@@ -196,6 +196,7 @@ const SubSubHomeMenu = () => {
              </ul>
            </div>
            {/* Inline script moved to the bottom of the page */}
+
            <div className="ty-product-filters__block">
              <div id="sw_content_177_9" className="ty-product-filters__switch cm-combination-filter_177_9 open cm-save-state cm-ss-reverse">
                <span className="ty-product-filters__title">Price</span>
@@ -203,43 +204,16 @@ const SubSubHomeMenu = () => {
                <i className="ty-product-filters__switch-right ty-icon-up-open" />
              </div>
              {/* Inline script moved to the bottom of the page */}
-             <div id="content_177_9" className="cm-product-filters-checkbox-container ty-price-slider  ">
-               <p className="ty-price-slider__inputs">
-                 <bdi className="ty-price-slider__bidi-container">
-                   <span className="ty-price-slider__filter-prefix">$</span>
-                   <input type="text" className="ty-price-slider__input-text" id="slider_177_9_left" name="left_177_9" defaultValue="3.25" disabled="disabled" />
-                 </bdi>
-                 &nbsp;–&nbsp;
-                 <bdi className="ty-price-slider__bidi-container">
-                   <span className="ty-price-slider__filter-prefix">$</span>
-                   <input type="text" className="ty-price-slider__input-text" id="slider_177_9_right" name="right_177_9" defaultValue="3.25" disabled="disabled" />
-                 </bdi>
-               </p>
-               <div id="slider_177_9" className="ty-range-slider cm-range-slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all ui-state-disabled ui-slider-disabled">
-                 <ul className="ty-range-slider__wrapper">
-                   <li className="ty-range-slider__item" style={{left: '0%'}}>
-                     <span className="ty-range-slider__num">
-                       <span>‎$<bdi><span>3.25</span></bdi></span>
-                     </span>
-                   </li>
-                   <li className="ty-range-slider__item" style={{left: '100%'}}>
-                     <span className="ty-range-slider__num">
-                       <span>‎$<bdi><span>3.25</span></bdi></span>
-                     </span>
-                   </li>
-                 </ul>
-                 <div className="ui-slider-range ui-widget-header ui-corner-all" /><span className="ui-slider-handle ui-state-default ui-corner-all" tabIndex={0} /><span className="ui-slider-handle ui-state-default ui-corner-all" tabIndex={0} /></div>
-               <input id="elm_checkbox_slider_177_9" data-ca-filter-id={9} className="cm-product-filters-checkbox hidden" type="checkbox" name="product_filters[9]" defaultValue />
-               <input type="hidden" id="slider_177_9_json" defaultValue="{
-&quot;disabled&quot;: true,
-&quot;min&quot;: 3.25,
-&quot;max&quot;: 3.25,
-&quot;left&quot;: 3.25,
-&quot;right&quot;: 3.25,
-&quot;step&quot;: 0.01,
-&quot;extra&quot;: &quot;USD&quot;
-}" />
-             </div>
+             <div id="content_177_9" className="cm-product-filters-checkbox-container">
+              
+              
+                 <Slider range defaultValue={[20, 50]}  />
+                 
+                 
+                 </div>
+               
+               
+            
            </div>
            {/* Inline script moved to the bottom of the page */}
           

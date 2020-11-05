@@ -4,7 +4,7 @@ const router = express.Router();
 
 // middlewares
 
-const { requireSignin, adminCheck } = require("../middlewares/auth");
+const { requireSignin, authCheck } = require("../middlewares/auth");
 
 // controllers
 const {
@@ -12,36 +12,31 @@ const {
   getUserCart,
   emptyCart,
   // saveAddress,
-  // applyCouponToUserCart,
+  applyCouponToUserCart,
   // createOrder,
   // orders,
-  // addToWishlist,
-  // wishlist,
-  // removeFromWishlist,
+  addToWishlist,
+  wishlist,
+  removeFromWishlist,
   // createCashOrder,
 } = require("../controllers/user");
 
-router.post("/user/cart", adminCheck, userCart); // save cart
-router.get("/user/cart", adminCheck, getUserCart); // get cart
-router.delete("/user/cart", authCheck, emptyCart); // empty cart
+router.post("/user/cart", requireSignin,authCheck, userCart); // save cart
+router.get("/user/cart", requireSignin,authCheck, getUserCart); // get cart
+router.delete("/user/cart", requireSignin,authCheck, emptyCart); // empty cart
 // router.post("/user/address", authCheck, saveAddress);
 
 // router.post("/user/order", authCheck, createOrder); // stripe
 // router.post("/user/cash-order", authCheck, createCashOrder); // cod
 // router.get("/user/orders", authCheck, orders);
 
-// // coupon
-// router.post("/user/cart/coupon", authCheck, applyCouponToUserCart);
+// coupon
+router.post("/user/cart/coupon", requireSignin,authCheck, applyCouponToUserCart);
 
-// // wishlist
-// router.post("/user/wishlist", authCheck, addToWishlist);
-// router.get("/user/wishlist", authCheck, wishlist);
-// router.put("/user/wishlist/:productId", authCheck, removeFromWishlist);
+// wishlist
+router.post("/user/wishlist", requireSignin,authCheck, addToWishlist);
+router.get("/user/wishlist", requireSignin,authCheck, wishlist);
+router.put("/user/wishlist/:productId", requireSignin,authCheck, removeFromWishlist);
 
-// // router.get("/user", (req, res) => {
-// //   res.json({
-// //     data: "hey you hit user API endpoint",
-// //   });
-// // });
 
-// module.exports = router;
+module.exports = router;

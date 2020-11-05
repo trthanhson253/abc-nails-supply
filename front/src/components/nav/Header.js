@@ -6,9 +6,12 @@ import { removeCookie } from "../../functions/auth";
 import { toast } from "react-toastify";
 import { getCategories,loadMenu } from "../../functions/category";
 import Search from "../forms/Search";
+import {Image,message} from 'antd';
 
 const Header = () => {
-
+  let { user,cart } = useSelector((state) => ({ ...state }));
+  let history = useHistory();
+  let dispatch = useDispatch();
   const [subs, setSubs] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -47,15 +50,49 @@ const Header = () => {
     return () => clearTimeout(delayed);
   };
 
+  // const clearCart = () => {
+  //   // remove from local storage
+  //   if (window.confirm("Are you sure to clear your cart ?")) {
+  //   if (typeof window !== "undefined") {
+  //     localStorage.removeItem("cart");
+  //   }
+  //   // remove from redux
+  //   dispatch({
+  //     type: "ADD_TO_CART",
+  //     payload: [],
+  //   });
+  //  message.success("Your cart is empty")
+  // }
+  // };
 
+  const handleRemove =(p)=> (e)=> {
+    // console.log(p._id, "to remove");
+    let cart = [];
+
+    if (typeof window !== "undefined") {
+      if (localStorage.getItem("cart")) {
+        cart = JSON.parse(localStorage.getItem("cart"));
+      }
+      // [1,2,3,4,5]
+      cart.map((product, i) => {
+        if (product._id === p._id) {
+          cart.splice(i, 1);
+        }
+      });
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      dispatch({
+        type: "ADD_TO_CART",
+        payload: cart,
+      });
+    }
+  };
   useEffect(() => {
     // loadSubSubs();
     loadCategories();
   }, []);
 
-  let { user,cart } = useSelector((state) => ({ ...state }));
-  let history = useHistory();
-  let dispatch = useDispatch();
+  
 
   const signout = () => {
     removeCookie('token');
@@ -87,19 +124,19 @@ const Header = () => {
             <div className="hidden-phone ">
               <ul id="text_links_678" className="ty-text-links">
                 <li className="ty-text-links__item ty-level-0 ty-menu-item__newest">
-                  <Link className="ty-text-links__a" to="https://www.ABCnailsupply.com/new-products/">New</Link> 
+                  <Link className="ty-text-links__a" to="new-products/">New</Link> 
                 </li>
                 <li className="ty-text-links__item ty-level-0 ty-menu-item__sale">
-                  <Link className="ty-text-links__a" to="https://www.ABCnailsupply.com/special-sales/">Sales</Link> 
+                  <Link className="ty-text-links__a" to="/special-sales/">Sales</Link> 
                 </li>
                 <li className="ty-text-links__item ty-level-0 ty-menu-item__hits">
-                  <Link className="ty-text-links__a" to="https://www.ABCnailsupply.com/index.php?dispatch=products.bestsellers">Best Sellers</Link> 
+                  <Link className="ty-text-links__a" to="/best-sellers">Best Sellers</Link> 
                 </li>
                 <li className="ty-text-links__item ty-level-0">
-                  <Link className="ty-text-links__a" to="https://www.ABCnailsupply.com/promotions/">Deals</Link> 
+                  <Link className="ty-text-links__a" to="/promotions">Deals</Link> 
                 </li>
                 <li className="ty-text-links__item ty-level-0">
-                  <Link className="ty-text-links__a" to="https://www.ABCnailsupply.com/brands/?filter_id=1">Brands</Link> 
+                  <Link className="ty-text-links__a" to="/brands">Brands</Link> 
                 </li>
                 <li className="ty-text-links__item ty-level-0 ty-menu-item-free">
                   <Link className="ty-text-links__a" to="/free-items">Free</Link> 
@@ -110,13 +147,13 @@ const Header = () => {
           <div className="span3 top-phoness ">
             <div className="top-buttons-grid ty-float-right">
               <div className="ut2-compared-products" id="abt__ut2_compared_products">
-                <Link className="cm-tooltip ty-compare__a " to="https://www.ABCnailsupply.com/compare/" rel="nofollow" title="Comparison List"><i className="ut2-icon-baseline-equalizer" /></Link>
+                <Link className="cm-tooltip ty-compare__a " to="/compare" rel="nofollow" title="Comparison List"><i className="ut2-icon-baseline-equalizer" /></Link>
                 {/*abt__ut2_compared_products*/}</div>
               <div className="ut2-wishlist-count" id="abt__ut2_wishlist_count">
-                <Link className="cm-tooltip ty-wishlist__a " to="https://www.ABCnailsupply.com/wishlist/" rel="nofollow" title="WishList"><i className="ut2-icon-baseline-favorite-border" /></Link>
+                <Link className="cm-tooltip ty-wishlist__a " to="/wishlist" rel="nofollow" title="WishList"><i className="ut2-icon-baseline-favorite-border" /></Link>
                 {/*abt__ut2_wishlist_count*/}</div>
             </div>
-          </div>
+          </div> 
         </div>
       </div>
       <div className="container-fluid-row container-fluid-row-full-width top-menu-grid">
@@ -124,13 +161,24 @@ const Header = () => {
             <div className="row-fluid ">        <div className="span11 top-left-grid ">
                 <div className="row-fluid ">        <div className="span6 menu-grid ">
                     <div className="ty-dropdown-box  top-menu-grid-vetrtical">
+                    
                       <div id="sw_dropdown_682" className="ty-dropdown-box__title cm-combination ">
-                        <Link>Shop By Category</Link>
+                     
+                        <a>                       
+                        Shop By Category&nbsp;             
+                        </a>
+                        <i class="fa fa-angle-down fa-dw" style={{color:'white',fontSize:'13px'}} />
                       </div>
+                      
                       <div id="dropdown_682" className="cm-popup-box ty-dropdown-box__content hidden">
                         <div className="ut2-menu__inbox">
                           <ul className="ty-menu__items cm-responsive-menu">
-                            <li className="ty-menu__item cm-menu-item-responsive first-lvl shop-by"><Link className="ty-menu__item-toggle ty-menu__menu-btn visible-phone cm-responsive-menu-toggle"><i className="ut2-icon-outline-expand_more" /></Link><Link to="javascript:void(0)" className="ty-menu__item-link a-first-lvl"><div className="menu-lvl-ctn "><span><bdi>Shop by</bdi></span><i className="icon-right-dir ut2-icon-outline-arrow_forward" /></div></Link>
+                            <li className="ty-menu__item cm-menu-item-responsive first-lvl shop-by">
+                            <Link className="ty-menu__item-toggle ty-menu__menu-btn visible-phone cm-responsive-menu-toggle">
+                           
+                            </Link>
+                            <Link to="javascript:void(0)" className="ty-menu__item-link a-first-lvl">
+                            <div className="menu-lvl-ctn "><span><bdi>Shop by</bdi></span><i className="icon-right-dir ut2-icon-outline-arrow_forward" /></div></Link>
                               <div className="ty-menu__submenu" id="topmenu_139_4258547604"><ul className="ty-menu__submenu-items ty-menu__submenu-items-simple  cm-responsive-menu-submenu" style={{minHeight: '475px'}}><li className="ty-menu__submenu-item"><Link className="ty-menu__submenu-link " to="https://www.ABCnailsupply.com/new-products/"><bdi>New Products</bdi></Link></li><li className="ty-menu__submenu-item"><Link className="ty-menu__submenu-link " to="https://www.ABCnailsupply.com/special-sales/"><bdi>Special Sales</bdi></Link></li><li className="ty-menu__submenu-item"><Link className="ty-menu__submenu-link " to="https://www.ABCnailsupply.com/index.php?dispatch=products.bestsellers"><bdi>Best Sellers</bdi></Link></li><li className="ty-menu__submenu-item"><Link className="ty-menu__submenu-link " to="https://www.ABCnailsupply.com/promotions/"><bdi>Best Deals</bdi></Link></li><li className="ty-menu__submenu-item"><Link className="ty-menu__submenu-link " to="/collections"><bdi>Collections</bdi></Link></li><li className="ty-menu__submenu-item"><Link className="ty-menu__submenu-link " to="/holidays"><bdi>Holidays</bdi></Link></li><li className="ty-menu__submenu-item"><Link className="ty-menu__submenu-link " to="/clearance"><bdi>Clearance</bdi></Link></li><li className="ty-menu__submenu-item"><Link className="ty-menu__submenu-link " to="/free-items"><bdi>Free Items</bdi></Link></li><li className="ty-menu__submenu-item"><Link className="ty-menu__submenu-link " to="https://www.ABCnailsupply.com/brands/?filter_id=1"><bdi>Brands</bdi></Link></li>
                                 </ul></div>                    
                             </li>
@@ -139,6 +187,7 @@ const Header = () => {
                             <li className="ty-menu__item cm-menu-item-responsive first-lvl ty-menu-item__nailpolishes">
                             <Link className="ty-menu__item-toggle ty-menu__menu-btn visible-phone cm-responsive-menu-toggle">
                               <i className="ut2-icon-outline-expand_more" />
+                              
                             </Link><Link to={`/${c.slug}/product`} className="ty-menu__item-link a-first-lvl" onMouseMove={()=>activateMenu(c._id)}>
                               <div className="menu-lvl-ctn " ><span><bdi>{c.name}</bdi></span><i className="icon-right-dir ut2-icon-outline-arrow_forward" /></div>
                             </Link>
@@ -193,25 +242,57 @@ const Header = () => {
                 <div className="ut2-top-cart-content ty-float-right">
                   <div className="ty-dropdown-box" id="cart_status_684">
                     <div id="sw_dropdown_684" className="ty-dropdown-box__title cm-combination">
-                      <Link to="https://www.ABCnailsupply.com/cart/" className="ac-title ty-hand">
-                        <i className="ut2-icon-outline-cart empty"><span className="ty-minicart-count ty-hand empty">{cart.length}</span></i><span>Cart<i className="ut2-icon-outline-expand_more" /></span>
+                      <Link to="#" className="ac-title ty-hand">
+                        <i className="ut2-icon-outline-cart empty"><span className="ty-minicart-count ty-hand empty">{cart.length}</span></i><span style={{fontSize:'15px'}}>Cart&nbsp;</span><i class="fa fa-angle-down fa-dw" style={{color:'white',fontSize:'13px'}} />
                       </Link>
                     </div>
                     <div id="dropdown_684" className="cm-popup-box ty-dropdown-box__content hidden">
                       <div className="cm-cart-content cm-cart-content-thumb cm-cart-content-delete">
+                      
+                      {cart.length ? (
+                        <>
+                        {cart.map((c)=>(
+                          <div className="ty-cart-items">
+                          <ul className="ty-cart-items__list">
+                          <li className="ty-cart-items__list-item">
+                              <div className="ty-cart-items__list-item-image">
+                                  <Image width={30} heigth={45} className="ty-pict lazyOwl cm-image abt-ut2-lazy-loaded" src={c.image[1].url}
+                                  alt={c.name} title style={{opacity:"1"}} />
+                              </div>
+                              <div className="ty-cart-items__list-item-desc">
+                                  <a href="#">{c.name}</a>
+                                  <p>
+                                      <span>{c.count}</span><span>&nbsp;x&nbsp;</span><bdi><span className="none">$</span><span id="sec_price_407242202_684" className="none">{c.price}</span></bdi>
+                                  </p>
+                              </div>
+                              <div className="ty-cart-items__list-item-tools cm-cart-item-delete">
+                                  <div
+                                      style={{cursor:'pointer'}}
+                                      className="cm-ajax cm-ajax-full-render"                                     
+                                      onClick={handleRemove(c)}
+                                  >
+                                      <i title="Remove" class="fa fa-remove" />
+                                  </div>
+                              </div>
+                          </li>
+                      </ul>
+                      </div>
+                      ))}
+                        </>
+                      ):(
                         <div className="ty-cart-items">
                           <div className="ty-cart-items__empty ty-center">Cart is empty</div>
                         </div>
-                        <div className="cm-cart-buttons ty-cart-content__buttons buttons-container hidden">
-                          <div className="ty-float-left">
-                            <Link to="https://www.ABCnailsupply.com/cart/" rel="nofollow" className="ty-btn ty-btn__secondary">View cart</Link>
-                          </div>
-                          <div className="ty-float-right">
-                            <Link className="cm-dialog-opener cm-dialog-auto-size ty-btn ty-btn__primary" to="https://www.ABCnailsupply.com/index.php?dispatch=checkout.login_form&return_url=https%3A%2F%2Fwww.ABCnailsupply.com%2Fcheckout%2F" data-ca-dialog-title="Sign in" data-ca-target-id="checkout_login_form" rel="nofollow">
-                              Checkout
-                            </Link>
-                          </div>
-                        </div>
+                      )}
+                      {cart.length ? (<div className="cm-cart-buttons ty-cart-content__buttons buttons-container">
+                                     
+                      <div className="ty-float-right">
+                        <Link className="cm-dialog-auto-size ty-btn ty-btn__primary" to="/cart">
+                          View Cart
+                        </Link>
+                      </div>
+                    </div>):(<></>)}
+                        
                       </div>
                     </div>
                     {/*cart_status_684*/}</div>
@@ -221,8 +302,8 @@ const Header = () => {
                       <div>
                         <Link className="ac-title">
                           <i className="ut2-icon-outline-account-circle" />
-                          {!user && (<span>Account<i className="ut2-icon-outline-expand_more" /></span>)}
-                          {user && (<span style={{fontSize: '12px'}}>{user.name}<i className="ut2-icon-outline-expand_more" /></span>)}
+                          {!user && (<><span style={{fontSize:'15px'}}>Account&nbsp;</span><i class="fa fa-angle-down fa-dw" style={{color:'white',fontSize:'13px'}} /></>)}
+                          {user && (<span style={{fontSize: '15px'}}>{user.name}&nbsp;<i class="fa fa-angle-down fa-dw" style={{color:'white',fontSize:'13px'}} /></span>)}
                           
                         </Link>
                       </div>
@@ -254,56 +335,22 @@ const Header = () => {
                       </ul>
                        
                       <div className="ty-account-info__orders updates-wrapper track-orders" id="track_orders_block_685">
-                        <form action="https://www.ABCnailsupply.com/" method="POST" className="cm-ajax cm-post cm-ajax-full-render" name="track_order_quick">
-                          <input type="hidden" name="result_ids" defaultValue="track_orders_block_*" />
-                          <input type="hidden" name="return_url" defaultValue="index.php" />
+                       
+                         
                           <div className="ty-account-info__orders-txt">Track my order(s)</div>
                           <div className="ty-account-info__orders-input ty-control-group ty-input-append">
                             <label htmlFor="track_order_item685" className="cm-required hidden">Track my order(s)</label>
                             <input type="text" size={20} className="ty-input-text cm-hint" id="track_order_item685" name="track_data" defaultValue="Order ID/Email" />
-                            <button title="Go" className="ty-btn-go" type="submit"><i className="ty-btn-go__icon ty-icon-right-dir" /></button>
+                            <button title="Go" className="ty-btn-go" type="submit"><i class="fa fa-play fa-dw" style={{fontSize:'13px'}} /></button>
                             <input type="hidden" name="dispatch" defaultValue="orders.track_request" />
                           </div>
-                          <input type="hidden" name="security_hash" className="cm-no-hide-input" defaultValue="9015f7214ad6c5db7036646ea0b626ad" /></form>
+                         
                         {/*track_orders_block_685*/}</div>
                       <div className="ty-account-info__buttons buttons-container">
                         
                         {!user && (<><Link to="/login" data-ca-target-id="login_block685" className="ty-btn ty-btn__secondary" rel="nofollow"><i className="fa fa-sign-in" />&nbsp;Sign in</Link><Link to="/register" rel="nofollow" className="ty-btn ty-btn__primary"><i className="fa fa-user-plus" />&nbsp;Register</Link></>)}
                         {user &&  (<div onClick={signout} rel="nofollow" class="ty-btn ty-btn__primary"><i className="fa fa-sign-out" />&nbsp;Sign out</div>)}
                         
-                        
-                        <div id="login_block685" className="hidden" title="Sign in">
-                          <div className="ty-login-popup">
-                            <div id="popup685_login_popup_form_container">
-                              <form name="popup685_form" action="https://www.ABCnailsupply.com/" method="post" className="cm-ajax cm-ajax-full-render">
-                                <input type="hidden" name="result_ids" defaultValue="popup685_login_popup_form_container" />
-                                <input type="hidden" name="error_container_id" defaultValue="login_error_popup685" />
-                                <input type="hidden" name="quick_login" defaultValue={1} />
-                                <input type="hidden" name="return_url" defaultValue="index.php" />
-                                <input type="hidden" name="redirect_url" defaultValue="index.php" />
-                                <div className="ty-control-group">
-                                  <label htmlFor="login_popup685" className="ty-login__filed-label ty-control-group__label cm-required cm-trim cm-email">Email</label>
-                                  <input type="text" id="login_popup685" name="user_login" size={30} defaultValue className="ty-login__input cm-focus" />
-                                </div>
-                                <div className="ty-control-group ty-password-forgot">
-                                  <label htmlFor="psw_popup685" className="ty-login__filed-label ty-control-group__label ty-password-forgot__label cm-required">Password</label><Link to="https://www.ABCnailsupply.com/reset-password/" className="ty-password-forgot__a" tabIndex={5}>Forgot your password?</Link>
-                                  <input type="password" id="psw_popup685" name="password" size={30} defaultValue className="ty-login__input" maxLength={32} />
-                                </div>
-                                <div className="ty-login-reglink ty-center">
-                                  <Link className="ty-login-reglink__a" to="https://www.ABCnailsupply.com/register/" rel="nofollow">Register for a new account</Link>
-                                </div>
-                                <div className="buttons-container clearfix">
-                                  <div className="ty-float-right">
-                                    <button className="ty-btn__login ty-btn__secondary ty-btn" type="submit" name="dispatch[auth.login]"><span><span>Sign in</span></span></button>
-                                  </div>
-                                  <div className="ty-login__remember-me">
-                                    <label htmlFor="remember_me_popup685" className="ty-login__remember-me-label"><input className="checkbox" type="checkbox" name="remember_me" id="remember_me_popup685" defaultValue="Y" />Remember me</label>
-                                  </div>
-                                </div>
-                                <input type="hidden" name="security_hash" className="cm-no-hide-input" defaultValue="9015f7214ad6c5db7036646ea0b626ad" /></form>
-                              {/*popup685_login_popup_form_container*/}</div>
-                          </div>
-                        </div>
                       </div>
                       </div>
                   </div>

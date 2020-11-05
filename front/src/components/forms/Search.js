@@ -19,7 +19,7 @@ const Search = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    history.push(`/shop?${text}`);
+    history.push(`/search?${text}`);
   };
 
   return (
@@ -28,7 +28,7 @@ const Search = () => {
         </div>
         <div id="cp_ls_ajax_loader" className="live-search-loader-wrap" style={{display: 'none'}}>
         
-        </div>
+        </div> 
         <input type="text" onChange={handleChange} name="text" value={text} placeholder="Search products" className="ty-search-block__input cm-hint" />
         <button style={{ cursor: "pointer" }} onClick={handleSubmit} title="Search" className="ty-search-magnifier" type="submit">
         <i className="ty-icon-search" />

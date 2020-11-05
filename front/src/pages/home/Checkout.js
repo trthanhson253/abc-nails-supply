@@ -5,23 +5,33 @@ import {
     getUserCart,
     emptyUserCart,
     // saveUserAddress,
-    // applyCoupon,
+    applyCoupon,
   } from "../../functions/user";
-import {message} from 'antd';
+import {message,Image} from 'antd';
 
 const Checkout = ({ history }) => {
     const [products, setProducts] = useState([]);
     const [total, setTotal] = useState(0);
+    const [coupon, setCoupon] = useState("");
+    const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
+    const [discountError, setDiscountError] = useState("");
 
     const dispatch = useDispatch();
     const { user } = useSelector((state) => ({ ...state }));
   
+    const loadProductInCart = (token) => {
+        // setLoading(true);
+        getUserCart(token).then((res) => {
+            console.log("user cart res", JSON.stringify(res.data, null, 4));
+            setProducts(res.data.products);
+            setTotal(res.data.cartTotal);
+            // setLoading(false);
+          });
+      };
+
     useEffect(() => {
-      getUserCart(user.token).then((res) => {
-        console.log("user cart res", JSON.stringify(res.data, null, 4));
-        setProducts(res.data.products);
-        setTotal(res.data.cartTotal);
-      });
+        let token=user.token;
+        loadProductInCart(token);
     }, []);
 
 const emptyCart = () => {
@@ -38,12 +48,34 @@ const emptyCart = () => {
         emptyUserCart(user.token).then((res) => {
           setProducts([]);
           setTotal(0);
-        //   setTotalAfterDiscount(0);
-        //   setCoupon("");
+          setTotalAfterDiscount(0);
+          setCoupon("");
           message.success("Your Cart is empty.");
         });
       };
-
+      const applyDiscountCoupon = () => {
+        console.log("send coupon to backend", coupon);
+        applyCoupon(user.token, coupon).then((res) => {
+          console.log("RES ON COUPON APPLIED", res.data);
+          if (res.data) {
+            setTotalAfterDiscount(res.data);
+            // update redux coupon applied true/false
+            dispatch({
+              type: "COUPON_APPLIED",
+              payload: true,
+            });
+          }
+          // error
+          if (res.data.err) {
+            setDiscountError(res.data.err);
+            // update redux coupon applied true/false
+            dispatch({
+              type: "COUPON_APPLIED",
+              payload: false,
+            });
+          }
+        });
+      };
   return (
    <>
    <div className="tygh-content clearfix">
@@ -73,7 +105,7 @@ const emptyCart = () => {
                            {/* Inline script moved to the bottom of the page */}
                            <div className="cm-save-fields row-fluid clearfix" id="onestepcheckout">
                               
-                               <form name="onestepcheckout_form" action="https://www.happynailsupply.com/" method="post" className="cm-processed-form">
+                               <form name="onestepcheckout_form" method="post" className="cm-processed-form">
                                    <div className="span5">
                                        <div className="ty-step__container-active ty-step-one" data-ct-checkout="user_info" id="step_one">
                                            <h3 className="ty-step__title-active clearfix">
@@ -85,57 +117,54 @@ const emptyCart = () => {
                                                <div id="step_two_body" className="ty-step__body-active cm-skip-save-fields">
                                                    <div className="clearfix">
                                                        <div className="checkout__block">
-                                                           <input type="hidden" id="profile_name" name="user_data[profile_name]" defaultValue="Main" />
+                                                           
                                                        </div>
                                                    </div>
                                                    <div className="clearfix" data-ct-address="billing-address">
                                                        <div className="checkout__block">
-                                                           <input type="hidden" name="ship_to_another" defaultValue="{1}" />
+                                                           
                                                            <div className="clearfix">
-                                                               <div className="ty-control-group ty-profile-field__item ty-billing-first-name">
-                                                                   <label htmlFor="elm_14" className="ty-control-group__title cm-profile-field cm-required ">First name</label>
-                                                                   <input x-autocompletetype="given-name" type="text" id="elm_14" name="user_data[b_firstname]" size={32} defaultValue="son" className="ty-input-text cm-focus"
-                                                                   data-emoji_font="true" style={{fontFamily: 'Arial, Helvetica, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", Symbola, EmojiSymbols !important'}} />
-                                                               </div>
-                                                               <div className="ty-control-group ty-profile-field__item ty-billing-last-name">
-                                                                   <label htmlFor="elm_16" className="ty-control-group__title cm-profile-field cm-required ">Last name</label>
-                                                                   <input x-autocompletetype="surname" type="text" id="elm_16" name="user_data[b_lastname]" size="{32}" defaultValue="tran" className="ty-input-text  " />
+            
+                                                               <div className="ty-control-group ty-profile-field__item ty-billing-email">
+                                                                   <label htmlFor="elm_32" className="ty-control-group__title cm-profile-field cm-required cm-email ">Full name</label>
+                                                                   <input      
+                                                                       type="text"
+                                                                       
+                                                                       name="name"
+                                                                       size="{32}"
+                                                                       placeholder="Your Full name"
+                                                                       className="ty-input-text cm-skip-avail-switch "
+                                                                   />
                                                                </div>
                                                                <div className="ty-control-group ty-profile-field__item ty-billing-email">
                                                                    <label htmlFor="elm_32" className="ty-control-group__title cm-profile-field cm-required cm-email ">E-mail</label>
-                                                                   <input
-                                                                       x-autocompletetype="email"
+                                                                   <input      
                                                                        type="text"
-                                                                       id="elm_32"
-                                                                       name="user_data[email]"
+                                                                      
+                                                                       name="email"
                                                                        size="{32}"
-                                                                       defaultValue="trthanhson253@yahoo.com"
+                                                                       placeholder="Your Email"
                                                                        className="ty-input-text cm-skip-avail-switch "
                                                                    />
                                                                </div>
                                                                <div className="ty-control-group ty-profile-field__item ty-billing-phone">
-                                                                   <label htmlFor="elm_30" className="ty-control-group__title cm-profile-field cm-required cm-phone ">Phone</label>
-                                                                   <input x-autocompletetype="phone-full" type="text" id="elm_30" name="user_data[b_phone]" size="{32}" defaultValue="{4049881923}" className="ty-input-text  " />
+                                                                   <label className="ty-control-group__title cm-profile-field cm-required cm-phone ">Phone</label>
+                                                                   <input type="text" name="phone" size="{32}" placeholder="Phone" className="ty-input-text" />
                                                                </div>
-                                                               <div className="ty-control-group ty-profile-field__item ty-">
-                                                                   <label htmlFor="elm_37" className="ty-control-group__title cm-profile-field  ">Company</label>
-                                                                   <input type="text" id="elm_37" name="user_data[fields][37]" size="{32}" defaultValue className="ty-input-text  " />
-                                                               </div>
+                                                              
                                                                <div className="ty-control-group ty-profile-field__item ty-billing-address">
-                                                                   <label htmlFor="elm_18" className="ty-control-group__title cm-profile-field cm-required ">Address</label>
-                                                                   <input x-autocompletetype="street-address" type="text" id="elm_18" name="user_data[b_address]" size="{32}" defaultValue="123 Abc Dr" className="ty-input-text  " />
+                                                                   <label className="ty-control-group__title cm-profile-field cm-required ">Address</label>
+                                                                   <input type="text" name="address" size="{32}" placeholder="Address" className="ty-input-text  " />
                                                                </div>
-                                                               <div className="ty-control-group ty-profile-field__item ty-billing-address-line2">
-                                                                   <input x-autocompletetype="address-line2" type="text" id="elm_20" name="user_data[b_address_2]" size="{32}" defaultValue className="ty-input-text  " />
-                                                               </div>
+                                                              
                                                                <div className="ty-control-group ty-profile-field__item ty-billing-city">
                                                                    <label htmlFor="elm_22" className="ty-control-group__title cm-profile-field cm-required ">City</label>
-                                                                   <input x-autocompletetype="city" type="text" id="elm_22" name="user_data[b_city]" size="{32}" defaultValue="Morrow" className="ty-input-text  " />
+                                                                   <input placeholder="City" type="text" name="city" size="{32}" className="ty-input-text  " />
                                                                </div>
                                                                <div className="ty-control-group ty-profile-field__item ty-billing-state">
-                                                                   <label htmlFor="elm_24" className="ty-control-group__title cm-profile-field cm-required ">State/province</label>
-                                                                   <select x-autocompletetype="state" id="elm_24" className="ty-profile-field__select-state cm-state cm-location-billing" name="user_data[b_state]">
-                                                                       <option value>- Select state -</option>
+                                                                   <label className="ty-control-group__title cm-profile-field cm-required ">State</label>
+                                                                   <select className="ty-profile-field__select-state cm-state cm-location-billing" name="state">
+                                                                       <option value="No" selected>- Select state -</option>
                                                                        <option value="AL">Alabama</option>
                                                                        <option value="AZ">Arizona</option>
                                                                        <option value="AR">Arkansas</option>
@@ -145,7 +174,7 @@ const emptyCart = () => {
                                                                        <option value="DE">Delaware</option>
                                                                        <option value="DC">District of Columbia</option>
                                                                        <option value="FL">Florida</option>
-                                                                       <option value="GA" selected>Georgia</option>
+                                                                       <option value="GA">Georgia</option>
                                                                        <option value="ID">Idaho</option>
                                                                        <option value="IL">Illinois</option>
                                                                        <option value="IN">Indiana</option>
@@ -187,29 +216,13 @@ const emptyCart = () => {
                                                                        <option value="WI">Wisconsin</option>
                                                                        <option value="WY">Wyoming</option>
                                                                    </select>
-                                                                   <input
-                                                                       x-autocompletetype="state"
-                                                                       type="text"
-                                                                       id="elm_24_d"
-                                                                       name="user_data[b_state]"
-                                                                       size="{32}"
-                                                                       maxlength="{64}"
-                                                                       defaultValue="GA"
-                                                                       disabled
-                                                                       className="cm-state cm-location-billing ty-input-text hidden cm-skip-avail-switch"
-                                                                   />
+                                                                   
                                                                </div>
                                                                <div className="ty-control-group ty-profile-field__item ty-billing-zip-code">
-                                                                   <label htmlFor="elm_28" className="ty-control-group__title cm-profile-field cm-required cm-zipcode cm-location-billing">Zip/postal code</label>
-                                                                   <input x-autocompletetype="postal-code" type="text" id="elm_28" name="user_data[b_zipcode]" size="{32}" defaultValue="{30260}" className="ty-input-text  " />
+                                                                   <label className="ty-control-group__title cm-profile-field cm-required cm-zipcode cm-location-billing">Zip/postal code</label>
+                                                                   <input type="text" name="zipcode" size="{32}" placeholder="Zip Code" className="ty-input-text" />
                                                                </div>
-                                                               <div className="ty-control-group ty-profile-field__item ty-billing-country">
-                                                                   <label htmlFor="elm_26" className="ty-control-group__title cm-profile-field cm-required ">Country</label>
-                                                                   <select x-autocompletetype="country" id="elm_26" className="ty-profile-field__select-country cm-country cm-location-billing " name="user_data[b_country]">
-                                                                       <option value>- Select country -</option>
-                                                                       <option selected="selected" value="US">United States</option>
-                                                                   </select>
-                                                               </div>
+                                                               
                                                            </div>
                                                        </div>
                                                    </div>
@@ -225,11 +238,11 @@ const emptyCart = () => {
                                                                    className="checkbox cm-switch-availability cm-switch-inverse cm-switch-visibility"
                                                                    defaultChecked="checked"
                                                                />
-                                                               Ship to the same address
+                                                               Ship to the same address 
                                                            </label>
                                                        </div>
                                                        <div className="clearfix">
-                                                           <div id="sa" className="hidden">
+                                                           <div id="sa">
                                                                <div className="checkout__block">
                                                                    <div className="ty-subheader">
                                                                        Shipping address
@@ -500,29 +513,29 @@ const emptyCart = () => {
                                                        </div>
                                                        <div className="cm-tabs-content tabs-content clearfix">
                                                            <div className id="content_payments_tab1">
-                                                               <input type="hidden" name="payment_id" defaultValue="{1}" />
-                                                               <input type="hidden" name="result_ids" defaultValue="checkout*,step_four,step_five" />
+                                                              
                                                                <div className="ty-checkout__billing-options ">
                                                                    <div className="clearfix">
                                                                        <div className="ty-payments-list__instruction other-text" />
                                                                        <div className="ty-payments-list__description">
-                                                                           Visa, Mastercard &amp; Discover
+                                                                           We Accept Visa, Mastercard &amp; Discover
                                                                        </div>
-                                                                       {/* Inline script moved to the bottom of the page */} {/* Inline script moved to the bottom of the page */}
+                                                                      
                                                                        <div className="litecheckout__item">
                                                                            <div className="clearfix">
                                                                                <div className="ty-credit-card cm-cc_form_1">
                                                                                    <div className="ty-credit-card__control-group ty-control-group">
                                                                                        <label htmlFor="credit_card_number_1" className="ty-control-group__title cm-cc-number cc-number_1 cm-required">Card number</label>
-                                                                                       <input
-                                                                                           size="{35}"
-                                                                                           type="text"
-                                                                                           id="credit_card_number_1"
-                                                                                           name="payment_info[card_number]"
-                                                                                           defaultValue
-                                                                                           className="ty-credit-card__input cm-autocomplete-off ty-inputmask-bdi"
-                                                                                           autocomplete="off"
-                                                                                       />
+                                                                                      
+                                                                                       <input      
+                                                                                       type="text"
+                                                                                       
+                                                                                       name="name"
+                                                                                       size="{32}"
+                                                                                       placeholder="Your Full name"
+                                                                                       className="ty-input-text cm-skip-avail-switch "
+                                                                                   />
+                                                                                       
                                                                                        <ul className="ty-cc-icons cm-cc-icons cc-icons_1">
                                                                                            <li className="ty-cc-icons__item cc-default cm-cc-default"><span className="ty-cc-icons__icon default">&nbsp;</span></li>
                                                                                            <li className="ty-cc-icons__item cm-cc-visa"><span className="ty-cc-icons__icon visa">&nbsp;</span></li>
@@ -535,17 +548,13 @@ const emptyCart = () => {
                                                                                    </div>
                                                                                    <div className="ty-credit-card__control-group ty-control-group">
                                                                                        <label
-                                                                                           htmlFor="credit_card_month_1"
-                                                                                           data-ca-regexp="^\d{1,2}$"
-                                                                                           data-ca-message
+                                                                                          
                                                                                            className="ty-control-group__title cm-regexp cm-cc-date cc-date_1 cm-cc-exp-month cm-required"
                                                                                        >
                                                                                            Valid thru (mm/yy)
                                                                                        </label>
                                                                                        <label
-                                                                                           htmlFor="credit_card_year_1"
-                                                                                           data-ca-regexp="^\d{2,4}$"
-                                                                                           data-ca-message
+                                                                                           
                                                                                            className="cm-required cm-regexp cm-cc-date cm-cc-exp-year cc-year_1 hidden"
                                                                                        />
                                                                                        <input
@@ -573,14 +582,7 @@ const emptyCart = () => {
                                                                                    </div>
                                                                                    <div className="ty-credit-card__control-group ty-control-group">
                                                                                        <label htmlFor="credit_card_name_1" className="ty-control-group__title cm-required">Cardholder's name</label>
-                                                                                       <input
-                                                                                           size="{35}"
-                                                                                           type="text"
-                                                                                           id="credit_card_name_1"
-                                                                                           name="payment_info[cardholder_name]"
-                                                                                           defaultValue
-                                                                                           className="cm-cc-name ty-credit-card__input ty-uppercase"
-                                                                                       />
+                                                                                       <input placeholder="Cardholder's name" type="text" name="cardholder_name" size="{35}" className="ty-input-text  " />
                                                                                    </div>
                                                                                </div>
                                                                                <div className="ty-control-group ty-credit-card__cvv-field cvv-field">
@@ -649,11 +651,23 @@ const emptyCart = () => {
                                            <h3 className="ty-step__title-active clearfix">
                                                <span className="ty-step__title-left"><i className="ty-icon-ok" /></span>
                                                <i className="ty-step__title-arrow ty-icon-down-micro" />
-                                               <span className="ty-step__title-txt">Review your order</span>
+                                               <span className="ty-step__title-txt">Order Summary</span>
                                            </h3>
                                            <div id="step_four_body" className="ty-step__body-active">
                                                <div className="clearfix">
                                                    <div className="checkout-summary" id="checkout_info_summary_687">
+                                                   <div className="ty-tabs cm-j-tabs cm-track cm-j-tabs-disable-convertation clearfix">
+                                                   <ul className="ty-tabs__list" id="payment_tabs">
+                                                       <li id="payments_tab1" className="ty-tabs__item active">
+                                                        <button type="button" class="btn btn-primary btn-xs">
+                                                        <i class="fa fa-bitbucket" /> Empty Cart
+                                                        </button>
+                                                       </li>
+                                                       <li id="payments_tab3" className="ty-tabs__item">
+                                                       <button type="button" class="btn btn-default btn-xs"><i class="fa fa-edit" />Edit Card</button>
+                                                       </li>
+                                                   </ul>
+                                               </div>
                                                        <table className="table table-middle">
                                                            <thead>
                                                                <tr>
@@ -666,12 +680,12 @@ const emptyCart = () => {
                                                            <tbody className="tbody">
                                                            {products.map((p, i) => (
 
-                                                            <tr>
+                                                            <tr key={p._id}>
                                                             <td width="18%">
                                                                 <Link to="#">
-                                                                    <img
+                                                                    <Image
                                                                         className="ty-pict lazyOwl cm-image abt-ut2-lazy-loaded"
-                                                                        src="./Checkout_files/1594_china_glaze_pilates_please-84149(1).jpg"
+                                                                        src={p.product.image[1].url}
                                                                         alt= {p.product.name}
                                                                         style={{opacity:'1'}}     
                                                                     />
@@ -696,7 +710,7 @@ const emptyCart = () => {
                                                                 <bdi><span className="price">$</span><span className="price">{p.product.price * p.count}</span></bdi>
                                                             </td>
                                                         </tr>
-                                                           ))};
+                                                           ))}
                                                               
                                                          
                                                            </tbody>
@@ -732,34 +746,41 @@ const emptyCart = () => {
                                                                    </td>
                                                                </tr>
                                                                <tr>
-                                                                   <td colspan="{3}" className="right last">Order Total</td>
+                                                                   <td colspan="{3}" className="right last"><h4>Order Total</h4></td>
                                                                    <td className="right last">
                                                                        <span>
-                                                                           <bdi>$<span>15.02</span></bdi>
+                                                                           <h4><bdi>$<span>15.02</span></bdi></h4>
                                                                        </span>
                                                                    </td>
                                                                </tr>
                                                            </tfoot>
                                                        </table>
+                                                       
                                                        {/*checkout_info_summary_687*/}
                                                    </div>
+                                                  
                                                    <div>
                                                        <div className="ty-discount-coupon__control-group ty-input-append">
-                                                           <label htmlFor="coupon_field" className="hidden">Promo code</label>
-                                                           <input type="text" className="ty-input-text cm-hint" id="coupon_field" name="hint_coupon_code" size="{40}" defaultValue placeholder="Promo code" />
-                                                           <button title="Apply" className="ty-btn-go" onclick="fn_osc_apply_coupon();return false;" type="button"><i className="ty-btn-go__icon ty-icon-right-dir" /></button>
+                                                           
+                                                           <input onChange={(e) => { setCoupon(e.target.value); setDiscountError(""); }} 
+                                                            value={coupon} type="text" className="ty-input-text cm-hint" id="coupon_field" size="{40}"
+                                                            placeholder="Apply Promo Code Here" />
+                                                           <button onClick={applyDiscountCoupon} className="ty-btn-go" type="button">
+                                                           <i class="fa fa-play fa-dw" style={{fontSize: '13px'}} />
+                                                           </button>
+                                                           {discountError && <p className="bg-danger p-2">{discountError}</p>}
                                                        </div>
                                                    </div>
                                                    <div className="clearfix"></div>
                                                    <div className="ty-customer-notes">
-                                                       <p className="ty-customer-notes__title">You can leave us a comment here</p>
-                                                       <textarea className="ty-customer-notes__text" name="customer_notes" cols={60} rows={2} defaultValue={""} />
+                                                      
                                                    </div>
                                                    {/* Inline script moved to the bottom of the page */}
                                                    <div className="checkout-buttons">
-                                                       <button id="place_order_tab1" className="ty-btn__big ty-btn__primary cm-checkout-place-order ty-btn" type="submit" name="dispatch[onestepcheckout.place_order]">
-                                                           <span><span>Submit my order</span></span>
-                                                       </button>
+                                                        <center><button id="place_order_tab1" className="ty-btn__big ty-btn__primary cm-checkout-place-order ty-btn" type="submit" name="dispatch[onestepcheckout.place_order]">
+                                                        <span>Place your order</span>
+                                                    </button></center>
+                                                       
                                                    </div>
                                                    <div className="processor-buttons hidden" />
                                                </div>

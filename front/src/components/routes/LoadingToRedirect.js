@@ -4,7 +4,7 @@ import Spinner from "../Spinner"
 import { useSelector } from "react-redux";
 
 const LoadingToRedirect = () => {
-  const [count, setCount] = useState(3);
+  const [count, setCount] = useState(2);
   let history = useHistory();
   const { user } = useSelector((state) => ({ ...state }));
 

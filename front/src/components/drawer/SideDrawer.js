@@ -31,7 +31,7 @@ const SideDrawer = () => {
           <div className="col">
             {p.image && (
               <>
-                <Image style={{height:'30px !important'}} src={p.image[1].url} style={imageStyle} />
+                <Image width={50} heigth={50} src={p.image[1].url} style={imageStyle} />
                 <p className="text-center bg-secondary text-light">
                   {p.name} x {p.count}
                 </p>

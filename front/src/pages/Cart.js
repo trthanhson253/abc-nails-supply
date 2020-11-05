@@ -10,14 +10,16 @@ import { userCart } from "../functions/user";
 
 const Cart = ({ history }) => {
 
-  const { cart, user } = useSelector((state) => ({ ...state }));
-  const dispatch = useDispatch();
-  const getTotal = () => {
+const { cart, user } = useSelector((state) => ({ ...state }));
+const dispatch = useDispatch();
+
+const getTotal = () => {
     return cart.reduce((currentValue, nextValue) => {
       return currentValue + nextValue.count * nextValue.price;
     }, 0);
   };
-  const saveOrderToDb = () => {
+
+const saveOrderToDb = () => {
     // console.log("cart", JSON.stringify(cart, null, 4));
     userCart(cart, user.token)
       .then((res) => {
@@ -27,7 +29,7 @@ const Cart = ({ history }) => {
       .catch((err) => console.log("cart save err", err));
   };
 
-  const handleQuantityChange =(p)=> (e)=>{
+const handleQuantityChange =(p)=> (e)=>{
     let count = e < 1 ? 1 : e;
 
     if (count > p.quantity) {
@@ -69,7 +71,7 @@ const Cart = ({ history }) => {
    message.success("Your cart is empty")
   };
 
-  const handleRemove =(p)=> (e)=> {
+const handleRemove =(p)=> (e)=> {
     // console.log(p._id, "to remove");
     let cart = [];
 
@@ -123,7 +125,7 @@ const Cart = ({ history }) => {
                 {cart.length ? (<div className="ty-btn ty-btn__tertiary text-button " onClick={clearCart}>Clear cart</div>):(<></>)}
               </div>
               <div className="ty-float-right ty-cart-content__right-buttons">
-              {user ? (<Link className=" cm-dialog-auto-size ty-btn ty-btn__primary" to="/checkout">
+              {user ? (<Link onClick={saveOrderToDb} className=" cm-dialog-auto-size ty-btn ty-btn__primary" to="/checkout">
                   Proceed to checkout
                 </Link>):( <Link className=" ty-btn ty-btn__tertiary text-button" to="/login" >
                 Signin to checkout
@@ -194,15 +196,7 @@ const Cart = ({ history }) => {
                <div className="ty-cart-total__wrapper clearfix" id="checkout_totals">
                  <div className="ty-coupons__container">
                    <div>
-                     <form className="cm-ajax cm-ajax-force cm-ajax-full-render cm-processed-form" name="coupon_code_form" action="https://www.happynailsupply.com/" method="post">
-                       
-                       <div className="ty-discount-coupon__control-group ty-input-append">
-                         <label htmlFor="coupon_field" className="hidden cm-required">Promo code</label>
-                         <input type="text" className="ty-input-text cm-hint" id="coupon_field" name="hint_coupon_code" size={40} defaultValue="Promo code" />
-                         <button title="Apply" className="ty-btn-go" type="submit"><i className="ty-btn-go__icon ty-icon-right-dir" /></button>
-                         
-                       </div>
-                       </form>
+                    
                    </div>
                  </div>
                  <ul className="ty-cart-statistic ty-statistic-list">
@@ -235,17 +229,15 @@ const Cart = ({ history }) => {
                  {cart.length ? (<div className="ty-btn ty-btn__tertiary text-button " onClick={clearCart}>Clear cart</div>):(<></>)}
                </div>
                <div className="ty-float-right ty-cart-content__right-buttons">
-               { user && cart.length ? (<Link onClick={saveOrderToDb} className="cm-dialog-auto-size ty-btn ty-btn__primary" to="/checkout">
-               Proceed to checkout
-               </Link>
-        
-               ):( <Link className="ty-btn ty-btn__tertiary text-button " to={{
+             
+                {user ? (<>{cart.length ? (<Link onClick={saveOrderToDb} className="cm-dialog-auto-size ty-btn ty-btn__primary" to="/checkout">
+                Proceed to checkout
+                </Link>):(<></>)}</>):(<Link className="ty-btn ty-btn__tertiary text-button " to={{
                   pathname: "/login",
                   state: { from: "cart" },
                 }} >
                 Signin to checkout
                 </Link>)}
-                
                  
                </div>
              </div>

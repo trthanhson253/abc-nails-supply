@@ -4,14 +4,15 @@ const expressJwt = require('express-jwt');
 exports.requireSignin = expressJwt({ secret:  process.env.JWT_SECRET });
 
 exports.authCheck = (req, res, next) => {
+    // console.log("STrn1",req.user._id)
     const authUserId = req.user._id;
-    User.findOne({ _id: authUserId }).exec((err, user) => {
-        if (err || !user) {
+    User.findOne({ _id: authUserId }).exec((err, data) => {
+        if (err || !data) {
             return res.status(400).json({
                 error: 'User not found'
             });
         }
-        req.profile = user;
+        req.user = data;
         next();
     });
 };

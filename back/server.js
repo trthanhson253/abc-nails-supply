@@ -37,6 +37,7 @@ const brandRoutes = require('./routes/brand');
 const colorRoutes = require('./routes/color');
 const sizeRoutes = require('./routes/size');
 const couponRoutes = require('./routes/coupon');
+const userRoutes = require('./routes/user');
 
 // middlewares
 app.use(morgan("dev"));
@@ -55,6 +56,7 @@ app.use('/api', brandRoutes);
 app.use('/api', colorRoutes);
 app.use('/api', sizeRoutes);
 app.use('/api', couponRoutes);
+app.use('/api', userRoutes);
 
 // port
 const port = process.env.PORT || 8000;

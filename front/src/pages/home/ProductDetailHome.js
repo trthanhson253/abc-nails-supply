@@ -9,6 +9,7 @@ import moment from 'moment';
 import { useSelector, useDispatch } from "react-redux";
 import _ from "lodash";
 import { LoadingOutlined } from '@ant-design/icons';
+import { addToWishlist } from "../../functions/user";
 
 const ProductDetailHome = props => {
   
@@ -65,11 +66,11 @@ const handleAddToCart = (p) => {
         count: 1,
       });
 
-      cart.map((item, i) => {
-        if (item._id == p._id) {
-          cart[i].count++;
-        }
-      });
+      // cart.map((item, i) => {
+      //   if (item._id == p._id) {
+      //     cart[i].count++;
+      //   }
+      // });
       // remove duplicates
       let unique = _.uniqWith(cart, _.isEqual);
       // save to local storage
@@ -87,7 +88,7 @@ const handleAddToCart = (p) => {
         });
         message.success('This product is added to cart successfully');
         setTooltip("You already added this product.");
-      }, 2000);
+      }, 1000);
       
       // add to reeux state
       dispatch({
@@ -97,6 +98,15 @@ const handleAddToCart = (p) => {
       // show cart items in side drawer
     
     }
+  };
+
+  const handleAddToWishlist = (e) => {
+    e.preventDefault();
+    addToWishlist(product._id, user.token).then((res) => {
+      // console.log("ADDED TO WISHLIST", res.data);
+      message.success("Added to wishlist");
+      // history.push("/user/wishlist");
+    });
   };
 
   useEffect(() => {
@@ -208,19 +218,25 @@ const handleAddToCart = (p) => {
                           <Tooltip title={tooltip}>
                           <a className="ty-btn__primary ty-btn__add-to-cart cm-ajax cm-ajax-full-render ty-btn" href="/cart" onClick={()=>handleAddToCart(product)}>
                                                    
-                            {loading ? (<center><Spin indicator={antIcon} /></center>):( <span>
+                            {loading ? (
+                          <div class="dots-loading">
+                             <div></div>
+                             <div></div>
+                             <div></div>
+                             <div></div>
+                           </div>   
+                              
+                              ):( <span>
                               <i className="fa fa-shopping-cart fa-fw" /><span>Add to cart</span></span>)}                         
                          </a>
                          </Tooltip>
                         
                           
                           
-                           <a className="
-ut2-add-to-wish label	cm-submit	cm-tooltip" title="Add to wishlist" id="button_wishlist_7797" data-ca-dispatch="dispatch[wishlist.add..7797]">
-                             <i className="ut2-icon-baseline-favorite" />    Add to wish list</a>
-                           <a className="
-ut2-add-to-compare cm-ajax cm-ajax-full-render label cm-tooltip" title="Add to comparison list" data-ca-target-id="comparison_list,account_info*,abt__ut2_compared_products" rel="nofollow" href="#">
-                             <i className="ut2-icon-baseline-equalizer" />    Compare  </a>
+                           <a className="ut2-add-to-wish label cm-submit" onClick={handleAddToWishlist}>
+                             <i className="ut2-icon-baseline-favorite" /> Add to wish list</a>
+                           <a className="ut2-add-to-compare cm-ajax cm-ajax-full-render label cm-tooltip" title="Add to comparison list" href="#">
+                             <i className="ut2-icon-baseline-equalizer" /> Compare  </a>
                            {/*add_to_cart_update_7797*/}</div>
                        </div>
                        
