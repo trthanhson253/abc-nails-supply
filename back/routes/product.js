@@ -14,11 +14,13 @@ const {
   create,
   listAll,
   listProductBySubSub,
+  listProductByCategory,
   listDetailProduct,
   remove,
   read,
   listRecentlyProducts,
   listByFilters,
+  listMenuByCategory,
   //   update,
   //   list,
   //   productsCount,
@@ -42,6 +44,9 @@ router.get('/products', listAll); // products/100
 router.post('/products/recentlyProduct', listRecentlyProducts);
 
 router.get('/products/subSub/:slug', listProductBySubSub);
+
+router.post('/products/category/:cslug', listProductByCategory);
+router.get('/products/category/menu/:cslug', listMenuByCategory);
 
 router.post('/product/:slug', requireSignin, adminCheck, remove);
 router.get('/product/:slug', read);

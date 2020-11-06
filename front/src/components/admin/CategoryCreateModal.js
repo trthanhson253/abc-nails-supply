@@ -1,53 +1,68 @@
-import React, { useState } from "react";
-import { Modal,Button,Spin} from "antd";
+import React, { useState } from 'react';
+import { Modal, Button, Spin } from 'antd';
 // import { LoadingOutlined } from '@ant-design/icons';
-import { toast } from "react-toastify";
-import { createCategory } from "../../functions/category";
-import FileUpload from "./FileUpload";
+import { toast } from 'react-toastify';
+import { createCategory } from '../../functions/category';
+import FileUpload from './FileUpload';
+import CKEditor from 'ckeditor4-react';
 
-
-const CategoryCreateModal = ({ open,handleClose,loadCategories,token,removeImage,setRemoveImage }) => {
+const CategoryCreateModal = ({
+  open,
+  handleClose,
+  loadCategories,
+  token,
+  removeImage,
+  setRemoveImage,
+}) => {
   const initialState = {
     images: [
       {
-        public_id: "",
-        url: "",       
+        public_id: '',
+        url: '',
       },
     ],
-    name: "",
+    name: '',
+    description: '',
   };
   const [values, setValues] = useState(initialState);
   const [loading, setLoading] = useState(false);
 
-  const { name,images } = values;
+  const { name, images, description } = values;
 
   const handleChange = (name) => (e) => {
-    setValues({
-      ...values,
-      [name]: e.target.value,
-    });
+    const value = name === 'description' ? e.editor.getData() : e.target.value;
+    setValues({ ...values, [name]: value });
   };
 
   const clickSubmit = (event) => {
     event.preventDefault();
-    createCategory(values,token).then((data) => {
-      setValues({ ...values,name:'',images:[{
-        public_id: "",
-        url: "",       
-      },] });
-      toast.success("Created Successfully!");
-      handleClose();
-      loadCategories(); 
-      setRemoveImage(false);         
-      }).catch((err)=>{
-        console.log(err)
+    createCategory(values, token)
+      .then((data) => {
+        setValues({
+          ...values,
+          name: '',
+          description: '',
+          images: [
+            {
+              public_id: '',
+              url: '',
+            },
+          ],
+        });
+        toast.success('Created Successfully!');
+        handleClose();
+        loadCategories();
+        setRemoveImage(false);
+      })
+      .catch((err) => {
+        console.log(err);
         toast.error(err.response.data.error);
       });
   };
 
   return (
-   <>
-        <Modal
+    <>
+      <Modal
         title="Create New Category"
         centered
         visible={open}
@@ -55,37 +70,64 @@ const CategoryCreateModal = ({ open,handleClose,loadCategories,token,removeImage
         onCancel={handleClose}
         footer={[
           <>
-          <Button key="back" onClick={handleClose}>
+            <Button key="back" onClick={handleClose}>
               Cancel
-            </Button>,
+            </Button>
+            ,
             <Button key="submit" type="primary" onClick={clickSubmit}>
               Submit
             </Button>
-          
-          </>
-         
+          </>,
         ]}
-        >
-              <div className="ty-control-group">
-                <label htmlFor="login_popup685" className="ty-login__filed-label ty-control-group__label cm-required cm-trim cm-email">Name</label>
-                <input type="text"  name="user_login" onChange={handleChange('name')}
-                value={name} size={30} placeHolder="Name" className="ty-login__input cm-focus" />
-              </div>    
-              {loading ? (<Spin size="large" tip="Loading..."><FileUpload values={values}
+      >
+        <div className="ty-control-group">
+          <label
+            htmlFor="login_popup685"
+            className="ty-login__filed-label ty-control-group__label cm-required cm-trim cm-email"
+          >
+            Name
+          </label>
+          <input
+            type="text"
+            name="user_login"
+            onChange={handleChange('name')}
+            value={name}
+            size={30}
+            placeHolder="Name"
+            className="ty-login__input cm-focus"
+          />
+        </div>
+        {loading ? (
+          <Spin size="large" tip="Loading...">
+            <FileUpload
+              values={values}
               setValues={setValues}
-              setLoading={setLoading} 
+              setLoading={setLoading}
               token={token}
-              /></Spin>):(<FileUpload values={values}
-                setValues={setValues}
-                setLoading={setLoading} 
-                token={token}
-                removeImage={removeImage}
-                setRemoveImage={setRemoveImage}
-                />   )}
-              
-        </Modal>
-
-   </>
+            />
+          </Spin>
+        ) : (
+          <FileUpload
+            values={values}
+            setValues={setValues}
+            setLoading={setLoading}
+            token={token}
+            removeImage={removeImage}
+            setRemoveImage={setRemoveImage}
+          />
+        )}
+        <div className="ty-control-group">
+          <label className="ty-control-group__title">Description</label>
+          <CKEditor
+            type="classic"
+            height="250px"
+            value={description}
+            // onChange={handleDescription}
+            onChange={handleChange('description')}
+          />
+        </div>
+      </Modal>
+    </>
   );
 };
 

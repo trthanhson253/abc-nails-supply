@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Category = require('../models/category');
 // const User = require("../models/user");
 const slugify = require('slugify');
 const Sub = require('../models/sub');
@@ -100,7 +101,6 @@ exports.listRecentlyProducts = async (req, res) => {
 };
 
 exports.listProductBySubSub = (req, res) => {
-  // const slug1 = req.params.slug;
   SubSub.find({ slug: req.params.slug })
     .populate('category')
     .populate('sub')
@@ -115,19 +115,72 @@ exports.listProductBySubSub = (req, res) => {
         .populate('category')
         .populate('sub')
         .populate('subSub')
-        // .populate('color')
-        // .populate('size')
-        // .populate('brand')
-        .collation({ locale: 'en', strength: 2 })
-        .sort({ name: 1 })
+        // .sort([[sortBy, order]])
+        // .skip(skip)
+        // .limit(limit)
         .exec((err, products) => {
           // console.log(products);
           res.json({
             products: products,
             subSub: subSub,
+            size: products.length,
           });
         });
     });
+};
+
+exports.listProductByCategory = (req, res) => {
+  let order = req.body.order ? req.body.order : 'desc';
+  let sortBy = req.body.sortBy ? req.body.sortBy : '_id';
+  let limit = req.body.limit ? parseInt(req.body.limit) : 100;
+  let skip = parseInt(req.body.skip);
+
+  Category.find({ slug: req.params.cslug }).exec((err, category) => {
+    if (err || !category) {
+      return res.status(400).json({
+        error: 'Do not find category',
+      });
+    }
+
+    Product.find({ category: category[0]._id })
+      // .populate('category')
+      // .populate('sub')
+      // .populate('subSub')
+      .sort([[sortBy, order]])
+      .skip(skip)
+      .limit(limit)
+      .exec((err, products) => {
+        // console.log(products);
+        res.json({
+          products: products,
+          category: category,
+          size: products.length,
+        });
+      });
+  });
+};
+
+exports.listMenuByCategory = (req, res) => {
+  Category.find({ slug: req.params.cslug }).exec((err, category) => {
+    if (err || !category) {
+      return res.status(400).json({
+        error: 'Do not find category',
+      });
+    }
+    Product.find({ category: category[0]._id }).exec((err, products) => {
+      if (err || !products) {
+        return res.status(400).json({
+          error: 'Do not find products',
+        });
+      }
+      Sub.find({ category: category[0]._id }).exec((err, subs) => {
+        res.json({
+          products,
+          subs,
+        });
+      });
+    });
+  });
 };
 
 exports.remove = async (req, res) => {
@@ -456,10 +509,10 @@ exports.searchFilters = async (req, res) => {
 };
 
 exports.listByFilters = (req, res) => {
-  // let order = req.body.order ? req.body.order : 'desc';
-  // let sortBy = req.body.sortBy ? req.body.sortBy : '_id';
-  // let limit = req.body.limit ? parseInt(req.body.limit) : 100;
-  // let skip = parseInt(req.body.skip);
+  let order = req.body.order ? req.body.order : 'desc';
+  let sortBy = req.body.sortBy ? req.body.sortBy : '_id';
+  let limit = req.body.limit ? parseInt(req.body.limit) : 100;
+  let skip = parseInt(req.body.skip);
   let findArgs = {};
 
   // console.log(order, sortBy, limit, skip, req.body.filters);
@@ -474,9 +527,9 @@ exports.listByFilters = (req, res) => {
 
   Product.find(findArgs)
     .populate('category')
-    // .sort([[sortBy, order]])
-    // .skip(skip)
-    // .limit(limit)
+    .sort([[sortBy, order]])
+    .skip(skip)
+    .limit(limit)
     .exec((err, data) => {
       if (err) {
         return res.status(400).json({

@@ -14,12 +14,18 @@ const ProductFilterMenu = ({
   setColors,
   setBrands,
   resetMenu,
+  skip,
+  limit,
+  setSoluong,
+  myFilters,
+  setMyFilters,
+  setSkip,
 }) => {
   const [checkedBrand, setCheckedBrand] = useState([]);
   const [checkedSize, setCheckedSize] = useState([]);
-  const [myFilters, setMyFilters] = useState({
-    filters: { brand: [], size: [] },
-  });
+  // const [myFilters, setMyFilters] = useState({
+  //   filters: { brand: [], size: [] },
+  // });
 
   const handleChangeBrand = (c) => () => {
     const currentBrandName = checkedBrand.indexOf(c);
@@ -59,14 +65,13 @@ const ProductFilterMenu = ({
 
   const loadFilteredResults = (newFilters) => {
     // console.log(newFilters);
-    getFilteredProducts(newFilters).then((data) => {
+    getFilteredProducts(skip, limit, newFilters).then((data) => {
       if (data.error) {
         message.error('Cannot Find Products');
       } else {
         setProducts(data.data);
-
-        // setSize(data.size);
-        // setSkip(0);
+        setSoluong(data.size);
+        setSkip(0);
 
         // CODE HERE
         let color = [];

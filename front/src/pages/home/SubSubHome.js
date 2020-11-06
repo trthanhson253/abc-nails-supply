@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../../components/cards/ProductCard';
 import ProductCardRelate from '../../components/cards/ProductCardRelate';
-import { getProductBySubSub } from '../../functions/product';
+import {
+  getProductBySubSub,
+  getFilteredProducts,
+} from '../../functions/product';
 import { useSelector } from 'react-redux';
 import ProductFilterMenu from '../../components/home/ProductFilterMenu';
-import { Slider, Checkbox } from 'antd';
+import { Slider, Checkbox, message } from 'antd';
 import _ from 'lodash';
 
 const SubSubHome = (props) => {
@@ -17,8 +20,20 @@ const SubSubHome = (props) => {
   const [colors, setColors] = useState([]);
   const [brands, setBrands] = useState([]);
   const [sizes, setSizes] = useState([]);
+  const [limit, setLimit] = useState(1);
+  const [skip, setSkip] = useState(0);
+  const [size, setSize] = useState(0);
+  const [soluong, setSoluong] = useState(0);
 
-  // const [filteredResults, setFilteredResults] = useState([]);
+  // FOR Sản phẩm ở trang Home
+  const [products1, setProducts1] = useState([]);
+  const [skip1, setSkip1] = useState(0);
+  const [size1, setSize1] = useState(0);
+  const [soluong1, setSoluong1] = useState(0);
+
+  const [myFilters, setMyFilters] = useState({
+    filters: { brand: [], size: [] },
+  });
 
   const { user } = useSelector((state) => ({ ...state }));
 
@@ -31,9 +46,9 @@ const SubSubHome = (props) => {
   const loadProductBySubSub = (slug) => {
     setLoading(true);
     getProductBySubSub(slug).then((data) => {
-      console.log('data', data);
-      console.log('products', data.products);
-      console.log('subsub', data.subSub[0]);
+      // console.log('data', data);
+      // console.log('products', data.products);
+      // console.log('subsub', data.subSub[0]);
       setProducts(data.products);
       setSubSub(data.subSub[0]);
       setCate(data.subSub[0].category);
@@ -55,7 +70,21 @@ const SubSubHome = (props) => {
       setColors(uniqueColor);
       setBrands(uniqueBrand);
       setSizes(uniqueSize);
-      console.log('uniqueColor', uniqueColor);
+      // console.log('uniqueColor', uniqueColor);
+    });
+  };
+  const loadMore = () => {
+    let toSkip = skip + limit;
+
+    getFilteredProducts(toSkip, limit, myFilters.filters).then((data) => {
+      if (data.error) {
+        message.error('No products found');
+      } else {
+        console.log('DULIEU1', data.data);
+        setProducts([...products, ...data.data]);
+        setSoluong(data.size);
+        setSkip(toSkip);
+      }
     });
   };
   const resetMenu = () => {
@@ -290,12 +319,13 @@ const SubSubHome = (props) => {
                             <ProductCard product={product} loading={loading} />
                           ))}
                         </div>
-                        <div className="ut2-load-more-container">
-                          <span className="ut2-load-more">
-                            <i className="loader" />
-                            Show another 24 products
-                          </span>
-                        </div>
+                        {soluong > 0 && soluong >= limit && (
+                          <div className="ut2-load-more-container">
+                            <span className="ut2-load-more" onClick={loadMore}>
+                              Show another 3 products
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -310,6 +340,12 @@ const SubSubHome = (props) => {
                 setBrands={setBrands}
                 setSizes={setSizes}
                 resetMenu={resetMenu}
+                skip={skip}
+                limit={limit}
+                setSoluong={setSoluong}
+                myFilters={myFilters}
+                setMyFilters={setMyFilters}
+                setSkip={setSkip}
               />
             </div>
           </div>

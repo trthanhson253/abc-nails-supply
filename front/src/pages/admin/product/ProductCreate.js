@@ -547,10 +547,7 @@ const ProductCreate = ({ history }) => {
                           </div>
 
                           <div className="ty-control-group">
-                            <label
-                              htmlFor="password2"
-                              className="ty-control-group__title"
-                            >
+                            <label className="ty-control-group__title">
                               Description
                             </label>
                             <CKEditor
