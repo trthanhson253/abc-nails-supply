@@ -63,7 +63,7 @@ export const removeProduct = async (slug, token, image) => {
 };
 
 export const fetchProductsByFilter = async (arg) =>
-  await axios.post(`${process.env.REACT_APP_API}/search/filters`, arg);
+  await axios.post(`${process.env.REACT_APP_API}/products/search/filters`, arg);
 
 export const getRecentlyView = async (recentlyProduct, pslug1) =>
   await axios.post(`${process.env.REACT_APP_API}/products/recentlyProduct`, {

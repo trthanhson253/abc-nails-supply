@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const couponSchema = new mongoose.Schema(
   {
@@ -7,7 +7,7 @@ const couponSchema = new mongoose.Schema(
       trim: true,
       unique: true,
       uppercase: true,
-      required: "Name is required",
+      required: true,
     },
     expiry: {
       type: Date,
@@ -21,4 +21,4 @@ const couponSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Coupon", couponSchema);
+module.exports = mongoose.model('Coupon', couponSchema);

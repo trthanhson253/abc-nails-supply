@@ -1,419 +1,806 @@
-
-import { Link } from "react-router-dom";
-import React, { useState,useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
-    // getProductsByCount,
-    fetchProductsByFilter,
-  } from "../functions/product";
+  // getProductsByCount,
+  fetchProductsByFilter,
+} from '../functions/product';
 // import SubSubHomeMenu from "../components/home/SubSubHomeMenu";
-import ProductCard from "../components/cards/ProductCard";
-import {getBrands} from "../functions/brand";
-import {Slider,Checkbox} from 'antd';
+import ProductCard from '../components/cards/ProductCard';
+import { getBrands } from '../functions/brand';
+import { Slider, Checkbox } from 'antd';
+import Loading from 'react-loading-spinkit';
+import _ from 'lodash';
 
 const Shop = () => {
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [brands, setBrands] = useState([]);
-    const [price, setPrice] = useState([0, 0]);
-    const [ok, setOk] = useState(false);
-    const [brandIds, setBrandIds] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [brands, setBrands] = useState([]);
+  const [price, setPrice] = useState([0, 0]);
+  const [ok, setOk] = useState(false);
+  const [brandIds, setBrandIds] = useState([]);
+  const [colors, setColors] = useState([]);
 
-    let dispatch = useDispatch();
-    let { search } = useSelector((state) => ({ ...state }));
-    const { text } = search;
+  const [sizes, setSizes] = useState([]);
+  let dispatch = useDispatch();
+  let { search, spin } = useSelector((state) => ({ ...state }));
+  const { text } = search;
 
+  const fetchProducts = (arg) => {
+    fetchProductsByFilter(arg).then((res) => {
+      console.log('res.data', res.data);
+      setProducts(res.data);
+    });
+  };
 
-      const fetchProducts = (arg) => {
-        fetchProductsByFilter(arg).then((res) => {
-          setProducts(res.data);
-        });
-      };
+  const fetchMenuByProductsSearch = (arg) => {
+    fetchProductsByFilter(arg).then((res) => {
+      let color = [];
+      let brand = [];
+      let size = [];
+      // console.log('data_son', data);
+      for (let i = 0; i < res.data.length; i++) {
+        color.push(res.data[i].color);
+        brand.push(res.data[i].brand);
+        size.push(res.data[i].size);
+      }
+      let uniqueColor = _.uniqWith(color, _.isEqual);
+      let uniqueBrand = _.uniqWith(brand, _.isEqual);
+      let uniqueSize = _.uniqWith(size, _.isEqual);
+      // console.log('colorUnique', unique);
+      setColors(uniqueColor);
+      setBrands(uniqueBrand);
+      setSizes(uniqueSize);
+    });
+  };
 
-     
+  const handleSlider = (value) => {
+    const delayed = dispatch({
+      type: 'SEARCH_QUERY',
+      payload: { text: '' },
+    });
 
-      const handleSlider = (value) => {
-        dispatch({
-          type: "SEARCH_QUERY",
-          payload: { text: "" },
-        });
-    
-        // reset
-        setBrandIds([]);
-        setPrice(value);
-        // setStar("");
-        // setSub("");
-        // setBrand("");
-        // setColor("");
-        // setShipping("");
-        setTimeout(() => {
-          setOk(!ok);
-        }, 300);
-      };
+    // reset
+    setBrandIds([]);
+    setPrice(value);
+    // setStar("");
+    // setSub("");
+    // setBrand("");
+    // setColor("");
+    // setShipping("");
+    setTimeout(() => {
+      setOk(!ok);
+    }, 300);
+    return () => clearTimeout(delayed);
+  };
 
-      const handleCheck = (e) => {
-        // reset
-        dispatch({
-          type: "SEARCH_QUERY",
-          payload: { text: "" },
-        });
-        setPrice([0, 0]);
-        // setStar("");
-        // setSub("");
-        // setBrand("");
-        // setColor("");
-        // setShipping("");
-        // console.log(e.target.value);
-        let inTheState = [...brandIds];
-        let justChecked = e.target.value;
-        let foundInTheState = inTheState.indexOf(justChecked); // index or -1
-    
-        // indexOf method ?? if not found returns -1 else return index [1,2,3,4,5]
-        if (foundInTheState === -1) {
-          inTheState.push(justChecked);
-        } else {
-          // if found pull out one item from index
-          inTheState.splice(foundInTheState, 1);
-        }
-    
-        setBrandIds(inTheState);
-        // console.log(inTheState);
-        fetchProducts({ brand: inTheState });
-      };
+  const handleCheck = (e) => {
+    // reset
+    dispatch({
+      type: 'SEARCH_QUERY',
+      payload: { text: '' },
+    });
+    setPrice([0, 0]);
+    // setStar("");
+    // setSub("");
+    // setBrand("");
+    // setColor("");
+    // setShipping("");
+    // console.log(e.target.value);
+    let inTheState = [...brandIds];
+    let justChecked = e.target.value;
+    let foundInTheState = inTheState.indexOf(justChecked); // index or -1
 
-      useEffect(() => {
-        const delayed = setTimeout(() => {
-          fetchProducts({ query: text });
-          if (!text) {
-            // loadAllProducts();
-          }
-        }, 300);
-        return () => clearTimeout(delayed);
-      }, [text]);
+    // indexOf method ?? if not found returns -1 else return index [1,2,3,4,5]
+    if (foundInTheState === -1) {
+      inTheState.push(justChecked);
+    } else {
+      // if found pull out one item from index
+      inTheState.splice(foundInTheState, 1);
+    }
 
-      useEffect(() => {
-        console.log("ok to request");
-        fetchProducts({ price });
-      }, [ok]);
+    setBrandIds(inTheState);
+    // console.log(inTheState);
+    fetchProducts({ brand: inTheState });
+  };
 
-      useEffect(() => {
-        // loadAllProducts();
-        // fetch categories
-        getBrands().then((res) => setBrands(res.data));
-        // fetch subcategories
-        
-      }, []);
+  useEffect(() => {
+    const delayed = setTimeout(() => {
+      fetchProducts({ query: text });
+      fetchMenuByProductsSearch({ query: text });
+
+      dispatch({
+        type: 'SET_SPIN',
+        payload: false,
+      });
+    }, 1000);
+    return () => clearTimeout(delayed);
+  }, [spin]);
+
+  useEffect(() => {
+    console.log('ok to request');
+    fetchProducts({ price });
+  }, [ok]);
+
+  useEffect(() => {
+    // loadAllProducts();
+    // fetch categories
+    // getBrands().then((res) => setBrands(res.data));
+    // fetch subcategories
+  }, []);
 
   return (
     <>
-  
-    <div className="tygh-content clearfix">
-    <div className="container-fluid  cat-content-grid">
-      <div className="container-fluid-row container-fluid-row-full-width ut2__subcategories">
-        <div className="row-fluid ">        <div className="span16 ut2-top">
-            <div className="ut2-extra-block-title">
-              <h1 className="ty-mainbox-title">
-                <span>Search Result</span>
-              </h1>
-              <div id="breadcrumbs_167">
-                <div className="ty-breadcrumbs clearfix">
-                  <Link to="/" className="ty-breadcrumbs__a"><bdi>Home</bdi></Link>
-                  <span className="ty-breadcrumbs__slash">/</span>
-                  <div className="ty-breadcrumbs__a"><bdi>Search</bdi></div>
-                 
+      <div className="tygh-content clearfix">
+        <div className="container-fluid  cat-content-grid">
+          <div className="container-fluid-row container-fluid-row-full-width ut2__subcategories">
+            <div className="row-fluid ">
+              {' '}
+              <div className="span16 ut2-top">
+                <div className="ut2-extra-block-title">
+                  <h1 className="ty-mainbox-title">
+                    <span>Search Result</span>
+                  </h1>
+                  <div id="breadcrumbs_167">
+                    <div className="ty-breadcrumbs clearfix">
+                      <Link to="/" className="ty-breadcrumbs__a">
+                        <bdi>Home</bdi>
+                      </Link>
+                      <span className="ty-breadcrumbs__slash">/</span>
+                      <div className="ty-breadcrumbs__a">
+                        <bdi>Search</bdi>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-               </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div className="container-fluid-row">
-        <div className="row-fluid ">        <div className="span9 main-content-grid  ">
-            <div className="ut2-cat-container">
-              <div className="cat-view-grid" id="category_products_11">
-               
-                <div className="ty-pagination-container cm-pagination-container" id="pagination_contents">
-                  <div><a data-ca-scroll=".cm-pagination-container" href="#" data-ca-page data-ca-target-id="pagination_contents" className="hidden" /></div>
-                  <div className="ty-sort-container">
-                    <div className="ut2-selected-product-filters cm-product-filters" id="selected_filters_170">{/*selected_filters_170*/}</div>
-                    <div className="ut2-sorting-wrap">
-       
-                     
-                      
-                    </div>
-                  </div>
-                  
-                  <div className="grid-list">
-                    <div id="categories_view_pagination_contents">               
-                     {products.map((product) => (
-                       <ProductCard product={product} loading={loading} />                  
-                      ))}
-                    
-
+          <div className="container-fluid-row">
+            <div className="row-fluid ">
+              {' '}
+              <div className="span9 main-content-grid  ">
+                <div className="ut2-cat-container">
+                  <div className="cat-view-grid" id="category_products_11">
+                    <div
+                      className="ty-pagination-container cm-pagination-container"
+                      id="pagination_contents"
+                    >
+                      <div>
+                        <a
+                          data-ca-scroll=".cm-pagination-container"
+                          href="#"
+                          data-ca-page
+                          data-ca-target-id="pagination_contents"
+                          className="hidden"
+                        />
                       </div>
-                    <div className="ut2-load-more-container" id="load_more_categories_view_pagination_contents">
-                      <span className="ut2-load-more" data-ut2-load-more-result-ids="categories_view_pagination_contents,load_more_categories_view_pagination_contents,pagination_block,pagination_block_bottom"><i className="loader" />Show another 24 products</span>
+                      <div className="ty-sort-container">
+                        <div
+                          className="ut2-selected-product-filters cm-product-filters"
+                          id="selected_filters_170"
+                        >
+                          {/*selected_filters_170*/}
+                        </div>
+                        <div className="ut2-sorting-wrap"></div>
                       </div>
-                  </div>
-                  <div className="ty-pagination__bottom">
-                    <div className="ty-pagination" id="pagination_block_bottom">
-                      <a data-ca-scroll=".cm-pagination-container" className="ty-pagination__item ty-pagination__btn "><i className="ty-pagination__text-arrow" />&nbsp;<span className="ty-pagination__text">Prev</span></a>
-                      <div className="ty-pagination__items">
-                        <span className="ty-pagination__selected">1</span>
-                        <a data-ca-scroll=".cm-pagination-container" href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/page-2/" data-ca-page={2} className="cm-history ty-pagination__item cm-ajax" data-ca-target-id="pagination_contents">2</a>
-                        <a data-ca-scroll=".cm-pagination-container" href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/page-3/" data-ca-page={3} className="cm-history ty-pagination__item cm-ajax" data-ca-target-id="pagination_contents">3</a>
-                        <a data-ca-scroll=".cm-pagination-container" href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/page-4/" data-ca-page={4} className="cm-history ty-pagination__item cm-ajax" data-ca-target-id="pagination_contents">4</a>
-                      </div>
-                      <a data-ca-scroll=".cm-pagination-container" className="ty-pagination__item ty-pagination__btn ty-pagination__next cm-history cm-ajax ty-pagination__right-arrow" href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/page-2/" data-ca-page={2} data-ca-target-id="pagination_contents"><span className="ty-pagination__text">Next</span>&nbsp;<i className="ty-pagination__text-arrow" /></a>
-                      {/*pagination_block_bottom*/}</div>
-                  </div>
-                  {/*pagination_contents*/}</div>
-                {/*category_products_11*/}</div>
-            </div>
-          </div>
- 
-          {/*START MENU*/}
-          <div className="span7 side-grid ut2-bottom">
-          <div className="ty-sidebox ut2-filters hidden-phone">
-            <div className="ty-sidebox__title cm-combination " id="sw_sidebox_177">
-              <span className="ty-sidebox__title-wrapper hidden-phone">Product filters</span>
-              <span className="ty-sidebox__title-wrapper visible-phone">Product filters</span>
-              <span className="ty-sidebox__title-toggle visible-phone">
-                <i className="ty-sidebox__icon-open ty-icon-down-open" />
-                <i className="ty-sidebox__icon-hide ty-icon-up-open" />
-              </span>
-            </div>
-            <div className="ty-sidebox__body" id="sidebox_177">
-              {/* Inline script moved to the bottom of the page */}
-              <div className="cm-product-filters" data-ca-target-id="product_filters_*,products_search_*,category_products_*,product_features_*,breadcrumbs_*,currencies_*,languages_*,selected_filters_*" data-ca-base-url="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/" id="product_filters_177">
-                <div className="ty-product-filters__wrapper">
-                  <div className="ty-product-filters__block">
-                    <div id="sw_content_177_1" className="ty-product-filters__switch cm-combination-filter_177_1 open cm-save-state cm-ss-reverse">
-                      <span className="ty-product-filters__title">Brand</span>
-                      <i className="ty-product-filters__switch-down ty-icon-down-open" />
-                      <i className="ty-product-filters__switch-right ty-icon-up-open" />
+                      {spin ? (
+                        <>
+                          <div style={{ height: '30vh', width: '60vw' }}>
+                            <Loading show={true} />
+                          </div>
+                        </>
+                      ) : (
+                        <div className="grid-list">
+                          {products.length ? (
+                            <>
+                              {' '}
+                              <div id="categories_view_pagination_contents">
+                                {products.map((product) => (
+                                  <ProductCard
+                                    product={product}
+                                    loading={loading}
+                                  />
+                                ))}
+                              </div>
+                              <div
+                                className="ut2-load-more-container"
+                                id="load_more_categories_view_pagination_contents"
+                              >
+                                <span
+                                  className="ut2-load-more"
+                                  data-ut2-load-more-result-ids="categories_view_pagination_contents,load_more_categories_view_pagination_contents,pagination_block,pagination_block_bottom"
+                                >
+                                  <i className="loader" />
+                                  Show another 24 products
+                                </span>
+                              </div>
+                            </>
+                          ) : (
+                            <>No Product Found</>
+                          )}
+                        </div>
+                      )}
                     </div>
-                    <ul className="ty-product-filters " id="content_177_1">
-                      <li className="ty-product-filters__item-more">
-                        <ul id="ranges_177_1" style={{maxHeight: '310px'}} className="ty-product-filters__variants cm-filter-table" data-ca-input-id="elm_search_177_1" data-ca-clear-id="elm_search_clear_177_1" data-ca-empty-id="elm_search_empty_177_1">
-                        {brands.map((c) => (
-                          <li className="cm-product-filters-checkbox-container ty-product-filters__group" key={c._id}>                        
-                            <Checkbox     
-                            onChange={handleCheck}
-                            value={c._id}
-                            name="brand"     
-                            checked={brandIds.includes(c._id)}                      
-                          >
-                            {c.name}
-                          </Checkbox>                              
-                          </li>
-                          ))}
-                         
-
-                        </ul>
-                      </li>
-                      <p id="elm_search_empty_177_1" className="ty-product-filters__no-items-found hidden">No items found matching the search criteria</p>
-                    </ul>
                   </div>
-                  {/* Inline script moved to the bottom of the page */}
-                  <div className="ty-product-filters__block">
-                    <div id="sw_content_177_2" className="ty-product-filters__switch cm-combination-filter_177_2 open cm-save-state cm-ss-reverse">
-                      <span className="ty-product-filters__title">Color</span>
-                      <i className="ty-product-filters__switch-down ty-icon-down-open" />
-                      <i className="ty-product-filters__switch-right ty-icon-up-open" />
-                    </div>
-                    <ul className="ty-product-filters " id="content_177_2">
-                      <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        <label>
-                          <input style={{display: 'none'}} className="cm-product-filters-checkbox" type="checkbox" name="product_filters[2]" data-ca-filter-id={2} defaultValue={25} id="elm_checkbox_177_2_25" />
-                          <div title="Black" className="cp_noactive_filter ci_color_icon cp_ci_icon_round" style={{background: '#000000'}}><svg xmlns="http://www.w3.org/2000/svg" className="ci_color_checked" width={1024} height={1024} viewBox="0 0 1024 1024"><path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" /></svg></div>
-                        </label>
-                      </li>
-                      <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        <label>
-                          <input style={{display: 'none'}} className="cm-product-filters-checkbox" type="checkbox" name="product_filters[2]" data-ca-filter-id={2} defaultValue={14} id="elm_checkbox_177_2_14" />
-                          <div title="White" className="cp_noactive_filter ci_color_icon cp_ci_icon_round" style={{background: '#ffffff'}}><svg xmlns="http://www.w3.org/2000/svg" className="ci_color_checked" width={1024} height={1024} viewBox="0 0 1024 1024"><path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" /></svg></div>
-                        </label>
-                      </li>
-                      <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        <label>
-                          <input style={{display: 'none'}} className="cm-product-filters-checkbox" type="checkbox" name="product_filters[2]" data-ca-filter-id={2} defaultValue={7} id="elm_checkbox_177_2_7" />
-                          <div title="Red" className="cp_noactive_filter ci_color_icon cp_ci_icon_round" style={{background: '#ff0000'}}><svg xmlns="http://www.w3.org/2000/svg" className="ci_color_checked" width={1024} height={1024} viewBox="0 0 1024 1024"><path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" /></svg></div>
-                        </label>
-                      </li>
-                      <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        <label>
-                          <input style={{display: 'none'}} className="cm-product-filters-checkbox" type="checkbox" name="product_filters[2]" data-ca-filter-id={2} defaultValue={22} id="elm_checkbox_177_2_22" />
-                          <div title="Blue" className="cp_noactive_filter ci_color_icon cp_ci_icon_round" style={{background: '#0000ff'}}><svg xmlns="http://www.w3.org/2000/svg" className="ci_color_checked" width={1024} height={1024} viewBox="0 0 1024 1024"><path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" /></svg></div>
-                        </label>
-                      </li>
-                      <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        <label>
-                          <input style={{display: 'none'}} className="cm-product-filters-checkbox" type="checkbox" name="product_filters[2]" data-ca-filter-id={2} defaultValue={12} id="elm_checkbox_177_2_12" />
-                          <div title="Pink" className="cp_noactive_filter ci_color_icon cp_ci_icon_round" style={{background: '#ff00ff'}}><svg xmlns="http://www.w3.org/2000/svg" className="ci_color_checked" width={1024} height={1024} viewBox="0 0 1024 1024"><path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" /></svg></div>
-                        </label>
-                      </li>
-                      <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        <label>
-                          <input style={{display: 'none'}} className="cm-product-filters-checkbox" type="checkbox" name="product_filters[2]" data-ca-filter-id={2} defaultValue={18} id="elm_checkbox_177_2_18" />
-                          <div title="Purple" className="cp_noactive_filter ci_color_icon cp_ci_icon_round" style={{background: '#9900ff'}}><svg xmlns="http://www.w3.org/2000/svg" className="ci_color_checked" width={1024} height={1024} viewBox="0 0 1024 1024"><path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" /></svg></div>
-                        </label>
-                      </li>
-                      <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        <label>
-                          <input style={{display: 'none'}} className="cm-product-filters-checkbox" type="checkbox" name="product_filters[2]" data-ca-filter-id={2} defaultValue={20} id="elm_checkbox_177_2_20" />
-                          <div title="Green" className="cp_noactive_filter ci_color_icon cp_ci_icon_round" style={{background: '#38761d'}}><svg xmlns="http://www.w3.org/2000/svg" className="ci_color_checked" width={1024} height={1024} viewBox="0 0 1024 1024"><path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" /></svg></div>
-                        </label>
-                      </li>
-                      <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        <label>
-                          <input style={{display: 'none'}} className="cm-product-filters-checkbox" type="checkbox" name="product_filters[2]" data-ca-filter-id={2} defaultValue={21} id="elm_checkbox_177_2_21" />
-                          <div title="Yellow" className="cp_noactive_filter ci_color_icon cp_ci_icon_round" style={{background: '#ffff00'}}><svg xmlns="http://www.w3.org/2000/svg" className="ci_color_checked" width={1024} height={1024} viewBox="0 0 1024 1024"><path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" /></svg></div>
-                        </label>
-                      </li>
-                      <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        <label>
-                          <input style={{display: 'none'}} className="cm-product-filters-checkbox" type="checkbox" name="product_filters[2]" data-ca-filter-id={2} defaultValue={17} id="elm_checkbox_177_2_17" />
-                          <div title="Neutral" className="cp_noactive_filter ci_color_icon cp_ci_icon_round" style={{background: '#e3b28b'}}><svg xmlns="http://www.w3.org/2000/svg" className="ci_color_checked" width={1024} height={1024} viewBox="0 0 1024 1024"><path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" /></svg></div>
-                        </label>
-                      </li>
-                      <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        <label>
-                          <input style={{display: 'none'}} className="cm-product-filters-checkbox" type="checkbox" name="product_filters[2]" data-ca-filter-id={2} defaultValue={6} id="elm_checkbox_177_2_6" />
-                          <div title="Orange" className="cp_noactive_filter ci_color_icon cp_ci_icon_round" style={{background: '#ff9900'}}><svg xmlns="http://www.w3.org/2000/svg" className="ci_color_checked" width={1024} height={1024} viewBox="0 0 1024 1024"><path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" /></svg></div>
-                        </label>
-                      </li>
-                      <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        <label>
-                          <input style={{display: 'none'}} className="cm-product-filters-checkbox" type="checkbox" name="product_filters[2]" data-ca-filter-id={2} defaultValue={26} id="elm_checkbox_177_2_26" />
-                          <div title="Brown" className="cp_noactive_filter ci_color_icon cp_ci_icon_round" style={{background: '#804c2f'}}><svg xmlns="http://www.w3.org/2000/svg" className="ci_color_checked" width={1024} height={1024} viewBox="0 0 1024 1024"><path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" /></svg></div>
-                        </label>
-                      </li>
-                      <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        <label>
-                          <input style={{display: 'none'}} className="cm-product-filters-checkbox" type="checkbox" name="product_filters[2]" data-ca-filter-id={2} defaultValue={15} id="elm_checkbox_177_2_15" />
-                          <div title="Silver" className="cp_noactive_filter ci_color_icon cp_ci_icon_round" style={{background: '#d9d9d9'}}><svg xmlns="http://www.w3.org/2000/svg" className="ci_color_checked" width={1024} height={1024} viewBox="0 0 1024 1024"><path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" /></svg></div>
-                        </label>
-                      </li>
-                      <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        <label>
-                          <input style={{display: 'none'}} className="cm-product-filters-checkbox" type="checkbox" name="product_filters[2]" data-ca-filter-id={2} defaultValue={28} id="elm_checkbox_177_2_28" />
-                          <div title="Gray" className="cp_noactive_filter ci_color_icon cp_ci_icon_round" style={{background: '#434343'}}><svg xmlns="http://www.w3.org/2000/svg" className="ci_color_checked" width={1024} height={1024} viewBox="0 0 1024 1024"><path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" /></svg></div>
-                        </label>
-                      </li>
-                      <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        <label>
-                          <input style={{display: 'none'}} className="cm-product-filters-checkbox" type="checkbox" name="product_filters[2]" data-ca-filter-id={2} defaultValue={31} id="elm_checkbox_177_2_31" />
-                          <div title="Clear" className="cp_noactive_filter ci_color_icon cp_ci_icon_round" style={{background: '#ffffff'}}><svg xmlns="http://www.w3.org/2000/svg" className="ci_color_checked" width={1024} height={1024} viewBox="0 0 1024 1024"><path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" /></svg></div>
-                        </label>
-                      </li>
-                      <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        <label>
-                          <input style={{display: 'none'}} className="cm-product-filters-checkbox" type="checkbox" name="product_filters[2]" data-ca-filter-id={2} defaultValue={34} id="elm_checkbox_177_2_34" />
-                          <div title="Gold" className="cp_noactive_filter ci_color_icon cp_ci_icon_round" style={{background: '#f1c232'}}><svg xmlns="http://www.w3.org/2000/svg" className="ci_color_checked" width={1024} height={1024} viewBox="0 0 1024 1024"><path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" /></svg></div>
-                        </label>
-                      </li>
-                      <p id="elm_search_empty_177_2" className="ty-product-filters__no-items-found hidden">No items found matching the search criteria</p>
-                    </ul>
+                </div>
+              </div>
+              {/*START MENU*/}
+              <div className="span7 side-grid ut2-bottom">
+                <div className="ty-sidebox ut2-filters hidden-phone">
+                  <div
+                    className="ty-sidebox__title cm-combination "
+                    id="sw_sidebox_177"
+                  >
+                    <span className="ty-sidebox__title-wrapper hidden-phone">
+                      Product filters
+                    </span>
+                    <span className="ty-sidebox__title-wrapper visible-phone">
+                      Product filters
+                    </span>
+                    <span className="ty-sidebox__title-toggle visible-phone">
+                      <i className="ty-sidebox__icon-open ty-icon-down-open" />
+                      <i className="ty-sidebox__icon-hide ty-icon-up-open" />
+                    </span>
                   </div>
-                  {/* Inline script moved to the bottom of the page */}
-                  <div className="ty-product-filters__block">
-                    <div id="sw_content_177_3" className="ty-product-filters__switch cm-combination-filter_177_3 open cm-save-state cm-ss-reverse">
-                      <span className="ty-product-filters__title">Shade</span>
-                      <i className="ty-product-filters__switch-down ty-icon-down-open" />
-                      <i className="ty-product-filters__switch-right ty-icon-up-open" />
-                    </div>
-                    <ul className="ty-product-filters " id="content_177_3">
-                      <li className="ty-product-filters__item-more">
-                        <ul id="ranges_177_3" style={{maxHeight: '310px'}} className="ty-product-filters__variants cm-filter-table" data-ca-input-id="elm_search_177_3" data-ca-clear-id="elm_search_clear_177_3" data-ca-empty-id="elm_search_empty_177_3">
-                          <li className="cm-product-filters-checkbox-container ty-product-filters__group">
-                            <input className="cm-product-filters-checkbox" type="checkbox" name="product_filters[3]" data-ca-filter-id={3} defaultValue={35} id="elm_checkbox_177_3_35" /><label htmlFor="elm_checkbox_177_3_35"><span>Chrome</span></label>
-                          </li>
-                          <li className="cm-product-filters-checkbox-container ty-product-filters__group">
-                            <input className="cm-product-filters-checkbox" type="checkbox" name="product_filters[3]" data-ca-filter-id={3} defaultValue={10} id="elm_checkbox_177_3_10" /><label htmlFor="elm_checkbox_177_3_10"><span>Cream</span></label>
-                          </li>
-                          <li className="cm-product-filters-checkbox-container ty-product-filters__group">
-                            <input className="cm-product-filters-checkbox" type="checkbox" name="product_filters[3]" data-ca-filter-id={3} defaultValue={19} id="elm_checkbox_177_3_19" /><label htmlFor="elm_checkbox_177_3_19"><span>Glitter</span></label>
-                          </li>
-                          <li className="cm-product-filters-checkbox-container ty-product-filters__group">
-                            <input className="cm-product-filters-checkbox" type="checkbox" name="product_filters[3]" data-ca-filter-id={3} defaultValue={36} id="elm_checkbox_177_3_36" /><label htmlFor="elm_checkbox_177_3_36"><span>Neon</span></label>
-                          </li>
-                          <li className="cm-product-filters-checkbox-container ty-product-filters__group">
-                            <input className="cm-product-filters-checkbox" type="checkbox" name="product_filters[3]" data-ca-filter-id={3} defaultValue={16} id="elm_checkbox_177_3_16" /><label htmlFor="elm_checkbox_177_3_16"><span>Nude</span></label>
-                          </li>
-                          <li className="cm-product-filters-checkbox-container ty-product-filters__group">
-                            <input className="cm-product-filters-checkbox" type="checkbox" name="product_filters[3]" data-ca-filter-id={3} defaultValue={24} id="elm_checkbox_177_3_24" /><label htmlFor="elm_checkbox_177_3_24"><span>Pearl</span></label>
-                          </li>
-                          <li className="cm-product-filters-checkbox-container ty-product-filters__group">
-                            <input className="cm-product-filters-checkbox" type="checkbox" name="product_filters[3]" data-ca-filter-id={3} defaultValue={23} id="elm_checkbox_177_3_23" /><label htmlFor="elm_checkbox_177_3_23"><span>Shapes</span></label>
-                          </li>
-                          <li className="cm-product-filters-checkbox-container ty-product-filters__group">
-                            <input className="cm-product-filters-checkbox" type="checkbox" name="product_filters[3]" data-ca-filter-id={3} defaultValue={13} id="elm_checkbox_177_3_13" /><label htmlFor="elm_checkbox_177_3_13"><span>Shimmer</span></label>
-                          </li>
-                        </ul>
-                      </li>
-                      <p id="elm_search_empty_177_3" className="ty-product-filters__no-items-found hidden">No items found matching the search criteria</p>
-                    </ul>
-                  </div>
-                  {/* Inline script moved to the bottom of the page */}
-                  <div className="ty-product-filters__block">
-                    <div id="sw_content_177_4" className="ty-product-filters__switch cm-combination-filter_177_4 open cm-save-state cm-ss-reverse">
-                      <span className="ty-product-filters__title">Size</span>
-                      <i className="ty-product-filters__switch-down ty-icon-down-open" />
-                      <i className="ty-product-filters__switch-right ty-icon-up-open" />
-                    </div>
-                    <ul className="ty-product-filters " id="content_177_4">
-                      <li className="ty-product-filters__item-more">
-                        <ul id="ranges_177_4" style={{maxHeight: '310px'}} className="ty-product-filters__variants cm-filter-table" data-ca-input-id="elm_search_177_4" data-ca-clear-id="elm_search_clear_177_4" data-ca-empty-id="elm_search_empty_177_4">
-                          <li className="cm-product-filters-checkbox-container ty-product-filters__group">
-                            <input className="cm-product-filters-checkbox" type="checkbox" name="product_filters[4]" data-ca-filter-id={4} defaultValue={11} id="elm_checkbox_177_4_11" /><label htmlFor="elm_checkbox_177_4_11"><span>0.5oz</span></label>
-                          </li>
-                        </ul>
-                      </li>
-                      <p id="elm_search_empty_177_4" className="ty-product-filters__no-items-found hidden">No items found matching the search criteria</p>
-                    </ul>
-                  </div>
-                  {/* Inline script moved to the bottom of the page */}
-       
-                  <div className="ty-product-filters__block">
-                    <div id="sw_content_177_9" className="ty-product-filters__switch cm-combination-filter_177_9 open cm-save-state cm-ss-reverse">
-                      <span className="ty-product-filters__title"><i class="fa fa-dollar" /> Price</span>
-                      <i className="ty-product-filters__switch-down ty-icon-down-open" />
-                      <i className="ty-product-filters__switch-right ty-icon-up-open" />
-                    </div>
+                  <div className="ty-sidebox__body" id="sidebox_177">
                     {/* Inline script moved to the bottom of the page */}
-                    <div id="content_177_9" className="cm-product-filters-checkbox-container">
-                    <Slider
-                    className="ml-4 mr-4"
-                    tipFormatter={(v) => `$${v}`}
-                    range
-                    value={price}
-                    onChange={handleSlider}
-                    max="200"
-                  />     
+                    <div className="cm-product-filters">
+                      <div className="ty-product-filters__wrapper">
+                        <div className="ty-product-filters__block">
+                          <div className="ty-product-filters__switch cm-combination-filter_177_1 open cm-save-state cm-ss-reverse">
+                            <span className="ty-product-filters__title">
+                              Brand
+                            </span>
+                            <i className="ty-product-filters__switch-down ty-icon-down-open" />
+                            <i className="ty-product-filters__switch-right ty-icon-up-open" />
+                          </div>
+                          <ul
+                            className="ty-product-filters "
+                            id="content_177_1"
+                          >
+                            <li className="ty-product-filters__item-more">
+                              <ul
+                                id="ranges_177_1"
+                                style={{ maxHeight: '310px' }}
+                                className="ty-product-filters__variants cm-filter-table"
+                                data-ca-input-id="elm_search_177_1"
+                                data-ca-clear-id="elm_search_clear_177_1"
+                                data-ca-empty-id="elm_search_empty_177_1"
+                              >
+                                {brands.map((c) => (
+                                  <li className="cm-product-filters-checkbox-container ty-product-filters__group">
+                                    <Checkbox name="brand">{c}</Checkbox>
+                                  </li>
+                                ))}
+                              </ul>
+                            </li>
+                            <p
+                              id="elm_search_empty_177_1"
+                              className="ty-product-filters__no-items-found hidden"
+                            >
+                              No items found matching the search criteria
+                            </p>
+                          </ul>
+                        </div>
+                        {/* Inline script moved to the bottom of the page */}
+                        <div className="ty-product-filters__block">
+                          <div
+                            id="sw_content_177_2"
+                            className="ty-product-filters__switch cm-combination-filter_177_2 open cm-save-state cm-ss-reverse"
+                          >
+                            <span className="ty-product-filters__title">
+                              Color
+                            </span>
+                            <i className="ty-product-filters__switch-down ty-icon-down-open" />
+                            <i className="ty-product-filters__switch-right ty-icon-up-open" />
+                          </div>
+                          <ul
+                            className="ty-product-filters "
+                            id="content_177_2"
+                          >
+                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                              <label>
+                                <input
+                                  style={{ display: 'none' }}
+                                  className="cm-product-filters-checkbox"
+                                  type="checkbox"
+                                  name="product_filters[2]"
+                                  data-ca-filter-id={2}
+                                  defaultValue={25}
+                                  id="elm_checkbox_177_2_25"
+                                />
+                                <div
+                                  title="Black"
+                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                  style={{ background: '#000000' }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="ci_color_checked"
+                                    width={1024}
+                                    height={1024}
+                                    viewBox="0 0 1024 1024"
+                                  >
+                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                  </svg>
+                                </div>
+                              </label>
+                            </li>
+                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                              <label>
+                                <input
+                                  style={{ display: 'none' }}
+                                  className="cm-product-filters-checkbox"
+                                  type="checkbox"
+                                  name="product_filters[2]"
+                                  data-ca-filter-id={2}
+                                  defaultValue={14}
+                                  id="elm_checkbox_177_2_14"
+                                />
+                                <div
+                                  title="White"
+                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                  style={{ background: '#ffffff' }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="ci_color_checked"
+                                    width={1024}
+                                    height={1024}
+                                    viewBox="0 0 1024 1024"
+                                  >
+                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                  </svg>
+                                </div>
+                              </label>
+                            </li>
+                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                              <label>
+                                <input
+                                  style={{ display: 'none' }}
+                                  className="cm-product-filters-checkbox"
+                                  type="checkbox"
+                                  name="product_filters[2]"
+                                  data-ca-filter-id={2}
+                                  defaultValue={7}
+                                  id="elm_checkbox_177_2_7"
+                                />
+                                <div
+                                  title="Red"
+                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                  style={{ background: '#ff0000' }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="ci_color_checked"
+                                    width={1024}
+                                    height={1024}
+                                    viewBox="0 0 1024 1024"
+                                  >
+                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                  </svg>
+                                </div>
+                              </label>
+                            </li>
+                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                              <label>
+                                <input
+                                  style={{ display: 'none' }}
+                                  className="cm-product-filters-checkbox"
+                                  type="checkbox"
+                                  name="product_filters[2]"
+                                  data-ca-filter-id={2}
+                                  defaultValue={22}
+                                  id="elm_checkbox_177_2_22"
+                                />
+                                <div
+                                  title="Blue"
+                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                  style={{ background: '#0000ff' }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="ci_color_checked"
+                                    width={1024}
+                                    height={1024}
+                                    viewBox="0 0 1024 1024"
+                                  >
+                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                  </svg>
+                                </div>
+                              </label>
+                            </li>
+                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                              <label>
+                                <input
+                                  style={{ display: 'none' }}
+                                  className="cm-product-filters-checkbox"
+                                  type="checkbox"
+                                  name="product_filters[2]"
+                                  data-ca-filter-id={2}
+                                  defaultValue={12}
+                                  id="elm_checkbox_177_2_12"
+                                />
+                                <div
+                                  title="Pink"
+                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                  style={{ background: '#ff00ff' }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="ci_color_checked"
+                                    width={1024}
+                                    height={1024}
+                                    viewBox="0 0 1024 1024"
+                                  >
+                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                  </svg>
+                                </div>
+                              </label>
+                            </li>
+                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                              <label>
+                                <input
+                                  style={{ display: 'none' }}
+                                  className="cm-product-filters-checkbox"
+                                  type="checkbox"
+                                  name="product_filters[2]"
+                                  data-ca-filter-id={2}
+                                  defaultValue={18}
+                                  id="elm_checkbox_177_2_18"
+                                />
+                                <div
+                                  title="Purple"
+                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                  style={{ background: '#9900ff' }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="ci_color_checked"
+                                    width={1024}
+                                    height={1024}
+                                    viewBox="0 0 1024 1024"
+                                  >
+                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                  </svg>
+                                </div>
+                              </label>
+                            </li>
+                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                              <label>
+                                <input
+                                  style={{ display: 'none' }}
+                                  className="cm-product-filters-checkbox"
+                                  type="checkbox"
+                                  name="product_filters[2]"
+                                  data-ca-filter-id={2}
+                                  defaultValue={20}
+                                  id="elm_checkbox_177_2_20"
+                                />
+                                <div
+                                  title="Green"
+                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                  style={{ background: '#38761d' }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="ci_color_checked"
+                                    width={1024}
+                                    height={1024}
+                                    viewBox="0 0 1024 1024"
+                                  >
+                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                  </svg>
+                                </div>
+                              </label>
+                            </li>
+                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                              <label>
+                                <input
+                                  style={{ display: 'none' }}
+                                  className="cm-product-filters-checkbox"
+                                  type="checkbox"
+                                  name="product_filters[2]"
+                                  data-ca-filter-id={2}
+                                  defaultValue={21}
+                                  id="elm_checkbox_177_2_21"
+                                />
+                                <div
+                                  title="Yellow"
+                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                  style={{ background: '#ffff00' }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="ci_color_checked"
+                                    width={1024}
+                                    height={1024}
+                                    viewBox="0 0 1024 1024"
+                                  >
+                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                  </svg>
+                                </div>
+                              </label>
+                            </li>
+                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                              <label>
+                                <input
+                                  style={{ display: 'none' }}
+                                  className="cm-product-filters-checkbox"
+                                  type="checkbox"
+                                  name="product_filters[2]"
+                                  data-ca-filter-id={2}
+                                  defaultValue={17}
+                                  id="elm_checkbox_177_2_17"
+                                />
+                                <div
+                                  title="Neutral"
+                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                  style={{ background: '#e3b28b' }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="ci_color_checked"
+                                    width={1024}
+                                    height={1024}
+                                    viewBox="0 0 1024 1024"
+                                  >
+                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                  </svg>
+                                </div>
+                              </label>
+                            </li>
+                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                              <label>
+                                <input
+                                  style={{ display: 'none' }}
+                                  className="cm-product-filters-checkbox"
+                                  type="checkbox"
+                                  name="product_filters[2]"
+                                  data-ca-filter-id={2}
+                                  defaultValue={6}
+                                  id="elm_checkbox_177_2_6"
+                                />
+                                <div
+                                  title="Orange"
+                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                  style={{ background: '#ff9900' }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="ci_color_checked"
+                                    width={1024}
+                                    height={1024}
+                                    viewBox="0 0 1024 1024"
+                                  >
+                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                  </svg>
+                                </div>
+                              </label>
+                            </li>
+                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                              <label>
+                                <input
+                                  style={{ display: 'none' }}
+                                  className="cm-product-filters-checkbox"
+                                  type="checkbox"
+                                  name="product_filters[2]"
+                                  data-ca-filter-id={2}
+                                  defaultValue={26}
+                                  id="elm_checkbox_177_2_26"
+                                />
+                                <div
+                                  title="Brown"
+                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                  style={{ background: '#804c2f' }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="ci_color_checked"
+                                    width={1024}
+                                    height={1024}
+                                    viewBox="0 0 1024 1024"
+                                  >
+                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                  </svg>
+                                </div>
+                              </label>
+                            </li>
+                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                              <label>
+                                <input
+                                  style={{ display: 'none' }}
+                                  className="cm-product-filters-checkbox"
+                                  type="checkbox"
+                                  name="product_filters[2]"
+                                  data-ca-filter-id={2}
+                                  defaultValue={15}
+                                  id="elm_checkbox_177_2_15"
+                                />
+                                <div
+                                  title="Silver"
+                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                  style={{ background: '#d9d9d9' }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="ci_color_checked"
+                                    width={1024}
+                                    height={1024}
+                                    viewBox="0 0 1024 1024"
+                                  >
+                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                  </svg>
+                                </div>
+                              </label>
+                            </li>
+                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                              <label>
+                                <input
+                                  style={{ display: 'none' }}
+                                  className="cm-product-filters-checkbox"
+                                  type="checkbox"
+                                  name="product_filters[2]"
+                                  data-ca-filter-id={2}
+                                  defaultValue={28}
+                                  id="elm_checkbox_177_2_28"
+                                />
+                                <div
+                                  title="Gray"
+                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                  style={{ background: '#434343' }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="ci_color_checked"
+                                    width={1024}
+                                    height={1024}
+                                    viewBox="0 0 1024 1024"
+                                  >
+                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                  </svg>
+                                </div>
+                              </label>
+                            </li>
+                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                              <label>
+                                <input
+                                  style={{ display: 'none' }}
+                                  className="cm-product-filters-checkbox"
+                                  type="checkbox"
+                                  name="product_filters[2]"
+                                  data-ca-filter-id={2}
+                                  defaultValue={31}
+                                  id="elm_checkbox_177_2_31"
+                                />
+                                <div
+                                  title="Clear"
+                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                  style={{ background: '#ffffff' }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="ci_color_checked"
+                                    width={1024}
+                                    height={1024}
+                                    viewBox="0 0 1024 1024"
+                                  >
+                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                  </svg>
+                                </div>
+                              </label>
+                            </li>
+                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                              <label>
+                                <input
+                                  style={{ display: 'none' }}
+                                  className="cm-product-filters-checkbox"
+                                  type="checkbox"
+                                  name="product_filters[2]"
+                                  data-ca-filter-id={2}
+                                  defaultValue={34}
+                                  id="elm_checkbox_177_2_34"
+                                />
+                                <div
+                                  title="Gold"
+                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                  style={{ background: '#f1c232' }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="ci_color_checked"
+                                    width={1024}
+                                    height={1024}
+                                    viewBox="0 0 1024 1024"
+                                  >
+                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                  </svg>
+                                </div>
+                              </label>
+                            </li>
+                            <p className="ty-product-filters__no-items-found hidden">
+                              No items found matching the search criteria
+                            </p>
+                          </ul>
+                        </div>
+
+                        <div className="ty-product-filters__block">
+                          <div className="ty-product-filters__switch cm-combination-filter_177_4 open cm-save-state cm-ss-reverse">
+                            <span className="ty-product-filters__title">
+                              Size
+                            </span>
+                            <i className="ty-product-filters__switch-down ty-icon-down-open" />
+                            <i className="ty-product-filters__switch-right ty-icon-up-open" />
+                          </div>
+                          <ul className="ty-product-filters ">
+                            <li className="ty-product-filters__item-more">
+                              <ul
+                                style={{ maxHeight: '310px' }}
+                                className="ty-product-filters__variants cm-filter-table"
+                              >
+                                <li className="cm-product-filters-checkbox-container ty-product-filters__group">
+                                  <input
+                                    className="cm-product-filters-checkbox"
+                                    type="checkbox"
+                                    name="product_filters[4]"
+                                    data-ca-filter-id={4}
+                                    defaultValue={11}
+                                  />
+                                  <label>
+                                    <span>0.5oz</span>
+                                  </label>
+                                </li>
+                              </ul>
+                            </li>
+                            <p
+                              id="elm_search_empty_177_4"
+                              className="ty-product-filters__no-items-found hidden"
+                            >
+                              No items found matching the search criteria
+                            </p>
+                          </ul>
+                        </div>
+                        {/* Inline script moved to the bottom of the page */}
+
+                        <div className="ty-product-filters__block">
+                          <div
+                            id="sw_content_177_9"
+                            className="ty-product-filters__switch cm-combination-filter_177_9 open cm-save-state cm-ss-reverse"
+                          >
+                            <span className="ty-product-filters__title">
+                              <i class="fa fa-dollar" /> Price
+                            </span>
+                            <i className="ty-product-filters__switch-down ty-icon-down-open" />
+                            <i className="ty-product-filters__switch-right ty-icon-up-open" />
+                          </div>
+                          {/* Inline script moved to the bottom of the page */}
+                          <div
+                            id="content_177_9"
+                            className="cm-product-filters-checkbox-container"
+                          >
+                            <Slider
+                              className="ml-4 mr-4"
+                              tipFormatter={(v) => `$${v}`}
+                              range
+                              value={price}
+                              onChange={handleSlider}
+                              max="200"
+                            />
+                          </div>
+                        </div>
+                        {/* Inline script moved to the bottom of the page */}
+                      </div>
+                      {/*product_filters_177*/}
                     </div>
-                  
                   </div>
-                  {/* Inline script moved to the bottom of the page */}
-                 
                 </div>
-                {/*product_filters_177*/}</div></div>
+              </div>
+              {/*END MENU*/}
+            </div>
           </div>
         </div>
-       
-
-           {/*END MENU*/}
-         
- 
- 
-        </div>
       </div>
-     
- 
- 
-    </div>
-  </div>
- 
     </>
   );
 };

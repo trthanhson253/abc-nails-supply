@@ -5,6 +5,7 @@ import { Spinner } from '../../components/Spinner';
 import { LoadingOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
+import { addToWishlist } from '../../functions/user';
 
 const ProductCard = ({ product, loading }) => {
   const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -23,7 +24,10 @@ const ProductCard = ({ product, loading }) => {
         ...product,
         count: 1,
       });
-
+      dispatch({
+        type: 'SET_LOADING',
+        payload: true,
+      });
       // cart.map((item, i) => {
       //   if (item._id == p._id) {
       //     cart[i].count++;
@@ -43,6 +47,10 @@ const ProductCard = ({ product, loading }) => {
           type: 'SET_VISIBLE',
           payload: true,
         });
+        dispatch({
+          type: 'SET_LOADING',
+          payload: false,
+        });
         message.success('This product is added to cart successfully');
       }, 500);
 
@@ -54,7 +62,14 @@ const ProductCard = ({ product, loading }) => {
       // show cart items in side drawer
     }
   };
-
+  const handleAddToWishlist = (e) => {
+    e.preventDefault();
+    addToWishlist(product._id, user.token).then((res) => {
+      // console.log("ADDED TO WISHLIST", res.data);
+      message.success('Added to wishlist');
+      // history.push("/user/wishlist");
+    });
+  };
   return (
     <>
       <div className="ty-column3" data-ut2-load-more="first-item">
@@ -85,6 +100,7 @@ const ProductCard = ({ product, loading }) => {
                   <a
                     className="ut2-add-to-wish cm-submit cm-tooltip"
                     title="Add to wishlist"
+                    onClick={handleAddToWishlist}
                   >
                     <i class="fa fa-heart" />{' '}
                   </a>

@@ -58,7 +58,7 @@ router.get('/product/:slug', read);
 // related
 // router.get("/product/related/:productId", listRelated);
 // search
-router.post('/search/filters', searchFilters);
+router.post('/products/search/filters', searchFilters);
 
 router.post('/products/by/search', listByFilters);
 

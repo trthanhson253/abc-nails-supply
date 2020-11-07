@@ -344,14 +344,30 @@ exports.read = async (req, res) => {
 
 // SEARCH / FILTER
 
-const handleQuery = async (req, res, query) => {
-  const products = await Product.find({ $text: { $search: query } })
+// const handleQuery = async (req, res, query) => {
+//   console.log('query', query);
+//   const products = await Product.find({ $text: { $search: query } })
+//     .populate('category', '_id name')
+//     .populate('sub', '_id name')
+//     .populate('subSub', '_id name')
+//     .exec();
+//   console.log('products', products);
+//   res.json(products);
+// };
+const handleQuery = (req, res, query) => {
+  console.log('query', query);
+  Product.find({ name: { $regex: query, $options: 'i' }, status: 0 })
     .populate('category', '_id name')
     .populate('sub', '_id name')
     .populate('subSub', '_id name')
-    .exec();
-
-  res.json(products);
+    .exec((err, products) => {
+      if (err) {
+        return res.status(400).json({
+          error: 'Not Found',
+        });
+      }
+      res.json(products);
+    });
 };
 
 const handlePrice = async (req, res, price) => {
