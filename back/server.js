@@ -1,20 +1,20 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const morgan = require("morgan");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const { readdirSync } = require("fs");
-require("dotenv").config();
+const express = require('express');
+const mongoose = require('mongoose');
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const { readdirSync } = require('fs');
+require('dotenv').config();
 
 // app
 const app = express();
 
 // db
 
-if(process.env.VERSION=='production'){
-  db=process.env.DATABASE_PRODUCTION
-}else if(process.env.VERSION=='development'){
-  db=process.env.DATABASE_DEVELOPMENT
+if (process.env.VERSION == 'production') {
+  db = process.env.DATABASE_PRODUCTION;
+} else if (process.env.VERSION == 'development') {
+  db = process.env.DATABASE_DEVELOPMENT;
 }
 
 mongoose
@@ -24,8 +24,8 @@ mongoose
     useFindAndModify: false,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("DB CONNECTED"))
-  .catch((err) => console.log("DB CONNECTION ERR", err));
+  .then(() => console.log('DB CONNECTED'))
+  .catch((err) => console.log('DB CONNECTION ERR', err));
 
 const authRoutes = require('./routes/auth');
 const categoryRoutes = require('./routes/category');
@@ -38,9 +38,10 @@ const colorRoutes = require('./routes/color');
 const sizeRoutes = require('./routes/size');
 const couponRoutes = require('./routes/coupon');
 const userRoutes = require('./routes/user');
+const stripeRoutes = require('./routes/stripe');
 
 // middlewares
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 app.use(bodyParser.json({ limit: '5mb', type: 'application/json' }));
 app.use(cors());
 
@@ -57,6 +58,7 @@ app.use('/api', colorRoutes);
 app.use('/api', sizeRoutes);
 app.use('/api', couponRoutes);
 app.use('/api', userRoutes);
+app.use('/api', stripeRoutes);
 
 // port
 const port = process.env.PORT || 8000;

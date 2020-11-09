@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema;
 const crypto = require('crypto');
 
@@ -57,7 +57,36 @@ const userSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    wishlist: [{ type: ObjectId, ref: "Product" }],
+    billingAddress: [
+      {
+        address: {
+          type: String,
+        },
+        city: {
+          type: String,
+        },
+        state: {
+          type: String,
+        },
+        zip: {
+          type: String,
+        },
+      },
+    ],
+    payment: [
+      {
+        name: {
+          type: String,
+        },
+        card: {
+          type: String,
+        },
+        cvv: {
+          type: String,
+        },
+      },
+    ],
+    wishlist: [{ type: ObjectId, ref: 'Product' }],
   },
   { timestamps: true }
 );
@@ -98,4 +127,4 @@ userSchema.methods = {
   },
 };
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema);
