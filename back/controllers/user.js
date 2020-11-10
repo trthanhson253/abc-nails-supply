@@ -4,6 +4,7 @@ const Cart = require('../models/cart');
 const Coupon = require('../models/coupon');
 const Order = require('../models/order');
 const uniqueid = require('uniqueid');
+const ShippingAndBillingAddress = require('../models/shippingAndBillingAddress');
 
 exports.userCart = async (req, res) => {
   // console.log("SonTran1",req.body.cart); // {cart: []}
@@ -201,15 +202,15 @@ exports.createOrder = async (req, res) => {
   res.json({ ok: true });
 };
 
-// exports.orders = async (req, res) => {
-//   let user = await User.findOne({ email: req.user.email }).exec();
+exports.orders = async (req, res) => {
+  let user = await User.findOne({ email: req.user.email }).exec();
 
-//   let userOrders = await Order.find({ orderdBy: user._id })
-//     .populate("products.product")
-//     .exec();
+  let userOrders = await Order.find({ orderdBy: user._id })
+    .populate('products.product')
+    .exec();
 
-//   res.json(userOrders);
-// };
+  res.json(userOrders);
+};
 
 // addToWishlist wishlist removeFromWishlist
 exports.addToWishlist = async (req, res) => {
@@ -240,4 +241,87 @@ exports.removeFromWishlist = async (req, res) => {
   ).exec();
 
   res.json({ ok: true });
+};
+
+exports.saveShippingBilling = (req, res) => {
+  const {
+    ship_name,
+    ship_email,
+    ship_phone,
+    ship_address,
+    ship_city,
+    ship_state,
+    ship_zip,
+    bill_name,
+    bill_address,
+    bill_city,
+    bill_state,
+    bill_zip,
+  } = req.body.values;
+  // console.log(token);
+
+  ShippingAndBillingAddress.findOne({ user: req.user._id }).exec(
+    (err, shippingAndBillingAddress) => {
+      if (!shippingAndBillingAddress) {
+        let shippingAndBillingAddress1 = new ShippingAndBillingAddress();
+        shippingAndBillingAddress1.ship_name = ship_name;
+        shippingAndBillingAddress1.ship_email = ship_email;
+        shippingAndBillingAddress1.ship_phone = ship_phone;
+        shippingAndBillingAddress1.ship_address = ship_address;
+        shippingAndBillingAddress1.ship_city = ship_city;
+        shippingAndBillingAddress1.ship_state = ship_state;
+        shippingAndBillingAddress1.ship_zip = ship_zip;
+
+        shippingAndBillingAddress1.bill_name = bill_name;
+        shippingAndBillingAddress1.bill_address = bill_address;
+        shippingAndBillingAddress1.bill_city = bill_city;
+        shippingAndBillingAddress1.bill_state = bill_state;
+        shippingAndBillingAddress1.bill_zip = bill_zip;
+        shippingAndBillingAddress1.user = req.user._id;
+        shippingAndBillingAddress1.save((err, result) => {
+          if (err || !result) {
+            return res.status(400).json({
+              error: 'Cannot Create A New shipping and billing address',
+            });
+          }
+          res.json({ ok: true });
+        });
+      } else {
+        shippingAndBillingAddress.ship_name = ship_name;
+        shippingAndBillingAddress.ship_email = ship_email;
+        shippingAndBillingAddress.ship_phone = ship_phone;
+        shippingAndBillingAddress.ship_address = ship_address;
+        shippingAndBillingAddress.ship_city = ship_city;
+        shippingAndBillingAddress.ship_state = ship_state;
+        shippingAndBillingAddress.ship_zip = ship_zip;
+
+        shippingAndBillingAddress.bill_name = bill_name;
+        shippingAndBillingAddress.bill_address = bill_address;
+        shippingAndBillingAddress.bill_city = bill_city;
+        shippingAndBillingAddress.bill_state = bill_state;
+        shippingAndBillingAddress.bill_zip = bill_zip;
+
+        shippingAndBillingAddress.user = req.user._id;
+
+        shippingAndBillingAddress.save((err, result) => {
+          if (err || !result) {
+            return res.status(400).json({
+              error: 'Cannot Update A New shipping and billing address',
+            });
+          }
+          res.json({ ok: true });
+        });
+      }
+    }
+  );
+};
+
+exports.getBillingAndShippingAddress = async (req, res) => {
+  let shippingAndBillingAddress = await ShippingAndBillingAddress.findOne({
+    user: req.user._id,
+  }).exec();
+
+  res.json({
+    shippingAndBillingAddress,
+  });
 };

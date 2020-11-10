@@ -86,6 +86,7 @@ const Header = () => {
         payload: cart,
       });
     }
+    history.push('/cart');
   };
   useEffect(() => {
     // loadSubSubs();

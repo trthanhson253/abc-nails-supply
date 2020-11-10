@@ -7,22 +7,34 @@ import {
   // saveUserAddress,
   changeShippingMethod,
   applyCoupon,
+  saveShippingBilling,
 } from '../../functions/user';
 import { message, Image, Alert } from 'antd';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
-import StripeCheckout from '../../components/StripeCheckout';
+import { toast } from 'react-toastify';
+
 import { Steps } from 'antd';
 import {
   CreditCardOutlined,
   SmileOutlined,
   FileOutlined,
 } from '@ant-design/icons';
-import '../../stripe.css';
-
-const promise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
 
 const Checkout = ({ history }) => {
+  const initialState = {
+    ship_name: '',
+    ship_email: '',
+    ship_phone: '',
+    ship_address: '',
+    ship_city: '',
+    ship_state: '',
+    ship_zip: '',
+    bill_name: '',
+    bill_address: '',
+    bill_city: '',
+    bill_state: '',
+    bill_zip: '',
+  };
+  const [values, setValues] = useState(initialState);
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
 
@@ -36,7 +48,23 @@ const Checkout = ({ history }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => ({ ...state }));
   const { Step } = Steps;
-
+  const {
+    ship_name,
+    ship_email,
+    ship_phone,
+    ship_address,
+    ship_city,
+    ship_state,
+    ship_zip,
+    bill_name,
+    bill_address,
+    bill_city,
+    bill_state,
+    bill_zip,
+  } = values;
+  const handleChange = (name) => (e) => {
+    setValues({ ...values, [name]: e.target.value });
+  };
   const loadProductInCart = (token) => {
     // setLoading(true);
     getUserCart(token).then((res) => {
@@ -110,6 +138,20 @@ const Checkout = ({ history }) => {
         });
       }
     });
+  };
+
+  const clickSubmit = (event) => {
+    event.preventDefault();
+    saveShippingBilling(values, user.token)
+      .then((data) => {
+        // setDescription("");
+        // toast.success('Created Successfully!');
+        history.push('/checkout-payment');
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.response.data.error);
+      });
   };
 
   useEffect(() => {
@@ -210,8 +252,11 @@ const Checkout = ({ history }) => {
                                         Full name
                                       </label>
                                       <input
+                                        id="ship_name"
+                                        name="ship_name"
+                                        onChange={handleChange('ship_name')}
+                                        value={ship_name}
                                         type="text"
-                                        value={user.name}
                                         name="name"
                                         size="{32}"
                                         placeholder="Your Full name"
@@ -226,10 +271,13 @@ const Checkout = ({ history }) => {
                                         E-mail
                                       </label>
                                       <input
+                                        id="ship_email"
+                                        name="ship_email"
+                                        onChange={handleChange('ship_email')}
+                                        value={ship_email}
                                         type="text"
                                         name="email"
                                         size="{32}"
-                                        value={user.email}
                                         placeholder="Your Email"
                                         className="ty-input-text cm-skip-avail-switch "
                                       />
@@ -240,7 +288,10 @@ const Checkout = ({ history }) => {
                                       </label>
                                       <input
                                         type="text"
-                                        name="phone"
+                                        id="ship_phone"
+                                        name="ship_phone"
+                                        onChange={handleChange('ship_phone')}
+                                        value={ship_phone}
                                         size="{32}"
                                         placeholder="Phone"
                                         className="ty-input-text"
@@ -253,7 +304,10 @@ const Checkout = ({ history }) => {
                                       </label>
                                       <input
                                         type="text"
-                                        name="address"
+                                        id="ship_address"
+                                        name="ship_address"
+                                        onChange={handleChange('ship_address')}
+                                        value={ship_address}
                                         size="{32}"
                                         placeholder="Address"
                                         className="ty-input-text  "
@@ -270,7 +324,10 @@ const Checkout = ({ history }) => {
                                       <input
                                         placeholder="City"
                                         type="text"
-                                        name="city"
+                                        id="ship_city"
+                                        name="ship_city"
+                                        onChange={handleChange('ship_city')}
+                                        value={ship_city}
                                         size="{32}"
                                         className="ty-input-text  "
                                       />
@@ -281,7 +338,10 @@ const Checkout = ({ history }) => {
                                       </label>
                                       <select
                                         className="ty-profile-field__select-state cm-state cm-location-billing"
-                                        name="state"
+                                        id="ship_state"
+                                        name="ship_state"
+                                        onChange={handleChange('ship_state')}
+                                        value={ship_state}
                                       >
                                         <option value="No" selected>
                                           - Select state -
@@ -358,7 +418,10 @@ const Checkout = ({ history }) => {
                                       </label>
                                       <input
                                         type="text"
-                                        name="zipcode"
+                                        id="ship_zip"
+                                        name="ship_zip"
+                                        onChange={handleChange('ship_zip')}
+                                        value={ship_zip}
                                         size="{32}"
                                         placeholder="Zip Code"
                                         className="ty-input-text"
@@ -372,19 +435,11 @@ const Checkout = ({ history }) => {
                                 data-ct-address="shipping-address"
                               >
                                 <div className="ty-control-group clearfix">
-                                  <input
-                                    type="hidden"
-                                    defaultValue="{1}"
-                                    name="ship_to_another"
-                                  />
                                   <label htmlFor="sw_sa">
                                     <input
                                       type="checkbox"
-                                      id="sw_sa"
                                       name="ship_to_another"
-                                      defaultValue="{0}"
                                       className="checkbox cm-switch-availability cm-switch-inverse cm-switch-visibility"
-                                      defaultChecked="checked"
                                     />
                                     Billing Address & Shipping Address are the
                                     same.
@@ -420,37 +475,13 @@ const Checkout = ({ history }) => {
                                         </label>
                                         <input
                                           type="text"
-                                          name="name"
+                                          id="bill_name"
+                                          name="bill_name"
+                                          onChange={handleChange('bill_name')}
+                                          value={bill_name}
                                           size="{32}"
                                           placeholder="Your Full name"
                                           className="ty-input-text cm-skip-avail-switch "
-                                        />
-                                      </div>
-                                      <div className="ty-control-group ty-profile-field__item ty-billing-email">
-                                        <label
-                                          htmlFor="elm_32"
-                                          className="ty-control-group__title cm-profile-field cm-required cm-email "
-                                        >
-                                          E-mail
-                                        </label>
-                                        <input
-                                          type="text"
-                                          name="email"
-                                          size="{32}"
-                                          placeholder="Your Email"
-                                          className="ty-input-text cm-skip-avail-switch "
-                                        />
-                                      </div>
-                                      <div className="ty-control-group ty-profile-field__item ty-billing-phone">
-                                        <label className="ty-control-group__title cm-profile-field cm-required cm-phone ">
-                                          Phone
-                                        </label>
-                                        <input
-                                          type="text"
-                                          name="phone"
-                                          size="{32}"
-                                          placeholder="Phone"
-                                          className="ty-input-text"
                                         />
                                       </div>
 
@@ -460,7 +491,12 @@ const Checkout = ({ history }) => {
                                         </label>
                                         <input
                                           type="text"
-                                          name="address"
+                                          id="bill_address"
+                                          name="bill_address"
+                                          onChange={handleChange(
+                                            'bill_address'
+                                          )}
+                                          value={bill_address}
                                           size="{32}"
                                           placeholder="Address"
                                           className="ty-input-text  "
@@ -477,7 +513,10 @@ const Checkout = ({ history }) => {
                                         <input
                                           placeholder="City"
                                           type="text"
-                                          name="city"
+                                          id="bill_city"
+                                          name="bill_city"
+                                          onChange={handleChange('bill_city')}
+                                          value={bill_city}
                                           size="{32}"
                                           className="ty-input-text  "
                                         />
@@ -488,7 +527,10 @@ const Checkout = ({ history }) => {
                                         </label>
                                         <select
                                           className="ty-profile-field__select-state cm-state cm-location-billing"
-                                          name="state"
+                                          id="bill_state"
+                                          name="bill_state"
+                                          onChange={handleChange('bill_state')}
+                                          value={bill_state}
                                         >
                                           <option value="No" selected>
                                             - Select state -
@@ -577,7 +619,10 @@ const Checkout = ({ history }) => {
                                         </label>
                                         <input
                                           type="text"
-                                          name="zipcode"
+                                          id="bill_zip"
+                                          name="bill_zip"
+                                          onChange={handleChange('bill_zip')}
+                                          value={bill_zip}
                                           size="{32}"
                                           placeholder="Zip Code"
                                           className="ty-input-text"
@@ -795,7 +840,7 @@ const Checkout = ({ history }) => {
                                             <span>
                                               {shipOption == 0
                                                 ? '8.00'
-                                                : '0.00'}
+                                                : 'FREE'}
                                             </span>
                                           </bdi>
                                         </span>
@@ -850,17 +895,17 @@ const Checkout = ({ history }) => {
                                         </span>
                                       </td>
                                     </tr>
-                                    <tr>
-                                      {totalAfterDiscount > 0 && (
-                                        <>
-                                          <p>Cart Total:</p>
-                                          <p className="bg-success p-2">
-                                            Discount Applied: Total Payable: $
-                                            {totalAfterDiscount}
-                                          </p>
-                                        </>
-                                      )}
-                                    </tr>
+
+                                    {totalAfterDiscount > 0 && (
+                                      <tr>
+                                        <Alert
+                                          message=" {totalAfterDiscount} is applied"
+                                          type="success"
+                                          showIcon
+                                          closable
+                                        />
+                                      </tr>
+                                    )}
                                   </tfoot>
                                 </table>
 
@@ -912,6 +957,7 @@ const Checkout = ({ history }) => {
                                 <button
                                   className="ty-btn__big ty-btn__primary cm-checkout-place-order ty-btn"
                                   type="submit"
+                                  onClick={clickSubmit}
                                 >
                                   <span>Next: Payment</span>
                                 </button>

@@ -50,7 +50,7 @@
 }
 /* Buttons and links */
 .stripe-button {
-  background: #5469d4;
+  background: linear-gradient(135deg, #bf3060 30%, #7f2680 100%) !important;
   font-family: Arial, sans-serif;
   color: #ffffff;
   border-radius: 0 0 4px 4px;

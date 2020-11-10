@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    zipCode: {
+    zip: {
       type: String,
       trim: true,
     },
@@ -57,35 +57,9 @@ const userSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    billingAddress: [
-      {
-        address: {
-          type: String,
-        },
-        city: {
-          type: String,
-        },
-        state: {
-          type: String,
-        },
-        zip: {
-          type: String,
-        },
-      },
-    ],
-    payment: [
-      {
-        name: {
-          type: String,
-        },
-        card: {
-          type: String,
-        },
-        cvv: {
-          type: String,
-        },
-      },
-    ],
+    // shippingAddress: [{ type: ObjectId, ref: 'ShippingAddress' }],
+    // billingAddress: [{ type: ObjectId, ref: 'BillingAddress' }],
+    // payment: [{ type: ObjectId, ref: 'Payment' }],
     wishlist: [{ type: ObjectId, ref: 'Product' }],
   },
   { timestamps: true }

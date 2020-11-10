@@ -2,8 +2,10 @@ const express = require('express');
 
 const router = express.Router();
 
-// middlewares
+const { saveShippingBillingValidator } = require('../validators/user');
+const { runValidation } = require('../validators');
 
+// middlewares
 const { requireSignin, authCheck } = require('../middlewares/auth');
 
 // controllers
@@ -11,15 +13,15 @@ const {
   userCart,
   getUserCart,
   emptyCart,
-  // saveAddress,
   applyCouponToUserCart,
-  // createOrder,
-  // orders,
+  createOrder,
+  orders,
   addToWishlist,
   wishlist,
   removeFromWishlist,
   shippingChange,
-  // createCashOrder,
+  saveShippingBilling,
+  getBillingAndShippingAddress,
 } = require('../controllers/user');
 
 router.post('/user/cart', requireSignin, authCheck, userCart); // save cart
@@ -31,12 +33,27 @@ router.post(
   requireSignin,
   authCheck,
   shippingChange
-); // empty cart
-// router.post("/user/address", authCheck, saveAddress);
+);
 
-// router.post("/user/order", authCheck, createOrder); // stripe
-// router.post("/user/cash-order", authCheck, createCashOrder); // cod
-// router.get("/user/orders", authCheck, orders);
+router.post(
+  '/user/cart/save-shipping-billing',
+  saveShippingBillingValidator,
+  runValidation,
+  requireSignin,
+  authCheck,
+  saveShippingBilling
+);
+
+router.get(
+  '/user/cart/get-billing-shipping-address',
+  requireSignin,
+  authCheck,
+  getBillingAndShippingAddress
+);
+
+// FOR ORDERS
+router.post('/user/order', requireSignin, authCheck, createOrder); // stripe
+router.get('/user/orders', requireSignin, authCheck, orders);
 
 // coupon
 router.post(

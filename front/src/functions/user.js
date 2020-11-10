@@ -91,3 +91,46 @@ export const changeShippingMethod = async (shipping, token) =>
       },
     }
   );
+
+export const saveShippingBilling = async (values, token) =>
+  await axios.post(
+    `${process.env.REACT_APP_API}/user/cart/save-shipping-billing`,
+    { values },
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+export const getBillingAndShippingAddress = async (token) =>
+  await axios.get(
+    `${process.env.REACT_APP_API}/user/cart/get-billing-shipping-address`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+export const createOrder = async (stripeResponse, authtoken) =>
+  await axios.post(
+    `${process.env.REACT_APP_API}/user/order`,
+    { stripeResponse },
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  );
+
+export const getUserOrders = async (authtoken) =>
+  await axios.get(`${process.env.REACT_APP_API}/user/orders`, {
+    headers: {
+      authtoken,
+    },
+  });

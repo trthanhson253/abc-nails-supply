@@ -44,6 +44,9 @@ import CategoryHome from './pages/home/CategoryHome';
 // import Nhap from "./pages/Nhap";
 import LoadingOverlay from 'react-loading-overlay';
 import FadeLoader from 'react-spinners/FadeLoader';
+import CheckoutPayment from './pages/home/CheckoutPayment';
+import UserDashboard from './pages/user/UserDashboard';
+import UserOrders from './pages/user/UserOrders';
 
 function App() {
   const dispatch = useDispatch();
@@ -190,8 +193,14 @@ function App() {
               />
 
               <UserRoute exact path="/checkout" component={Checkout} />
+              <UserRoute
+                exact
+                path="/checkout-payment"
+                component={CheckoutPayment}
+              />
               <UserRoute exact path="/wishlist" component={WishList} />
-
+              <UserRoute exact path="/user/history" component={UserDashboard} />
+              <UserRoute exact path="/user/orders" component={UserOrders} />
               <Route component={Error} />
             </Switch>
             <Footer />
