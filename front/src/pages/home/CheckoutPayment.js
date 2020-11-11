@@ -113,7 +113,7 @@ const CheckoutPayment = () => {
                                 className="clearfix"
                                 data-ct-address="billing-address"
                               >
-                                <div className="span8">
+                                <div className="span16">
                                   <Card
                                     title="SHIPPING ADDRESS"
                                     type="inner"
@@ -143,7 +143,21 @@ const CheckoutPayment = () => {
                                     </p>
                                   </Card>
                                 </div>
-                                <div className="span8">
+                              </div>
+                            </div>
+                            <br></br>
+                            <div
+                              id="step_two_body"
+                              className="ty-step__body-active cm-skip-save-fields"
+                            >
+                              <div className="clearfix">
+                                <div className="checkout__block"></div>
+                              </div>
+                              <div
+                                className="clearfix"
+                                data-ct-address="billing-address"
+                              >
+                                <div className="span16">
                                   <Card
                                     title="BILLING ADDRESS"
                                     type="inner"
@@ -166,33 +180,6 @@ const CheckoutPayment = () => {
                                       {billingAndShippingAddress.bill_zip}
                                       ,United States{' '}
                                     </p>
-                                  </Card>
-                                </div>
-                              </div>
-                            </div>
-                            <br></br>
-                            <div
-                              id="step_two_body"
-                              className="ty-step__body-active cm-skip-save-fields"
-                            >
-                              <div className="clearfix">
-                                <div className="checkout__block"></div>
-                              </div>
-                              <div
-                                className="clearfix"
-                                data-ct-address="billing-address"
-                              >
-                                <div className="span16">
-                                  <Card
-                                    title="MY ORDER CHARGE"
-                                    type="inner"
-                                    style={{ borderRadius: '5px' }}
-                                  >
-                                    <p>Total Before Tax</p>
-                                    <p>Total After Tax</p>
-                                    <p>Shipping & Handling</p>
-                                    <p>Discount Applied</p>
-                                    <p>Total you need to pay</p>
                                   </Card>
                                 </div>
                               </div>

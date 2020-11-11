@@ -603,7 +603,7 @@ const Header = () => {
                                 <li className="ty-account-info__item ty-dropdown-box__item">
                                   <Link
                                     className="ty-account-info__a underlined"
-                                    to="/orders"
+                                    to="/user/orders"
                                     rel="nofollow"
                                   >
                                     <i className="fa fa-delicious fa-fw" />{' '}
@@ -613,7 +613,7 @@ const Header = () => {
                                 <li className="ty-account-info__item ty-dropdown-box__item">
                                   <Link
                                     className="ty-account-info__a underlined"
-                                    to="/compare"
+                                    to="/user/compare"
                                     rel="nofollow"
                                   >
                                     <i className="fa fa-bar-chart fa-fw" />{' '}
@@ -623,7 +623,7 @@ const Header = () => {
                                 <li className="ty-account-info__item ty-dropdown-box__item">
                                   <Link
                                     className="ty-account-info__a"
-                                    to="/wishlist"
+                                    to="/user/wishlist"
                                     rel="nofollow"
                                   >
                                     <i className="fa fa-star fa-fw" /> Wish list

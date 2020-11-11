@@ -6,6 +6,7 @@ import { Card, Alert } from 'antd';
 import { createPaymentIntent } from '../functions/stripe';
 import { useSelector, useDispatch } from 'react-redux';
 import { createOrder, emptyUserCart } from '../functions/user';
+import { useHistory } from 'react-router-dom';
 
 const StripeCheckout = () => {
   const dispatch = useDispatch();
@@ -16,37 +17,45 @@ const StripeCheckout = () => {
   const [processing, setProcessing] = useState('');
   const [disabled, setDisabled] = useState(true);
   const [clientSecret, setClientSecret] = useState('');
-
+  const [cartTotalBeforeTax, setCartTotalBeforeTax] = useState(0);
   const [cartTotal, setCartTotal] = useState(0);
   const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
   const [payable, setPayable] = useState(0);
 
   const stripe = useStripe();
   const elements = useElements();
+  const history = useHistory();
 
   useEffect(() => {
-    createPaymentIntent(user.token, coupon).then((res) => {
+    createPaymentIntent(coupon, user.token).then((res) => {
       console.log('create payment intent', res.data);
       setClientSecret(res.data.clientSecret);
       // additional response received on successful payment
       setCartTotal(res.data.cartTotal);
+      setCartTotalBeforeTax(res.data.cartTotalBeforeTax);
       setTotalAfterDiscount(res.data.totalAfterDiscount);
       setPayable(res.data.payable);
     });
   }, []);
+
+  const handleChange = async (e) => {
+    setDisabled(e.empty); // disable pay button if errors
+    setError(e.error ? e.error.message : ''); // show error message
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setProcessing(true);
-
+    console.log('e.target.name.value', e.target.name.value);
     const payload = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement),
-        billing_details: {
-          name: e.target.name.value,
-        },
+        // billing_details: {
+        //   name: e.target.name.value,
+        // },
       },
     });
-
+    console.log('payload', payload);
     if (payload.error) {
       setError(`Payment failed ${payload.error.message}`);
       setProcessing(false);
@@ -76,12 +85,8 @@ const StripeCheckout = () => {
       setError(null);
       setProcessing(false);
       setSucceeded(true);
+      history.push('/checkout-finish');
     }
-  };
-
-  const handleChange = async (e) => {
-    setDisabled(e.empty); // disable pay button if errors
-    setError(e.error ? e.error.message : ''); // show error message
   };
 
   const cartStyle = {
@@ -90,7 +95,7 @@ const StripeCheckout = () => {
         color: '#32325d',
         fontFamily: 'Arial, sans-serif',
         fontSmoothing: 'antialiased',
-        fontSize: '16px',
+        fontSize: '14px',
         '::placeholder': {
           color: '#32325d',
         },
@@ -103,18 +108,17 @@ const StripeCheckout = () => {
   };
   return (
     <>
+      {!succeeded && (
+        <div>
+          {coupon && totalAfterDiscount !== undefined ? (
+            <p className="alert alert-success">{`Total after discount: $${totalAfterDiscount}`}</p>
+          ) : (
+            <></>
+          )}
+        </div>
+      )}
       <div className="text-center pb-5">
         <Card
-          // cover={
-          //   <img
-          //     src={Laptop}
-          //     style={{
-          //       height: '200px',
-          //       objectFit: 'cover',
-          //       marginBottom: '-50px',
-          //     }}
-          //   />
-          // }
           actions={[
             <>
               <DollarOutlined className="text-info" /> <br /> Total: $
@@ -127,13 +131,16 @@ const StripeCheckout = () => {
           ]}
         />
       </div>
-
+      <br></br>
       <form id="payment-form" className="stripe-form" onSubmit={handleSubmit}>
-        <CardElement
-          id="card-element"
-          options={cartStyle}
-          onChange={handleChange}
-        />
+        <div className="ty-control-group">
+          <CardElement
+            id="card-element"
+            options={cartStyle}
+            onChange={handleChange}
+          />
+        </div>
+
         <button
           className="stripe-button"
           disabled={processing || disabled || succeeded}

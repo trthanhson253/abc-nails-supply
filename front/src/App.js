@@ -47,6 +47,7 @@ import FadeLoader from 'react-spinners/FadeLoader';
 import CheckoutPayment from './pages/home/CheckoutPayment';
 import UserDashboard from './pages/user/UserDashboard';
 import UserOrders from './pages/user/UserOrders';
+import CheckoutFinish from './pages/home/CheckoutFinish';
 
 function App() {
   const dispatch = useDispatch();
@@ -198,9 +199,16 @@ function App() {
                 path="/checkout-payment"
                 component={CheckoutPayment}
               />
+              <UserRoute
+                exact
+                path="/checkout-finish"
+                component={CheckoutFinish}
+              />
+
               <UserRoute exact path="/wishlist" component={WishList} />
               <UserRoute exact path="/user/history" component={UserDashboard} />
               <UserRoute exact path="/user/orders" component={UserOrders} />
+
               <Route component={Error} />
             </Switch>
             <Footer />

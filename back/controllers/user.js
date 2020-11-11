@@ -3,7 +3,8 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 const Coupon = require('../models/coupon');
 const Order = require('../models/order');
-const uniqueid = require('uniqueid');
+// const uniqueid = require('uniqueid');
+const shortId = require('shortid');
 const ShippingAndBillingAddress = require('../models/shippingAndBillingAddress');
 
 exports.userCart = async (req, res) => {
@@ -84,7 +85,7 @@ exports.getUserCart = async (req, res) => {
 };
 
 exports.emptyCart = async (req, res) => {
-  console.log('empty cart');
+  // console.log('empty cart');
   const user = await User.findOne({ email: req.user.email }).exec();
 
   const cart = await Cart.findOneAndRemove({ orderdBy: user._id }).exec();
@@ -171,7 +172,7 @@ exports.applyCouponToUserCart = async (req, res) => {
 };
 
 exports.createOrder = async (req, res) => {
-  // console.log(req.body);
+  // console.log(req.body.stripeResponse);
   // return;
   const { paymentIntent } = req.body.stripeResponse;
 
@@ -182,6 +183,7 @@ exports.createOrder = async (req, res) => {
   let newOrder = await new Order({
     products,
     paymentIntent,
+    trackId: shortId.generate(),
     orderdBy: user._id,
   }).save();
 
@@ -196,9 +198,9 @@ exports.createOrder = async (req, res) => {
   });
 
   let updated = await Product.bulkWrite(bulkOption, {});
-  console.log('PRODUCT QUANTITY-- AND SOLD++', updated);
+  // console.log('PRODUCT QUANTITY-- AND SOLD++', updated);
 
-  console.log('NEW ORDER SAVED', newOrder);
+  // console.log('NEW ORDER SAVED', newOrder);
   res.json({ ok: true });
 };
 
@@ -207,6 +209,7 @@ exports.orders = async (req, res) => {
 
   let userOrders = await Order.find({ orderdBy: user._id })
     .populate('products.product')
+    .sort({ createdAt: -1 })
     .exec();
 
   res.json(userOrders);
@@ -324,4 +327,16 @@ exports.getBillingAndShippingAddress = async (req, res) => {
   res.json({
     shippingAndBillingAddress,
   });
+};
+
+exports.getLatestOrder = async (req, res) => {
+  const user = await User.findOne({ email: req.user.email }).exec();
+
+  let order = await Order.find({ orderdBy: user._id })
+    .sort({ createdAt: -1 })
+    .populate('products.product')
+    .limit(1)
+    .exec();
+  // console.log('order', order);
+  res.json(order);
 };

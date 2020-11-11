@@ -117,20 +117,33 @@ export const getBillingAndShippingAddress = async (token) =>
     }
   );
 
-export const createOrder = async (stripeResponse, authtoken) =>
+export const createOrder = async (stripeResponse, token) =>
   await axios.post(
     `${process.env.REACT_APP_API}/user/order`,
     { stripeResponse },
     {
       headers: {
-        authtoken,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
     }
   );
 
-export const getUserOrders = async (authtoken) =>
+export const getUserOrders = async (token) =>
   await axios.get(`${process.env.REACT_APP_API}/user/orders`, {
     headers: {
-      authtoken,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+export const getLatestOrder = async (token) =>
+  await axios.get(`${process.env.REACT_APP_API}/user/orders/getLatest`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
   });
