@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import UserMenu from '../../components/user/UserMenu';
-// import { PDFDownloadLink } from '@react-pdf/renderer';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import Invoice from '../../components/order/Invoice';
 import { getUserOrders } from '../../functions/user';
 import { useSelector, useDispatch } from 'react-redux';
 import { Steps, Card, Avatar } from 'antd';
@@ -16,6 +17,17 @@ const UserOrders = () => {
       setOrders(res.data);
     });
 
+  const showDownloadLink = (order) => (
+    <PDFDownloadLink
+      document={<Invoice order={order} />}
+      fileName="invoice.pdf"
+    >
+      <button type="button" class="btn btn-outline btn-default btn-sm">
+        <i className="fa fa-download" />
+        &nbsp; Download Invoice
+      </button>
+    </PDFDownloadLink>
+  );
   useEffect(() => {
     loadUserOrders();
   }, []);
@@ -45,13 +57,7 @@ const UserOrders = () => {
                           &nbsp;|&nbsp;
                           <i className="fa fa-file-o" />
                           &nbsp;
-                          <button
-                            type="button"
-                            class="btn btn-outline btn-default btn-sm"
-                          >
-                            <i className="fa fa-download" />
-                            &nbsp; Download Invoice
-                          </button>
+                          {showDownloadLink(order)}
                           &nbsp; |&nbsp;{' '}
                           <i className="fa fa-calendar-check-o" />
                           &nbsp; Order Placed Date:{' '}
@@ -88,10 +94,13 @@ const UserOrders = () => {
 
                     <div className="panel-body">
                       <div className="col-xs-12">
-                        <Steps size="small" progressDot current={0}>
+                        <Steps
+                          size="small"
+                          progressDot
+                          current={order.orderStatus}
+                        >
                           <Step title="Order Received" />
                           <Step title="Processing" />
-
                           <Step title="Shipped" />
                           <Step title="Completed" />
                           <Step title="Cancelled" />

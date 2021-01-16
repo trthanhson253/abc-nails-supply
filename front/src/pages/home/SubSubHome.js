@@ -1,22 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import ProductCard from '../../components/cards/ProductCard';
-import ProductCardRelate from '../../components/cards/ProductCardRelate';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import ProductCard from "../../components/cards/ProductCard";
+import ProductCardRelate from "../../components/cards/ProductCardRelate";
 import {
   getProductBySubSub,
   getFilteredProducts,
-} from '../../functions/product';
-import { useSelector } from 'react-redux';
-import ProductFilterMenu from '../../components/home/ProductFilterMenu';
-import { Slider, Checkbox, message } from 'antd';
-import _ from 'lodash';
+} from "../../functions/product";
+import { useSelector, useDispatch } from "react-redux";
+import ProductFilterMenu from "../../components/home/ProductFilterMenu";
+import { Slider, Checkbox, message } from "antd";
+import _ from "lodash";
+import { Helmet } from "react-helmet";
 
 const SubSubHome = (props) => {
+  const dispatch = useDispatch();
   const [products, setProducts] = useState([]);
   const [subSub, setSubSub] = useState({});
   const [cate, setCate] = useState({});
   const [sub, setSub] = useState({});
-  const [loading, setLoading] = useState(false);
+
   const [colors, setColors] = useState([]);
   const [brands, setBrands] = useState([]);
   const [sizes, setSizes] = useState([]);
@@ -44,7 +46,10 @@ const SubSubHome = (props) => {
   //   });
   // };
   const loadProductBySubSub = (slug) => {
-    setLoading(true);
+    dispatch({
+      type: "SET_SPIN",
+      payload: true,
+    });
     getProductBySubSub(slug).then((data) => {
       // console.log('data', data);
       // console.log('products', data.products);
@@ -53,7 +58,7 @@ const SubSubHome = (props) => {
       setSubSub(data.subSub[0]);
       setCate(data.subSub[0].category);
       setSub(data.subSub[0].sub);
-      setLoading(false);
+
       let color = [];
       let brand = [];
       let size = [];
@@ -71,6 +76,12 @@ const SubSubHome = (props) => {
       setBrands(uniqueBrand);
       setSizes(uniqueSize);
       // console.log('uniqueColor', uniqueColor);
+      const delayed = setTimeout(() => {
+        dispatch({
+          type: "SET_SPIN",
+          payload: false,
+        });
+      }, 1000);
     });
   };
   const loadMore = () => {
@@ -78,9 +89,9 @@ const SubSubHome = (props) => {
 
     getFilteredProducts(toSkip, limit, myFilters.filters).then((data) => {
       if (data.error) {
-        message.error('No products found');
+        message.error("No products found");
       } else {
-        console.log('DULIEU1', data.data);
+        // console.log("DULIEU1", data.data);
         setProducts([...products, ...data.data]);
         setSoluong(data.size);
         setSkip(toSkip);
@@ -94,15 +105,18 @@ const SubSubHome = (props) => {
   useEffect(() => {
     const ssslug1 = props.match.params.ssslug;
     loadProductBySubSub(ssslug1);
-  }, [props]);
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <title>{subSub.name}</title>
+      </Helmet>
       <div className="tygh-content clearfix">
         <div className="container-fluid  cat-content-grid">
           <div className="container-fluid-row container-fluid-row-full-width ut2__subcategories">
             <div className="row-fluid ">
-              {' '}
+              {" "}
               <div className="span16 ut2-top">
                 <div className="ut2-extra-block-title">
                   <h1 className="ty-mainbox-title">
@@ -132,8 +146,6 @@ const SubSubHome = (props) => {
                         <bdi>{subSub.name}</bdi>
                       </span>
                     </div>
-                    {/* Inline script moved to the bottom of the page */}
-                    {/*breadcrumbs_167*/}
                   </div>
                 </div>
               </div>
@@ -141,7 +153,7 @@ const SubSubHome = (props) => {
           </div>
           <div className="container-fluid-row">
             <div className="row-fluid ">
-              {' '}
+              {" "}
               <div className="span9 main-content-grid  ">
                 <div className="ut2-cat-container">
                   <div className="cat-view-grid" id="category_products_11">
@@ -150,182 +162,12 @@ const SubSubHome = (props) => {
                       className="ty-pagination-container cm-pagination-container"
                       id="pagination_contents"
                     >
-                      <div>
-                        <a
-                          data-ca-scroll=".cm-pagination-container"
-                          href="#"
-                          data-ca-page
-                          data-ca-target-id="pagination_contents"
-                          className="hidden"
-                        />
-                      </div>
-                      <div className="ty-sort-container">
-                        <div
-                          className="ut2-selected-product-filters cm-product-filters"
-                          id="selected_filters_170"
-                        >
-                          {/*selected_filters_170*/}
-                        </div>
-                        <div className="ut2-sorting-wrap">
-                          <div className="ty-sort-dropdown">
-                            <div className="ut2-sort-label"> Sort by:</div>
-                            <a
-                              id="sw_elm_sort_fields"
-                              className="ty-sort-dropdown__wrapper cm-combination"
-                            >
-                              <span>Sort by Newest</span>
-                              <i className="ut2-icon-outline-expand_more" />
-                            </a>
-                            <ul
-                              id="elm_sort_fields"
-                              className="ty-sort-dropdown__content cm-popup-box hidden"
-                            >
-                              <li className="sort-by-timestamp-asc ty-sort-dropdown__content-item">
-                                <a
-                                  className="cm-ajax cm-ajax-full-render ty-sort-dropdown__content-item-a"
-                                  data-ca-target-id="pagination_contents"
-                                  href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/?sort_by=timestamp&sort_order=asc"
-                                  rel="nofollow"
-                                >
-                                  Sort by Oldest
-                                </a>
-                              </li>
-                              <li className="sort-by-code-asc ty-sort-dropdown__content-item">
-                                <a
-                                  className="cm-ajax cm-ajax-full-render ty-sort-dropdown__content-item-a"
-                                  data-ca-target-id="pagination_contents"
-                                  href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/?sort_by=code&sort_order=asc"
-                                  rel="nofollow"
-                                >
-                                  Sort by Item # 0 to 9
-                                </a>
-                              </li>
-                              <li className="sort-by-code-desc ty-sort-dropdown__content-item">
-                                <a
-                                  className="cm-ajax cm-ajax-full-render ty-sort-dropdown__content-item-a"
-                                  data-ca-target-id="pagination_contents"
-                                  href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/?sort_by=code&sort_order=desc"
-                                  rel="nofollow"
-                                >
-                                  Sort by Item # 9 to 0
-                                </a>
-                              </li>
-                              <li className="sort-by-product-asc ty-sort-dropdown__content-item">
-                                <a
-                                  className="cm-ajax cm-ajax-full-render ty-sort-dropdown__content-item-a"
-                                  data-ca-target-id="pagination_contents"
-                                  href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/?sort_by=product&sort_order=asc"
-                                  rel="nofollow"
-                                >
-                                  Sort by A to Z
-                                </a>
-                              </li>
-                              <li className="sort-by-product-desc ty-sort-dropdown__content-item">
-                                <a
-                                  className="cm-ajax cm-ajax-full-render ty-sort-dropdown__content-item-a"
-                                  data-ca-target-id="pagination_contents"
-                                  href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/?sort_by=product&sort_order=desc"
-                                  rel="nofollow"
-                                >
-                                  Sort by Z to A
-                                </a>
-                              </li>
-                              <li className="sort-by-price-asc ty-sort-dropdown__content-item">
-                                <a
-                                  className="cm-ajax cm-ajax-full-render ty-sort-dropdown__content-item-a"
-                                  data-ca-target-id="pagination_contents"
-                                  href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/?sort_by=price&sort_order=asc"
-                                  rel="nofollow"
-                                >
-                                  Sort by Price Lowest
-                                </a>
-                              </li>
-                              <li className="sort-by-price-desc ty-sort-dropdown__content-item">
-                                <a
-                                  className="cm-ajax cm-ajax-full-render ty-sort-dropdown__content-item-a"
-                                  data-ca-target-id="pagination_contents"
-                                  href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/?sort_by=price&sort_order=desc"
-                                  rel="nofollow"
-                                >
-                                  Sort by Price Highest
-                                </a>
-                              </li>
-                              <li className="sort-by-popularity-desc ty-sort-dropdown__content-item">
-                                <a
-                                  className="cm-ajax cm-ajax-full-render ty-sort-dropdown__content-item-a"
-                                  data-ca-target-id="pagination_contents"
-                                  href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/?sort_by=popularity&sort_order=desc"
-                                  rel="nofollow"
-                                >
-                                  Sort by Popular
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                          <div
-                            className="ty-sort-dropdown"
-                            style={{ marginRight: '10px' }}
-                          >
-                            <a
-                              id="sw_elm_pagination_steps"
-                              className="ty-sort-dropdown__wrapper cm-combination cm-tooltip"
-                              title="24 Per Page"
-                            >
-                              <span>24</span>
-                              <i className="ut2-icon-outline-expand_more" />
-                            </a>
-                            <ul
-                              id="elm_pagination_steps"
-                              className="ty-sort-dropdown__content cm-popup-box hidden"
-                            >
-                              <li className="ty-sort-dropdown__content-item">
-                                <a
-                                  className="cm-ajax cm-ajax-full-render ty-sort-dropdown__content-item-a"
-                                  href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/?items_per_page=12"
-                                  data-ca-target-id="pagination_contents"
-                                  rel="nofollow"
-                                >
-                                  12 Per Page
-                                </a>
-                              </li>
-                              <li className="ty-sort-dropdown__content-item">
-                                <a
-                                  className="cm-ajax cm-ajax-full-render ty-sort-dropdown__content-item-a"
-                                  href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/?items_per_page=48"
-                                  data-ca-target-id="pagination_contents"
-                                  rel="nofollow"
-                                >
-                                  48 Per Page
-                                </a>
-                              </li>
-                              <li className="ty-sort-dropdown__content-item">
-                                <a
-                                  className="cm-ajax cm-ajax-full-render ty-sort-dropdown__content-item-a"
-                                  href="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/?items_per_page=96"
-                                  data-ca-target-id="pagination_contents"
-                                  rel="nofollow"
-                                >
-                                  96 Per Page
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      {/* Inline script moved to the bottom of the page */}
                       <div className="grid-list">
                         <div id="categories_view_pagination_contents">
                           {products.map((product) => (
-                            <ProductCard product={product} loading={loading} />
+                            <ProductCard product={product} />
                           ))}
                         </div>
-                        {soluong > 0 && soluong >= limit && (
-                          <div className="ut2-load-more-container">
-                            <span className="ut2-load-more" onClick={loadMore}>
-                              Show another 3 products
-                            </span>
-                          </div>
-                        )}
                       </div>
                     </div>
                   </div>

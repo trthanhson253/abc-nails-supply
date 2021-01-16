@@ -1,11 +1,11 @@
-const Product = require('../models/product');
-const Category = require('../models/category');
+const Product = require("../models/product");
+const Category = require("../models/category");
 // const User = require("../models/user");
-const slugify = require('slugify');
-const Sub = require('../models/sub');
-const SubSub = require('../models/subSub');
-const formidable = require('formidable');
-const cloudinary = require('cloudinary');
+const slugify = require("slugify");
+const Sub = require("../models/sub");
+const SubSub = require("../models/subSub");
+const formidable = require("formidable");
+const cloudinary = require("cloudinary");
 
 exports.create = (req, res) => {
   const {
@@ -65,7 +65,7 @@ exports.create = (req, res) => {
     if (err) {
       console.log(err);
       return res.status(400).json({
-        error: 'Cannot Create Product',
+        error: "Cannot Create Product",
       });
     }
     res.json(result);
@@ -75,10 +75,10 @@ exports.create = (req, res) => {
 exports.listAll = async (req, res) => {
   let products = await Product.find({})
     // .limit(parseInt(req.params.count))
-    .populate('category', 'name')
-    .populate('sub', 'name')
-    .populate('subSub', 'name')
-    .sort([['createdAt', 'desc']])
+    .populate("category", "name")
+    .populate("sub", "name")
+    .populate("subSub", "name")
+    .sort([["createdAt", "desc"]])
     .exec();
   res.json(products);
 };
@@ -95,26 +95,26 @@ exports.listRecentlyProducts = async (req, res) => {
 
   // console.log("notPresentInArray",notPresentInArray);
 
-  let products = await Product.find().where('_id').in(notPresentInArray).exec();
+  let products = await Product.find().where("_id").in(notPresentInArray).exec();
   // console.log(products)
   res.json(products);
 };
 
 exports.listProductBySubSub = (req, res) => {
   SubSub.find({ slug: req.params.slug })
-    .populate('category')
-    .populate('sub')
+    .populate("category")
+    .populate("sub")
     .exec((err, subSub) => {
       if (err || !subSub) {
         return res.status(400).json({
-          error: 'Do not find sub-sub',
+          error: "Do not find sub-sub",
         });
       }
       console.log(subSub[0]._id);
       Product.find({ subSub: subSub[0]._id })
-        .populate('category')
-        .populate('sub')
-        .populate('subSub')
+        .populate("category")
+        .populate("sub")
+        .populate("subSub")
         // .sort([[sortBy, order]])
         // .skip(skip)
         // .limit(limit)
@@ -130,15 +130,15 @@ exports.listProductBySubSub = (req, res) => {
 };
 
 exports.listProductByCategory = (req, res) => {
-  let order = req.body.order ? req.body.order : 'desc';
-  let sortBy = req.body.sortBy ? req.body.sortBy : '_id';
+  let order = req.body.order ? req.body.order : "desc";
+  let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
   let limit = req.body.limit ? parseInt(req.body.limit) : 100;
   let skip = parseInt(req.body.skip);
 
   Category.find({ slug: req.params.cslug }).exec((err, category) => {
     if (err || !category) {
       return res.status(400).json({
-        error: 'Do not find category',
+        error: "Do not find category",
       });
     }
 
@@ -149,6 +149,9 @@ exports.listProductByCategory = (req, res) => {
       .sort([[sortBy, order]])
       .skip(skip)
       .limit(limit)
+      .populate("category", "name slug")
+      .populate("sub", "name slug")
+      .populate("subSub", "name slug")
       .exec((err, products) => {
         // console.log(products);
         res.json({
@@ -164,13 +167,13 @@ exports.listMenuByCategory = (req, res) => {
   Category.find({ slug: req.params.cslug }).exec((err, category) => {
     if (err || !category) {
       return res.status(400).json({
-        error: 'Do not find category',
+        error: "Do not find category",
       });
     }
     Product.find({ category: category[0]._id }).exec((err, products) => {
       if (err || !products) {
         return res.status(400).json({
-          error: 'Do not find products',
+          error: "Do not find products",
         });
       }
       Sub.find({ category: category[0]._id }).exec((err, subs) => {
@@ -198,7 +201,7 @@ exports.remove = async (req, res) => {
       res.json(deletedProduct);
     }
   } catch (err) {
-    res.status(400).send('Product delete failed');
+    res.status(400).send("Product delete failed");
   }
 
   try {
@@ -208,15 +211,15 @@ exports.remove = async (req, res) => {
     res.json(deleted);
   } catch (err) {
     console.log(err);
-    return res.staus(400).send('Product delete failed');
+    return res.staus(400).send("Product delete failed");
   }
 };
 
 exports.read = async (req, res) => {
   const product = await Product.findOne({ slug: req.params.slug })
-    .populate('category', 'name slug')
-    .populate('sub', 'name slug')
-    .populate('subSub', 'name slug')
+    .populate("category", "name slug")
+    .populate("sub", "name slug")
+    .populate("subSub", "name slug")
     // .populate('color', 'name slug')
     // .populate('size', 'name slug')
     // .populate('brand', 'name slug')
@@ -355,15 +358,15 @@ exports.read = async (req, res) => {
 //   res.json(products);
 // };
 const handleQuery = (req, res, query) => {
-  console.log('query', query);
-  Product.find({ name: { $regex: query, $options: 'i' }, status: 0 })
-    .populate('category', '_id name')
-    .populate('sub', '_id name')
-    .populate('subSub', '_id name')
+  console.log("query", query);
+  Product.find({ name: { $regex: query, $options: "i" }, status: 0 })
+    .populate("category", "_id name")
+    .populate("sub", "_id name")
+    .populate("subSub", "_id name")
     .exec((err, products) => {
       if (err) {
         return res.status(400).json({
-          error: 'Not Found',
+          error: "Not Found",
         });
       }
       res.json(products);
@@ -378,9 +381,9 @@ const handlePrice = async (req, res, price) => {
         $lte: price[1],
       },
     })
-      .populate('category', '_id name')
-      .populate('subs', '_id name')
-      .populate('postedBy', '_id name')
+      .populate("category", "_id name")
+      .populate("subs", "_id name")
+      .populate("postedBy", "_id name")
       .exec();
 
     res.json(products);
@@ -462,9 +465,9 @@ const handlePrice = async (req, res, price) => {
 
 const handleBrand = async (req, res, brand) => {
   const products = await Product.find({ brand })
-    .populate('category', '_id name')
-    .populate('subs', '_id name')
-    .populate('postedBy', '_id name')
+    .populate("category", "_id name")
+    .populate("subs", "_id name")
+    .populate("postedBy", "_id name")
     .exec();
 
   res.json(products);
@@ -483,7 +486,7 @@ exports.searchFilters = async (req, res) => {
   } = req.body;
 
   if (query) {
-    console.log('query --->', query);
+    console.log("query --->", query);
     await handleQuery(req, res, query);
   }
 
@@ -519,37 +522,37 @@ exports.searchFilters = async (req, res) => {
   // }
 
   if (brand) {
-    console.log('brand ---> ', brand);
+    console.log("brand ---> ", brand);
     await handleBrand(req, res, brand);
   }
 };
 
 exports.listByFilters = (req, res) => {
-  let order = req.body.order ? req.body.order : 'desc';
-  let sortBy = req.body.sortBy ? req.body.sortBy : '_id';
+  let order = req.body.order ? req.body.order : "desc";
+  let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
   let limit = req.body.limit ? parseInt(req.body.limit) : 100;
   let skip = parseInt(req.body.skip);
   let findArgs = {};
 
   // console.log(order, sortBy, limit, skip, req.body.filters);
-  console.log('findArgs', findArgs);
+  console.log("findArgs", findArgs);
 
   for (let key in req.body.filters) {
     if (req.body.filters[key].length > 0) {
       findArgs[key] = req.body.filters[key];
-      console.log('findArgs', findArgs[key]);
+      console.log("findArgs", findArgs[key]);
     }
   }
 
   Product.find(findArgs)
-    .populate('category')
+    .populate("category")
     .sort([[sortBy, order]])
     .skip(skip)
     .limit(limit)
     .exec((err, data) => {
       if (err) {
         return res.status(400).json({
-          error: 'Products not found',
+          error: "Products not found",
         });
       }
       res.json({

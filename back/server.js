@@ -39,6 +39,7 @@ const sizeRoutes = require('./routes/size');
 const couponRoutes = require('./routes/coupon');
 const userRoutes = require('./routes/user');
 const stripeRoutes = require('./routes/stripe');
+const adminOrdersRoutes = require('./routes/adminOrders');
 
 // middlewares
 app.use(morgan('dev'));
@@ -59,6 +60,7 @@ app.use('/api', sizeRoutes);
 app.use('/api', couponRoutes);
 app.use('/api', userRoutes);
 app.use('/api', stripeRoutes);
+app.use('/api', adminOrdersRoutes);
 
 // port
 const port = process.env.PORT || 8000;

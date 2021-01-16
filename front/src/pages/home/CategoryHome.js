@@ -1,16 +1,18 @@
-import { Link } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import {
   getProductByCategory,
   getMenuByCategory,
   getFilteredProducts,
-} from '../../functions/product';
-import _ from 'lodash';
-import ProductCard from '../../components/cards/ProductCard';
-import renderHTML from 'react-render-html';
-import { Menu, Slider, Checkbox, message } from 'antd';
-
+} from "../../functions/product";
+import _ from "lodash";
+import ProductCard from "../../components/cards/ProductCard";
+import renderHTML from "react-render-html";
+import { Menu, Slider, Checkbox, message } from "antd";
+import { Helmet } from "react-helmet";
+import { useSelector, useDispatch } from "react-redux";
 const CategoryHome = (props) => {
+  const dispatch = useDispatch();
   const [products, setProducts] = useState([]);
   const [cate, setCate] = useState([]);
   const [subCates, setSubCates] = useState([]);
@@ -19,7 +21,7 @@ const CategoryHome = (props) => {
   const [sizes, setSizes] = useState([]);
   const [limit, setLimit] = useState(4);
   const [skip, setSkip] = useState(0);
-  const [loading, setLoading] = useState(false);
+
   const [soluong, setSoluong] = useState(0);
   const [checkedBrand, setCheckedBrand] = useState([]);
   const [checkedSize, setCheckedSize] = useState([]);
@@ -29,10 +31,13 @@ const CategoryHome = (props) => {
   });
 
   const loadProductByCategory = (cslug) => {
-    setLoading(true);
+    dispatch({
+      type: "SET_SPIN",
+      payload: true,
+    });
     getProductByCategory(skip, limit, cslug).then((data) => {
-      console.log('data', data);
-      console.log('products', data.products);
+      // console.log("data", data);
+      // console.log("products", data.products);
 
       // console.log('subsub', data.subSub[0]);
       setProducts(data.products);
@@ -40,10 +45,16 @@ const CategoryHome = (props) => {
       //   setSubSub(data.subSub[0]);
       //   setCate(data.subSub[0].category);
       //   setSub(data.subSub[0].sub);
-      setLoading(false);
+
       setSoluong(data.size);
       setSkip(0);
       setFlag(false);
+      const delayed = setTimeout(() => {
+        dispatch({
+          type: "SET_SPIN",
+          payload: false,
+        });
+      }, 1000);
     });
   };
 
@@ -52,7 +63,7 @@ const CategoryHome = (props) => {
       let color = [];
       let brand = [];
       let size = [];
-      console.log('data_son', data);
+      console.log("data_son", data);
       for (let i = 0; i < data.products.length; i++) {
         color.push(data.products[i].color);
         brand.push(data.products[i].brand);
@@ -75,7 +86,7 @@ const CategoryHome = (props) => {
     getProductByCategory(toSkip, limit, props.match.params.cslug).then(
       (data) => {
         if (data.error) {
-          message.error('Cannot get data');
+          message.error("Cannot get data");
         } else {
           setProducts([...products, ...data.products]);
           setSoluong(data.size);
@@ -91,7 +102,7 @@ const CategoryHome = (props) => {
     // console.log(newFilters);
     getFilteredProducts(toSkip, limit, myFilters.filters).then((data) => {
       if (data.error) {
-        message.error('Cannot get data');
+        message.error("Cannot get data");
       } else {
         setProducts([...products, ...data.data]);
         setSoluong(data.size);
@@ -112,7 +123,7 @@ const CategoryHome = (props) => {
     }
 
     setCheckedBrand(newCheckedBrandName);
-    handleFilters(newCheckedBrandName, 'brand');
+    handleFilters(newCheckedBrandName, "brand");
   };
 
   const handleChangeSize = (c) => () => {
@@ -126,7 +137,7 @@ const CategoryHome = (props) => {
     }
     console.log(newCheckedSize);
     setCheckedSize(newCheckedSize);
-    handleFilters(newCheckedSize, 'size');
+    handleFilters(newCheckedSize, "size");
   };
 
   const handleFilters = (filters, filterBy) => {
@@ -140,7 +151,7 @@ const CategoryHome = (props) => {
     // console.log(newFilters);
     getFilteredProducts(skip, limit, newFilters).then((data) => {
       if (data.error) {
-        message.error('Cannot Find Products');
+        message.error("Cannot Find Products");
       } else {
         setProducts(data.data);
         setSoluong(data.size);
@@ -184,16 +195,19 @@ const CategoryHome = (props) => {
 
     loadProductByCategory(cslug);
     loadMenuByCategory(cslug);
-  }, [props]);
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <title>{cate.name}</title>
+      </Helmet>
       {JSON.stringify(myFilters)}
       <div className="tygh-content clearfix">
         <div className="container-fluid  cat-content-grid">
           <div className="container-fluid-row container-fluid-row-full-width ut2__subcategories">
             <div className="row-fluid ">
-              {' '}
+              {" "}
               <div className="span16 ut2-top">
                 <div className="ut2-extra-block-title">
                   <h1 className="ty-mainbox-title">
@@ -216,19 +230,19 @@ const CategoryHome = (props) => {
           </div>
           <div className="container-fluid-row">
             <div className="row-fluid ">
-              {' '}
+              {" "}
               <div className="span9 main-content-grid  ">
                 {cate.description ? (
                   <>
                     <div
                       style={{
-                        borderStyle: 'solid',
-                        padding: '15px',
-                        borderColor: '#F0F0F0',
+                        borderStyle: "solid",
+                        padding: "15px",
+                        borderColor: "#F0F0F0",
                       }}
                     >
                       {renderHTML(cate.description)}
-                    </div>{' '}
+                    </div>{" "}
                     <hr />
                   </>
                 ) : (
@@ -254,7 +268,7 @@ const CategoryHome = (props) => {
                       <div className="grid-list">
                         <div id="categories_view_pagination_contents">
                           {products.map((product) => (
-                            <ProductCard product={product} loading={loading} />
+                            <ProductCard product={product} />
                           ))}
                         </div>
                         {flag == false && (
@@ -336,7 +350,7 @@ const CategoryHome = (props) => {
                           </div>
                           <ul className="ty-product-filters ">
                             <li className="ty-product-filters__item-more">
-                              <ul style={{ maxHeight: '310px' }}>
+                              <ul style={{ maxHeight: "310px" }}>
                                 <li className="cm-product-filters-checkbox-container ty-product-filters__group">
                                   {subCates.map((c) => (
                                     <li className="cm-product-filters-checkbox-container ty-product-filters__group">
@@ -373,7 +387,7 @@ const CategoryHome = (props) => {
                           </div>
                           <ul className="ty-product-filters ">
                             <li className="ty-product-filters__item-more">
-                              <ul style={{ maxHeight: '310px' }}>
+                              <ul style={{ maxHeight: "310px" }}>
                                 <li className="cm-product-filters-checkbox-container ty-product-filters__group">
                                   {brands.map((c) => (
                                     <li className="cm-product-filters-checkbox-container ty-product-filters__group">
@@ -416,7 +430,7 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: 'none' }}
+                                  style={{ display: "none" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
@@ -427,7 +441,7 @@ const CategoryHome = (props) => {
                                 <div
                                   title="Black"
                                   className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: '#000000' }}
+                                  style={{ background: "#000000" }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -444,7 +458,7 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: 'none' }}
+                                  style={{ display: "none" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
@@ -455,7 +469,7 @@ const CategoryHome = (props) => {
                                 <div
                                   title="White"
                                   className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: '#ffffff' }}
+                                  style={{ background: "#ffffff" }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -472,7 +486,7 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: 'none' }}
+                                  style={{ display: "none" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
@@ -483,7 +497,7 @@ const CategoryHome = (props) => {
                                 <div
                                   title="Red"
                                   className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: '#ff0000' }}
+                                  style={{ background: "#ff0000" }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -500,7 +514,7 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: 'none' }}
+                                  style={{ display: "none" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
@@ -511,7 +525,7 @@ const CategoryHome = (props) => {
                                 <div
                                   title="Blue"
                                   className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: '#0000ff' }}
+                                  style={{ background: "#0000ff" }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -528,7 +542,7 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: 'none' }}
+                                  style={{ display: "none" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
@@ -539,7 +553,7 @@ const CategoryHome = (props) => {
                                 <div
                                   title="Pink"
                                   className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: '#ff00ff' }}
+                                  style={{ background: "#ff00ff" }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -556,7 +570,7 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: 'none' }}
+                                  style={{ display: "none" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
@@ -567,7 +581,7 @@ const CategoryHome = (props) => {
                                 <div
                                   title="Purple"
                                   className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: '#9900ff' }}
+                                  style={{ background: "#9900ff" }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -584,7 +598,7 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: 'none' }}
+                                  style={{ display: "none" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
@@ -595,7 +609,7 @@ const CategoryHome = (props) => {
                                 <div
                                   title="Green"
                                   className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: '#38761d' }}
+                                  style={{ background: "#38761d" }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -612,7 +626,7 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: 'none' }}
+                                  style={{ display: "none" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
@@ -623,7 +637,7 @@ const CategoryHome = (props) => {
                                 <div
                                   title="Yellow"
                                   className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: '#ffff00' }}
+                                  style={{ background: "#ffff00" }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -640,7 +654,7 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: 'none' }}
+                                  style={{ display: "none" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
@@ -651,7 +665,7 @@ const CategoryHome = (props) => {
                                 <div
                                   title="Neutral"
                                   className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: '#e3b28b' }}
+                                  style={{ background: "#e3b28b" }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -668,7 +682,7 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: 'none' }}
+                                  style={{ display: "none" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
@@ -679,7 +693,7 @@ const CategoryHome = (props) => {
                                 <div
                                   title="Orange"
                                   className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: '#ff9900' }}
+                                  style={{ background: "#ff9900" }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -696,7 +710,7 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: 'none' }}
+                                  style={{ display: "none" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
@@ -707,7 +721,7 @@ const CategoryHome = (props) => {
                                 <div
                                   title="Brown"
                                   className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: '#804c2f' }}
+                                  style={{ background: "#804c2f" }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -724,7 +738,7 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: 'none' }}
+                                  style={{ display: "none" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
@@ -735,7 +749,7 @@ const CategoryHome = (props) => {
                                 <div
                                   title="Silver"
                                   className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: '#d9d9d9' }}
+                                  style={{ background: "#d9d9d9" }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -752,7 +766,7 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: 'none' }}
+                                  style={{ display: "none" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
@@ -763,7 +777,7 @@ const CategoryHome = (props) => {
                                 <div
                                   title="Gray"
                                   className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: '#434343' }}
+                                  style={{ background: "#434343" }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -780,7 +794,7 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: 'none' }}
+                                  style={{ display: "none" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
@@ -791,7 +805,7 @@ const CategoryHome = (props) => {
                                 <div
                                   title="Clear"
                                   className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: '#ffffff' }}
+                                  style={{ background: "#ffffff" }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -808,7 +822,7 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: 'none' }}
+                                  style={{ display: "none" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
@@ -819,7 +833,7 @@ const CategoryHome = (props) => {
                                 <div
                                   title="Gold"
                                   className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: '#f1c232' }}
+                                  style={{ background: "#f1c232" }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -860,7 +874,7 @@ const CategoryHome = (props) => {
                             <li className="ty-product-filters__item-more">
                               <ul
                                 id="ranges_177_4"
-                                style={{ maxHeight: '310px' }}
+                                style={{ maxHeight: "310px" }}
                                 className="ty-product-filters__variants cm-filter-table"
                                 data-ca-input-id="elm_search_177_4"
                                 data-ca-clear-id="elm_search_clear_177_4"

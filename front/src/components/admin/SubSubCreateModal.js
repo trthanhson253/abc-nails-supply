@@ -5,7 +5,7 @@ import { createSubSub } from "../../functions/subSub";
 import { getCategories,getCategorySubs } from "../../functions/category";
 
 
-const SubCreateModal = ({ open,handleClose,loadSubSubs,token }) => {
+const SubSubCreateModal = ({ open,handleClose,loadSubSubs,token }) => {
   const initialState = {
     name: "",
     category:"",
@@ -142,4 +142,4 @@ const SubCreateModal = ({ open,handleClose,loadSubSubs,token }) => {
   );
 };
 
-export default SubCreateModal;
+export default SubSubCreateModal;

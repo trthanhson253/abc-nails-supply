@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import { login, setCookie, getCookie } from '../../functions/auth';
-import Spinner from '../../components/Spinner';
-import { message } from 'antd';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { login, setCookie, getCookie } from "../../functions/auth";
+import Spinner from "../../components/Spinner";
+import { message } from "antd";
 const Login = ({ history }) => {
   const [state, setState] = useState({
-    email: '',
-    password: '',
-    error: '',
-    success: '',
-    buttonText: 'Log in',
+    email: "",
+    password: "",
+    error: "",
+    success: "",
+    buttonText: "Log in",
   });
   const [loading, setLoading] = useState(false);
   const { email, password, error, success, buttonText } = state;
@@ -20,8 +20,8 @@ const Login = ({ history }) => {
     setState({
       ...state,
       [name]: e.target.value,
-      error: '',
-      success: '',
+      error: "",
+      success: "",
     });
   };
 
@@ -33,7 +33,7 @@ const Login = ({ history }) => {
     if (intended) {
       return;
     } else {
-      if (user && user.token) history.push('/');
+      if (user && user.token) history.push("/");
     }
   }, [user, history]);
 
@@ -46,9 +46,9 @@ const Login = ({ history }) => {
       history.push(intended.from);
     } else {
       if (res.data.user.role == 0) {
-        history.push('/admin');
+        history.push("/admin");
       } else {
-        history.push('/user/history');
+        history.push("/user/history");
       }
     }
   };
@@ -56,13 +56,13 @@ const Login = ({ history }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch({
-      type: 'SET_LOADING',
+      type: "SET_LOADING",
       payload: true,
     });
-    if (email === getCookie('emailForRegistration')) {
+    if (email === getCookie("emailForRegistration")) {
       // toast.error("Your account has not been activated yet. Please check your email.");
       message.warning(
-        'Your account has not been activated yet. Please check your email.',
+        "Your account has not been activated yet. Please check your email.",
         15
       );
     }
@@ -70,7 +70,7 @@ const Login = ({ history }) => {
       .then((res) => {
         // console.log("RES",res)
         dispatch({
-          type: 'LOGGED_IN_USER',
+          type: "LOGGED_IN_USER",
           payload: {
             name: res.data.user.name,
             email: res.data.user.email,
@@ -82,13 +82,13 @@ const Login = ({ history }) => {
         setLoading(false);
         setTimeout(() => {
           dispatch({
-            type: 'SET_LOADING',
+            type: "SET_LOADING",
             payload: false,
           });
         }, 1000);
-        setCookie('token', res.data.token);
-        setCookie('_id', res.data.user._id);
-        setCookie('role', res.data.user.role);
+        setCookie("token", res.data.token);
+        setCookie("_id", res.data.user._id);
+        setCookie("role", res.data.user.role);
         toast.success(`Login Success`);
         roleBasedRedirect(res);
       })
@@ -96,12 +96,12 @@ const Login = ({ history }) => {
         // console.log('Son', error.response);
         setLoading(false);
         dispatch({
-          type: 'SET_LOADING',
+          type: "SET_LOADING",
           payload: false,
         });
         setState({
           ...state,
-          password: '',
+          password: "",
         });
         toast.error(error.response.data.error);
       });
@@ -129,7 +129,7 @@ const Login = ({ history }) => {
           className="ty-login__input cm-focus"
           data-emoji_font="true"
           value={email}
-          onChange={handleChange('email')}
+          onChange={handleChange("email")}
           placeholder="Your email"
           style={{
             fontFamily:
@@ -157,7 +157,7 @@ const Login = ({ history }) => {
           name="password"
           size="{30}"
           value={password}
-          onChange={handleChange('password')}
+          onChange={handleChange("password")}
           className="ty-login__input"
           maxlength="{32}"
           placeholder="Your password"
@@ -171,7 +171,7 @@ const Login = ({ history }) => {
           >
             <span>
               <span>
-                <i className="fa fa-lock" style={{ color: 'white' }} />
+                <i className="fa fa-lock" style={{ color: "white" }} />
                 &nbsp;&nbsp;{buttonText}
               </span>
             </span>
@@ -211,7 +211,7 @@ const Login = ({ history }) => {
                     <bdi>Sign in</bdi>
                   </span>
                 </div>
-                {/* Inline script moved to the bottom of the page */}{' '}
+                {/* Inline script moved to the bottom of the page */}{" "}
                 {/*breadcrumbs_10*/}
               </div>
             </div>

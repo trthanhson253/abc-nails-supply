@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Modal, Button, Spin } from 'antd';
+import React, { useState } from "react";
+import { Modal, Button, Spin } from "antd";
 // import { LoadingOutlined } from '@ant-design/icons';
-import { toast } from 'react-toastify';
-import { createCategory } from '../../functions/category';
-import FileUpload from './FileUpload';
-import CKEditor from 'ckeditor4-react';
+import { toast } from "react-toastify";
+import { createCategory } from "../../functions/category";
+import FileUpload from "./FileUpload";
+import CKEditor from "ckeditor4-react";
 
 const CategoryCreateModal = ({
   open,
@@ -17,12 +17,12 @@ const CategoryCreateModal = ({
   const initialState = {
     images: [
       {
-        public_id: '',
-        url: '',
+        public_id: "",
+        url: "",
       },
     ],
-    name: '',
-    description: '',
+    name: "",
+    description: "",
   };
   const [values, setValues] = useState(initialState);
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,7 @@ const CategoryCreateModal = ({
   const { name, images, description } = values;
 
   const handleChange = (name) => (e) => {
-    const value = name === 'description' ? e.editor.getData() : e.target.value;
+    const value = name === "description" ? e.editor.getData() : e.target.value;
     setValues({ ...values, [name]: value });
   };
 
@@ -40,16 +40,16 @@ const CategoryCreateModal = ({
       .then((data) => {
         setValues({
           ...values,
-          name: '',
-          description: '',
+          name: "",
+          description: "",
           images: [
             {
-              public_id: '',
-              url: '',
+              public_id: "",
+              url: "",
             },
           ],
         });
-        toast.success('Created Successfully!');
+        toast.success("Created Successfully!");
         handleClose();
         loadCategories();
         setRemoveImage(false);
@@ -63,6 +63,7 @@ const CategoryCreateModal = ({
   return (
     <>
       <Modal
+        style={{ width: "820px" }}
         title="Create New Category"
         centered
         visible={open}
@@ -90,7 +91,7 @@ const CategoryCreateModal = ({
           <input
             type="text"
             name="user_login"
-            onChange={handleChange('name')}
+            onChange={handleChange("name")}
             value={name}
             size={30}
             placeHolder="Name"
@@ -123,7 +124,7 @@ const CategoryCreateModal = ({
             height="250px"
             value={description}
             // onChange={handleDescription}
-            onChange={handleChange('description')}
+            onChange={handleChange("description")}
           />
         </div>
       </Modal>

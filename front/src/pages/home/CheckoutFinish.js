@@ -17,7 +17,7 @@ const CheckoutFinish = () => {
   useEffect(() => {
     getLatestOrder(user.token).then((res) => {
       console.log('create payment intent', res.data);
-      setOrder(res.data[0]);
+      setOrder(res.data);
     });
   }, []);
   return (
@@ -130,9 +130,7 @@ const CheckoutFinish = () => {
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        <tbody>
-                                          {JSON.stringify(order.products)}
-                                        </tbody>
+                                        <tbody></tbody>
                                       </tbody>
                                     </table>
                                   </div>

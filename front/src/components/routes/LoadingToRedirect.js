@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import Spinner from "../Spinner"
+import Spinner from "../Spinner";
 import { useSelector } from "react-redux";
 
 const LoadingToRedirect = () => {
@@ -11,12 +11,12 @@ const LoadingToRedirect = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCount((currentCount) => --currentCount);
-    }, 1000);
+    }, 300);
     // redirect once count is equal to 0
     count === 0 && history.push("/login");
     // cleanup
     return () => clearInterval(interval);
-  }, [count,history]);
+  }, [count, history]);
 
   return (
     <>

@@ -332,11 +332,12 @@ exports.getBillingAndShippingAddress = async (req, res) => {
 exports.getLatestOrder = async (req, res) => {
   const user = await User.findOne({ email: req.user.email }).exec();
 
-  let order = await Order.find({ orderdBy: user._id })
+  let order = await Order.findOne({ orderdBy: user._id })
     .sort({ createdAt: -1 })
     .populate('products.product')
     .limit(1)
     .exec();
   // console.log('order', order);
+
   res.json(order);
 };

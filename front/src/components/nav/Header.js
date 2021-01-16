@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { removeCookie } from '../../functions/auth';
-import { toast } from 'react-toastify';
-import { getCategories, loadMenu } from '../../functions/category';
-import Search from '../forms/Search';
-import { Image, message } from 'antd';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { removeCookie } from "../../functions/auth";
+import { toast } from "react-toastify";
+import { getCategories, loadMenu } from "../../functions/category";
+import Search from "../forms/Search";
+import { Image, message } from "antd";
 
 const Header = () => {
   let { user, cart, load } = useSelector((state) => ({ ...state }));
@@ -69,9 +69,9 @@ const Header = () => {
     // console.log(p._id, "to remove");
     let cart = [];
 
-    if (typeof window !== 'undefined') {
-      if (localStorage.getItem('cart')) {
-        cart = JSON.parse(localStorage.getItem('cart'));
+    if (typeof window !== "undefined") {
+      if (localStorage.getItem("cart")) {
+        cart = JSON.parse(localStorage.getItem("cart"));
       }
       // [1,2,3,4,5]
       cart.map((product, i) => {
@@ -80,13 +80,13 @@ const Header = () => {
         }
       });
 
-      localStorage.setItem('cart', JSON.stringify(cart));
+      localStorage.setItem("cart", JSON.stringify(cart));
       dispatch({
-        type: 'ADD_TO_CART',
+        type: "ADD_TO_CART",
         payload: cart,
       });
     }
-    history.push('/cart');
+    history.push("/cart");
   };
   useEffect(() => {
     // loadSubSubs();
@@ -94,26 +94,26 @@ const Header = () => {
   }, []);
 
   const signout = () => {
-    removeCookie('token');
-    removeCookie('_id');
-    removeCookie('role');
+    removeCookie("token");
+    removeCookie("_id");
+    removeCookie("role");
     dispatch({
-      type: 'SET_LOADING',
+      type: "SET_LOADING",
       payload: true,
     });
 
     dispatch({
-      type: 'LOGOUT',
+      type: "LOGOUT",
       payload: null,
     });
     setTimeout(() => {
       dispatch({
-        type: 'SET_LOADING',
+        type: "SET_LOADING",
         payload: false,
       });
     }, 1000);
     toast.success(`Logout Success`);
-    history.push('/login');
+    history.push("/login");
   };
 
   return (
@@ -121,11 +121,11 @@ const Header = () => {
       <div className="tygh-header clearfix">
         <div
           className="container-fluid  header-grid  advanced-header"
-          style={{ padding: '5px 0' }}
+          style={{ padding: "5px 0" }}
         >
           <div className="container-fluid-row">
             <div className="row-fluid ">
-              {' '}
+              {" "}
               <div className="span5 top-logo-grid ">
                 <div className="top-logo ">
                   <div className="ty-logo-container">
@@ -133,7 +133,7 @@ const Header = () => {
                       <img
                         className="ty-pict  ty-logo-container__image cm-image"
                         id="det_img_590283576"
-                        src={require('../../assets/img/abc-logo.png')}
+                        src={require("../../assets/img/abc-logo.png")}
                         width={374}
                         height={160}
                         alt="ABC Nail Supply"
@@ -201,7 +201,7 @@ const Header = () => {
                   >
                     <Link
                       className="cm-tooltip ty-wishlist__a "
-                      to="/wishlist"
+                      to="/user/wishlist"
                       rel="nofollow"
                       title="WishList"
                     >
@@ -215,13 +215,13 @@ const Header = () => {
           </div>
           <div className="container-fluid-row container-fluid-row-full-width top-menu-grid">
             <div className="row-fluid ">
-              {' '}
+              {" "}
               <div className="span16 ">
                 <div className="row-fluid ">
-                  {' '}
+                  {" "}
                   <div className="span11 top-left-grid ">
                     <div className="row-fluid ">
-                      {' '}
+                      {" "}
                       <div className="span6 menu-grid ">
                         <div className="ty-dropdown-box  top-menu-grid-vetrtical">
                           <div
@@ -231,7 +231,7 @@ const Header = () => {
                             <a>Shop By Category&nbsp;</a>
                             <i
                               class="fa fa-angle-down fa-dw"
-                              style={{ color: 'white', fontSize: '13px' }}
+                              style={{ color: "white", fontSize: "13px" }}
                             />
                           </div>
 
@@ -260,7 +260,7 @@ const Header = () => {
                                   >
                                     <ul
                                       className="ty-menu__submenu-items ty-menu__submenu-items-simple  cm-responsive-menu-submenu"
-                                      style={{ minHeight: '475px' }}
+                                      style={{ minHeight: "475px" }}
                                     >
                                       <li className="ty-menu__submenu-item">
                                         <Link
@@ -362,7 +362,7 @@ const Header = () => {
                                     >
                                       <div
                                         className="ty-menu__submenu-items cm-responsive-menu-submenu dropdown-column-item  with-icon-items clearfix"
-                                        style={{ minHeight: '475px' }}
+                                        style={{ minHeight: "475px" }}
                                       >
                                         <ul>
                                           {subs.length > 0 &&
@@ -435,10 +435,10 @@ const Header = () => {
                                 {cart.length}
                               </span>
                             </i>
-                            <span style={{ fontSize: '15px' }}>Cart&nbsp;</span>
+                            <span style={{ fontSize: "15px" }}>Cart&nbsp;</span>
                             <i
                               class="fa fa-angle-down fa-dw"
-                              style={{ color: 'white', fontSize: '13px' }}
+                              style={{ color: "white", fontSize: "13px" }}
                             />
                           </Link>
                         </div>
@@ -461,7 +461,7 @@ const Header = () => {
                                             src={c.image[1].url}
                                             alt={c.name}
                                             title
-                                            style={{ opacity: '1' }}
+                                            style={{ opacity: "1" }}
                                           />
                                         </div>
                                         <div className="ty-cart-items__list-item-desc">
@@ -482,7 +482,7 @@ const Header = () => {
                                         </div>
                                         <div className="ty-cart-items__list-item-tools cm-cart-item-delete">
                                           <div
-                                            style={{ cursor: 'pointer' }}
+                                            style={{ cursor: "pointer" }}
                                             className="cm-ajax cm-ajax-full-render"
                                             onClick={handleRemove(c)}
                                           >
@@ -534,21 +534,21 @@ const Header = () => {
                               <i className="ut2-icon-outline-account-circle" />
                               {!user && (
                                 <>
-                                  <span style={{ fontSize: '15px' }}>
+                                  <span style={{ fontSize: "15px" }}>
                                     Account&nbsp;
                                   </span>
                                   <i
                                     class="fa fa-angle-down fa-dw"
-                                    style={{ color: 'white', fontSize: '13px' }}
+                                    style={{ color: "white", fontSize: "13px" }}
                                   />
                                 </>
                               )}
                               {user && (
-                                <span style={{ fontSize: '15px' }}>
+                                <span style={{ fontSize: "15px" }}>
                                   {user.name}&nbsp;
                                   <i
                                     class="fa fa-angle-down fa-dw"
-                                    style={{ color: 'white', fontSize: '13px' }}
+                                    style={{ color: "white", fontSize: "13px" }}
                                   />
                                 </span>
                               )}
@@ -562,10 +562,10 @@ const Header = () => {
                           <ul className="ty-account-info">
                             {user && user.role == 1 && (
                               <>
-                                {' '}
+                                {" "}
                                 <li class="ty-account-info__item  ty-account-info__name ty-dropdown-box__item">
                                   <i className="fa fa-user fa-fw" />
-                                  Hello, <b>{user.name}</b>{' '}
+                                  Hello, <b>{user.name}</b>{" "}
                                 </li>
                                 <li className="ty-account-info__item ty-dropdown-box__item">
                                   <Link
@@ -584,7 +584,7 @@ const Header = () => {
                               <>
                                 <li class="ty-account-info__item  ty-account-info__name ty-dropdown-box__item">
                                   <i className="fa fa-user fa-fw" />
-                                  Hello, <b>{user.name}</b>{' '}
+                                  Hello, <b>{user.name}</b>{" "}
                                 </li>
                                 <li className="ty-account-info__item ty-dropdown-box__item">
                                   <Link
@@ -606,7 +606,7 @@ const Header = () => {
                                     to="/user/orders"
                                     rel="nofollow"
                                   >
-                                    <i className="fa fa-delicious fa-fw" />{' '}
+                                    <i className="fa fa-delicious fa-fw" />{" "}
                                     Orders
                                   </Link>
                                 </li>
@@ -616,7 +616,7 @@ const Header = () => {
                                     to="/user/compare"
                                     rel="nofollow"
                                   >
-                                    <i className="fa fa-bar-chart fa-fw" />{' '}
+                                    <i className="fa fa-bar-chart fa-fw" />{" "}
                                     Comparison list
                                   </Link>
                                 </li>
@@ -662,7 +662,7 @@ const Header = () => {
                               >
                                 <i
                                   class="fa fa-play fa-dw"
-                                  style={{ fontSize: '13px' }}
+                                  style={{ fontSize: "13px" }}
                                 />
                               </button>
                               <input

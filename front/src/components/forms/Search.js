@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { SearchOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { SearchOutlined } from "@ant-design/icons";
 import {
   // getProductsByCount,
   fetchProductsByFilter,
-} from '../../functions/product';
-import { Image } from 'antd';
-import Loading from 'react-loading-spinkit';
-import PulseLoader from 'react-spinners/PulseLoader';
+} from "../../functions/product";
+import { Image } from "antd";
 
 const Search = () => {
   const dispatch = useDispatch();
@@ -20,7 +18,7 @@ const Search = () => {
 
   const handleChange = (e) => {
     dispatch({
-      type: 'SEARCH_QUERY',
+      type: "SEARCH_QUERY",
       payload: { text: e.target.value },
     });
   };
@@ -29,7 +27,7 @@ const Search = () => {
     e.preventDefault();
     history.push(`/search?${text}`);
     dispatch({
-      type: 'SET_SPIN',
+      type: "SET_SPIN",
       payload: true,
     });
   };
@@ -45,7 +43,7 @@ const Search = () => {
 
   useEffect(() => {
     const delayed = setTimeout(() => {
-      console.log('textSonTran', text);
+      console.log("textSonTran", text);
       fetchProducts({ query: text });
     }, 500);
     return () => clearTimeout(delayed);
@@ -54,7 +52,7 @@ const Search = () => {
     <form name="search_form" onSubmit={handleSubmit}>
       <div id="live_reload_box">
         <div className="live-search-box" style={{}}>
-          <div style={{ maxHeight: '600px' }}>
+          <div style={{ maxHeight: "600px" }}>
             {products.length ? (
               <>
                 {loading ? (
@@ -125,7 +123,7 @@ const Search = () => {
         className="ty-search-block__input"
       />
       <button
-        style={{ cursor: 'pointer' }}
+        style={{ cursor: "pointer" }}
         onClick={handleSubmit}
         title="Search"
         className="ty-search-magnifier"
