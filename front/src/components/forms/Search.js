@@ -7,10 +7,13 @@ import {
   fetchProductsByFilter,
 } from "../../functions/product";
 import { Image } from "antd";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const Search = () => {
   const dispatch = useDispatch();
-  const { search } = useSelector((state) => ({ ...state }));
+  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+  const { search, spin } = useSelector((state) => ({ ...state }));
   const { text } = search;
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -26,17 +29,21 @@ const Search = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     history.push(`/search?${text}`);
-    dispatch({
-      type: "SET_SPIN",
-      payload: true,
-    });
   };
 
   const fetchProducts = (arg) => {
     setLoading(true);
+    dispatch({
+      type: "SET_SPIN",
+      payload: true,
+    });
 
     fetchProductsByFilter(arg).then((res) => {
       setLoading(false);
+      dispatch({
+        type: "SET_SPIN",
+        payload: false,
+      });
       setProducts(res.data);
     });
   };
@@ -129,7 +136,7 @@ const Search = () => {
         className="ty-search-magnifier"
         type="submit"
       >
-        <i className="ty-icon-search" />
+        {spin ? <i className="ty-icon-search" /> : <Spin indicator={antIcon} />}
       </button>
     </form>
   );

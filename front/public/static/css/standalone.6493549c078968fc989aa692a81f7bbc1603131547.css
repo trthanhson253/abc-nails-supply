@@ -3241,7 +3241,8 @@ body .ui-tooltip {
   content: "\e028";
 }
 .ty-icon-search:before {
-  content: url(../img/search.png);
+  font-family:FontAwesome;
+  content:"\f002";
 }
 .ty-icon-lock:before {
   content: "\e02a";
@@ -9690,7 +9691,8 @@ td.ty-cart-content__description {
   margin: 25px 20px;
 }
 .ty-step__container-active .ty-step__title-txt {
-  margin-left: 45px;
+  margin-left: 5px;
+  font-size: 18px;
 }
 .ty-step__container-active .ty-step__title-left {
   background: #fff;

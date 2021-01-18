@@ -1,11 +1,11 @@
-const User = require('../models/user');
-const Product = require('../models/product');
-const Cart = require('../models/cart');
-const Coupon = require('../models/coupon');
-const Order = require('../models/order');
+const User = require("../models/user");
+const Product = require("../models/product");
+const Cart = require("../models/cart");
+const Coupon = require("../models/coupon");
+const Order = require("../models/order");
 // const uniqueid = require('uniqueid');
-const shortId = require('shortid');
-const ShippingAndBillingAddress = require('../models/shippingAndBillingAddress');
+const shortId = require("shortid");
+const ShippingAndBillingAddress = require("../models/shippingAndBillingAddress");
 
 exports.userCart = async (req, res) => {
   // console.log("SonTran1",req.body.cart); // {cart: []}
@@ -30,7 +30,7 @@ exports.userCart = async (req, res) => {
     object.count = cart[i].count;
     // get price for creating total
     let productFromDb = await Product.findById(cart[i]._id)
-      .select('price')
+      .select("price")
       .exec();
     object.price = productFromDb.price;
 
@@ -54,7 +54,7 @@ exports.userCart = async (req, res) => {
     orderdBy: user._id,
   }).save();
 
-  console.log('new cart ----> ', newCart);
+  console.log("new cart ----> ", newCart);
   res.json({ ok: true });
 };
 
@@ -63,8 +63,8 @@ exports.getUserCart = async (req, res) => {
 
   let cart = await Cart.findOne({ orderdBy: user._id })
     .populate(
-      'products.product',
-      '_id name price image totalAfterDiscount shipOption'
+      "products.product",
+      "_id name price image totalAfterDiscount shipOption"
     )
     .exec();
 
@@ -139,17 +139,17 @@ exports.applyCouponToUserCart = async (req, res) => {
   const validCoupon = await Coupon.findOne({ name: coupon }).exec();
   if (validCoupon === null) {
     return res.json({
-      err: 'Invalid coupon',
+      err: "Invalid coupon",
     });
   }
-  console.log('VALID COUPON', validCoupon);
+  console.log("VALID COUPON", validCoupon);
 
   const user = await User.findOne({ email: req.user.email }).exec();
 
   let { products, cartTotalBeforeTax } = await Cart.findOne({
     orderdBy: user._id,
   })
-    .populate('products.product', '_id title price')
+    .populate("products.product", "_id title price")
     .exec();
 
   // console.log('cartTotal', cartTotal, 'discount%', validCoupon.discount);
@@ -208,7 +208,7 @@ exports.orders = async (req, res) => {
   let user = await User.findOne({ email: req.user.email }).exec();
 
   let userOrders = await Order.find({ orderdBy: user._id })
-    .populate('products.product')
+    .populate("products.product")
     .sort({ createdAt: -1 })
     .exec();
 
@@ -229,8 +229,8 @@ exports.addToWishlist = async (req, res) => {
 
 exports.wishlist = async (req, res) => {
   const list = await User.findOne({ email: req.user.email })
-    .select('wishlist')
-    .populate('wishlist')
+    .select("wishlist")
+    .populate("wishlist")
     .exec();
 
   res.json(list);
@@ -284,7 +284,7 @@ exports.saveShippingBilling = (req, res) => {
         shippingAndBillingAddress1.save((err, result) => {
           if (err || !result) {
             return res.status(400).json({
-              error: 'Cannot Create A New shipping and billing address',
+              error: "Cannot Create A New shipping and billing address",
             });
           }
           res.json({ ok: true });
@@ -309,7 +309,75 @@ exports.saveShippingBilling = (req, res) => {
         shippingAndBillingAddress.save((err, result) => {
           if (err || !result) {
             return res.status(400).json({
-              error: 'Cannot Update A New shipping and billing address',
+              error: "Cannot Update A New shipping and billing address",
+            });
+          }
+          res.json({ ok: true });
+        });
+      }
+    }
+  );
+};
+
+exports.saveShippingBillingBothSame = (req, res) => {
+  const {
+    ship_name,
+    ship_email,
+    ship_phone,
+    ship_address,
+    ship_city,
+    ship_state,
+    ship_zip,
+  } = req.body.values;
+  // console.log(token);
+
+  ShippingAndBillingAddress.findOne({ user: req.user._id }).exec(
+    (err, shippingAndBillingAddress) => {
+      if (!shippingAndBillingAddress) {
+        let shippingAndBillingAddress1 = new ShippingAndBillingAddress();
+        shippingAndBillingAddress1.ship_name = ship_name;
+        shippingAndBillingAddress1.ship_email = ship_email;
+        shippingAndBillingAddress1.ship_phone = ship_phone;
+        shippingAndBillingAddress1.ship_address = ship_address;
+        shippingAndBillingAddress1.ship_city = ship_city;
+        shippingAndBillingAddress1.ship_state = ship_state;
+        shippingAndBillingAddress1.ship_zip = ship_zip;
+
+        shippingAndBillingAddress1.bill_name = ship_name;
+        shippingAndBillingAddress1.bill_address = ship_address;
+        shippingAndBillingAddress1.bill_city = ship_city;
+        shippingAndBillingAddress1.bill_state = ship_state;
+        shippingAndBillingAddress1.bill_zip = ship_zip;
+        shippingAndBillingAddress1.user = req.user._id;
+        shippingAndBillingAddress1.save((err, result) => {
+          if (err || !result) {
+            return res.status(400).json({
+              error: "Cannot Create A New shipping and billing address",
+            });
+          }
+          res.json({ ok: true });
+        });
+      } else {
+        shippingAndBillingAddress.ship_name = ship_name;
+        shippingAndBillingAddress.ship_email = ship_email;
+        shippingAndBillingAddress.ship_phone = ship_phone;
+        shippingAndBillingAddress.ship_address = ship_address;
+        shippingAndBillingAddress.ship_city = ship_city;
+        shippingAndBillingAddress.ship_state = ship_state;
+        shippingAndBillingAddress.ship_zip = ship_zip;
+
+        shippingAndBillingAddress.bill_name = ship_name;
+        shippingAndBillingAddress.bill_address = ship_address;
+        shippingAndBillingAddress.bill_city = ship_city;
+        shippingAndBillingAddress.bill_state = ship_state;
+        shippingAndBillingAddress.bill_zip = ship_zip;
+
+        shippingAndBillingAddress.user = req.user._id;
+
+        shippingAndBillingAddress.save((err, result) => {
+          if (err || !result) {
+            return res.status(400).json({
+              error: "Cannot Update A New shipping and billing address",
             });
           }
           res.json({ ok: true });
@@ -334,7 +402,7 @@ exports.getLatestOrder = async (req, res) => {
 
   let order = await Order.findOne({ orderdBy: user._id })
     .sort({ createdAt: -1 })
-    .populate('products.product')
+    .populate("products.product")
     .limit(1)
     .exec();
   // console.log('order', order);

@@ -4,7 +4,7 @@ import { Modal, Button, Spin } from "antd";
 import { toast } from "react-toastify";
 import { createCategory } from "../../functions/category";
 import FileUpload from "./FileUpload";
-import CKEditor from "ckeditor4-react";
+import { Editor } from "@tinymce/tinymce-react";
 
 const CategoryCreateModal = ({
   open,
@@ -30,7 +30,8 @@ const CategoryCreateModal = ({
   const { name, images, description } = values;
 
   const handleChange = (name) => (e) => {
-    const value = name === "description" ? e.editor.getData() : e.target.value;
+    const value =
+      name === "description" ? e.target.getContent() : e.target.value;
     setValues({ ...values, [name]: value });
   };
 
@@ -63,7 +64,6 @@ const CategoryCreateModal = ({
   return (
     <>
       <Modal
-        style={{ width: "820px" }}
         title="Create New Category"
         centered
         visible={open}
@@ -119,12 +119,23 @@ const CategoryCreateModal = ({
         )}
         <div className="ty-control-group">
           <label className="ty-control-group__title">Description</label>
-          <CKEditor
-            type="classic"
-            height="250px"
+          <Editor
+            apiKey="vk5dzbhlfowdjlegve39540n21d7ems2k9hklan44u32j302"
             value={description}
-            // onChange={handleDescription}
             onChange={handleChange("description")}
+            init={{
+              height: 400,
+              menubar: true,
+              plugins: [
+                "advlist autolink lists link image charmap print preview anchor",
+                "searchreplace visualblocks code fullscreen",
+                "insertdatetime media table paste code help wordcount",
+              ],
+              toolbar:
+                "undo redo | formatselect | bold italic backcolor | \
+           alignleft aligncenter alignright alignjustify | \
+           bullist numlist outdent indent | removeformat | help",
+            }}
           />
         </div>
       </Modal>

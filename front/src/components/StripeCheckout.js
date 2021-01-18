@@ -1,12 +1,12 @@
-import { Link } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
-import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { DollarOutlined, CheckOutlined, SwapOutlined } from '@ant-design/icons';
-import { Card, Alert } from 'antd';
-import { createPaymentIntent } from '../functions/stripe';
-import { useSelector, useDispatch } from 'react-redux';
-import { createOrder, emptyUserCart } from '../functions/user';
-import { useHistory } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { DollarOutlined, CheckOutlined, SwapOutlined } from "@ant-design/icons";
+import { Card, Alert } from "antd";
+import { createPaymentIntent } from "../functions/stripe";
+import { useSelector, useDispatch } from "react-redux";
+import { createOrder, emptyUserCart } from "../functions/user";
+import { useHistory } from "react-router-dom";
 
 const StripeCheckout = () => {
   const dispatch = useDispatch();
@@ -14,9 +14,9 @@ const StripeCheckout = () => {
 
   const [succeeded, setSucceeded] = useState(false);
   const [error, setError] = useState(null);
-  const [processing, setProcessing] = useState('');
+  const [processing, setProcessing] = useState("");
   const [disabled, setDisabled] = useState(true);
-  const [clientSecret, setClientSecret] = useState('');
+  const [clientSecret, setClientSecret] = useState("");
   const [cartTotalBeforeTax, setCartTotalBeforeTax] = useState(0);
   const [cartTotal, setCartTotal] = useState(0);
   const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
@@ -28,7 +28,7 @@ const StripeCheckout = () => {
 
   useEffect(() => {
     createPaymentIntent(coupon, user.token).then((res) => {
-      console.log('create payment intent', res.data);
+      console.log("create payment intent", res.data);
       setClientSecret(res.data.clientSecret);
       // additional response received on successful payment
       setCartTotal(res.data.cartTotal);
@@ -40,13 +40,17 @@ const StripeCheckout = () => {
 
   const handleChange = async (e) => {
     setDisabled(e.empty); // disable pay button if errors
-    setError(e.error ? e.error.message : ''); // show error message
+    setError(e.error ? e.error.message : ""); // show error message
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    dispatch({
+      type: "SET_LOADING",
+      payload: true,
+    });
     setProcessing(true);
-    console.log('e.target.name.value', e.target.name.value);
+    console.log("e.target.name.value", e.target.name.value);
     const payload = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement),
@@ -55,7 +59,7 @@ const StripeCheckout = () => {
         // },
       },
     });
-    console.log('payload', payload);
+    console.log("payload", payload);
     if (payload.error) {
       setError(`Payment failed ${payload.error.message}`);
       setProcessing(false);
@@ -65,15 +69,15 @@ const StripeCheckout = () => {
       createOrder(payload, user.token).then((res) => {
         if (res.data.ok) {
           // empty cart from local storage
-          if (typeof window !== 'undefined') localStorage.removeItem('cart');
+          if (typeof window !== "undefined") localStorage.removeItem("cart");
           // empty cart from redux
           dispatch({
-            type: 'ADD_TO_CART',
+            type: "ADD_TO_CART",
             payload: [],
           });
           // reset coupon to false
           dispatch({
-            type: 'COUPON_APPLIED',
+            type: "COUPON_APPLIED",
             payload: false,
           });
           // empty cart from database
@@ -85,24 +89,30 @@ const StripeCheckout = () => {
       setError(null);
       setProcessing(false);
       setSucceeded(true);
-      history.push('/checkout-finish');
+      const delayed = setTimeout(() => {
+        dispatch({
+          type: "SET_LOADING",
+          payload: false,
+        });
+      }, 3000);
+      history.push("/checkout-finish");
     }
   };
 
   const cartStyle = {
     style: {
       base: {
-        color: '#32325d',
-        fontFamily: 'Arial, sans-serif',
-        fontSmoothing: 'antialiased',
-        fontSize: '14px',
-        '::placeholder': {
-          color: '#32325d',
+        color: "#32325d",
+        fontFamily: "Arial, sans-serif",
+        fontSmoothing: "antialiased",
+        fontSize: "14px",
+        "::placeholder": {
+          color: "#32325d",
         },
       },
       invalid: {
-        color: '#fa755a',
-        iconColor: '#fa755a',
+        color: "#fa755a",
+        iconColor: "#fa755a",
       },
     },
   };
@@ -149,15 +159,15 @@ const StripeCheckout = () => {
             {processing ? (
               <div className="spinner" id="spinner"></div>
             ) : (
-              'Place My Order'
+              "Place My Order"
             )}
           </span>
         </button>
         <br />
         {error && <Alert message={error} type="error" showIcon />}
         <br />
-        <p className={succeeded ? 'result-message' : 'result-message hidden'}>
-          Payment Successful.{' '}
+        <p className={succeeded ? "result-message" : "result-message hidden"}>
+          Payment Successful.{" "}
           <Link to="/user/history">See it in your purchase history.</Link>
         </p>
       </form>

@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const categorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
       trim: true,
-      required: 'Name is required',
+      required: "Name is required",
       text: true,
     },
     slug: {
@@ -15,9 +15,7 @@ const categorySchema = new mongoose.Schema(
       index: true,
     },
     description: {
-      type: {},
-      min: 20,
-      max: 2000000,
+      type: String,
     },
     images: {
       type: Array,
@@ -26,4 +24,4 @@ const categorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Category', categorySchema);
+module.exports = mongoose.model("Category", categorySchema);

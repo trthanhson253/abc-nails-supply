@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 export const userCart = async (cart, token) =>
   await axios.post(
@@ -6,8 +6,8 @@ export const userCart = async (cart, token) =>
     { cart },
     {
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     }
@@ -16,8 +16,8 @@ export const userCart = async (cart, token) =>
 export const getUserCart = async (token) =>
   await axios.get(`${process.env.REACT_APP_API}/user/cart`, {
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });
@@ -25,8 +25,8 @@ export const getUserCart = async (token) =>
 export const emptyUserCart = async (token) =>
   await axios.delete(`${process.env.REACT_APP_API}/user/cart`, {
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });
@@ -37,8 +37,8 @@ export const applyCoupon = async (token, coupon) =>
     { coupon },
     {
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     }
@@ -47,8 +47,8 @@ export const applyCoupon = async (token, coupon) =>
 export const getWishlist = async (token) =>
   await axios.get(`${process.env.REACT_APP_API}/user/wishlist`, {
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });
@@ -59,8 +59,8 @@ export const removeWishlist = async (productId, token) =>
     {},
     {
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     }
@@ -72,8 +72,8 @@ export const addToWishlist = async (productId, token) =>
     { productId },
     {
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     }
@@ -85,8 +85,8 @@ export const changeShippingMethod = async (shipping, token) =>
     { shipping },
     {
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     }
@@ -98,20 +98,31 @@ export const saveShippingBilling = async (values, token) =>
     { values },
     {
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     }
   );
-
+export const saveShippingBillingBothSame = async (values, token) =>
+  await axios.post(
+    `${process.env.REACT_APP_API}/user/cart/save-shipping-billing-both-same`,
+    { values },
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 export const getBillingAndShippingAddress = async (token) =>
   await axios.get(
     `${process.env.REACT_APP_API}/user/cart/get-billing-shipping-address`,
     {
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     }
@@ -123,8 +134,8 @@ export const createOrder = async (stripeResponse, token) =>
     { stripeResponse },
     {
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     }
@@ -133,8 +144,8 @@ export const createOrder = async (stripeResponse, token) =>
 export const getUserOrders = async (token) =>
   await axios.get(`${process.env.REACT_APP_API}/user/orders`, {
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });
@@ -142,8 +153,8 @@ export const getUserOrders = async (token) =>
 export const getLatestOrder = async (token) =>
   await axios.get(`${process.env.REACT_APP_API}/user/orders/getLatest`, {
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });

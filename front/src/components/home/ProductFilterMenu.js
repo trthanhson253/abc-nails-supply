@@ -1,9 +1,8 @@
-import { Link } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
-import { Menu, Slider, Checkbox, Radio } from 'antd';
-import { getFilteredProducts } from '../../functions/product';
-import { message } from 'antd';
-import _ from 'lodash';
+import React, { useState } from "react";
+import { Slider, Checkbox } from "antd";
+import { getFilteredProducts } from "../../functions/product";
+import { message } from "antd";
+import _ from "lodash";
 
 const ProductFilterMenu = ({
   brands,
@@ -38,7 +37,7 @@ const ProductFilterMenu = ({
     }
 
     setCheckedBrand(newCheckedBrandName);
-    handleFilters(newCheckedBrandName, 'brand');
+    handleFilters(newCheckedBrandName, "brand");
   };
 
   const handleChangeSize = (c) => () => {
@@ -52,7 +51,7 @@ const ProductFilterMenu = ({
     }
     console.log(newCheckedSize);
     setCheckedSize(newCheckedSize);
-    handleFilters(newCheckedSize, 'size');
+    handleFilters(newCheckedSize, "size");
   };
 
   const handleFilters = (filters, filterBy) => {
@@ -67,7 +66,7 @@ const ProductFilterMenu = ({
     // console.log(newFilters);
     getFilteredProducts(skip, limit, newFilters).then((data) => {
       if (data.error) {
-        message.error('Cannot Find Products');
+        message.error("Cannot Find Products");
       } else {
         setProducts(data.data);
         setSoluong(data.size);
@@ -126,7 +125,6 @@ const ProductFilterMenu = ({
             <div
               className="cm-product-filters"
               data-ca-target-id="product_filters_*,products_search_*,category_products_*,product_features_*,breadcrumbs_*,currencies_*,languages_*,selected_filters_*"
-              data-ca-base-url="https://www.happynailsupply.com/nail-polishes/colors/china-glaze/"
               id="product_filters_177"
             >
               <div className="ty-product-filters__wrapper">
@@ -143,7 +141,7 @@ const ProductFilterMenu = ({
                     <li className="ty-product-filters__item-more">
                       <ul
                         id="ranges_177_1"
-                        style={{ maxHeight: '310px' }}
+                        style={{ maxHeight: "310px" }}
                         className="ty-product-filters__variants cm-filter-table"
                         data-ca-input-id="elm_search_177_1"
                         data-ca-clear-id="elm_search_clear_177_1"
@@ -185,7 +183,7 @@ const ProductFilterMenu = ({
                   <ul className="ty-product-filters " id="content_177_2">
                     {colors.map((c) => (
                       <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                        {c === 'Blue' && (
+                        {c === "Blue" && (
                           <Checkbox
                             // onChange={handleCheck}
                             // value={c}
@@ -195,7 +193,7 @@ const ProductFilterMenu = ({
                             <label>
                               <div
                                 className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                style={{ background: 'blue' }}
+                                style={{ background: "blue" }}
                               >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -210,7 +208,7 @@ const ProductFilterMenu = ({
                           </Checkbox>
                         )}
 
-                        {c === 'Pink' && (
+                        {c === "Pink" && (
                           <Checkbox
                             // onChange={handleCheck}
                             // value={c}
@@ -220,7 +218,7 @@ const ProductFilterMenu = ({
                             <label>
                               <div
                                 className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                style={{ background: 'pink' }}
+                                style={{ background: "pink" }}
                               >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -260,7 +258,7 @@ const ProductFilterMenu = ({
                     <li className="ty-product-filters__item-more">
                       <ul
                         id="ranges_177_4"
-                        style={{ maxHeight: '310px' }}
+                        style={{ maxHeight: "310px" }}
                         className="ty-product-filters__variants cm-filter-table"
                         data-ca-input-id="elm_search_177_4"
                         data-ca-clear-id="elm_search_clear_177_4"

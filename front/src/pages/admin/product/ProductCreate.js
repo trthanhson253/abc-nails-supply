@@ -1,45 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import { message, Radio } from 'antd';
-import { toast } from 'react-toastify';
-import { createProduct } from '../../../functions/product';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { message, Radio } from "antd";
+import { toast } from "react-toastify";
+import { createProduct } from "../../../functions/product";
+import { useSelector } from "react-redux";
 import {
   getCategories,
   getCategorySubs,
   getCategorySubSubs,
-} from '../../../functions/category';
-import { getBrands } from '../../../functions/brand';
-import { getColors } from '../../../functions/color';
-import { getSizes } from '../../../functions/size';
-import AdminMenu from '../../../components/admin/AdminMenu';
-import { Steps } from 'antd';
-import FileMultipleUpload from '../../../components/admin/FileMultipleUpload';
-import { Spin } from 'antd';
-import CKEditor from 'ckeditor4-react';
+} from "../../../functions/category";
+import { getBrands } from "../../../functions/brand";
+import { getColors } from "../../../functions/color";
+import { getSizes } from "../../../functions/size";
+import AdminMenu from "../../../components/admin/AdminMenu";
+import { Steps } from "antd";
+import FileMultipleUpload from "../../../components/admin/FileMultipleUpload";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import CKEditor from "ckeditor4-react";
 
 const ProductCreate = ({ history }) => {
+  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
   const initialState = {
-    item: '',
-    name: '',
-    price: '',
-    discountPrice: '',
-    category: '',
-    sub: '',
-    subSub: '',
+    item: "",
+    name: "",
+    price: "",
+    discountPrice: "",
+    category: "",
+    sub: "",
+    subSub: "",
     quantity: 50,
     images: [
       {
-        public_id: '',
-        url: '',
+        public_id: "",
+        url: "",
       },
     ],
     status: 0,
     shipping: 0,
-    color: '',
-    size: '',
-    brand: '',
+    color: "",
+    size: "",
+    brand: "",
     // formData:"",
-    description: '',
+    description: "",
   };
   const [values, setValues] = useState(initialState);
   const [categories, setCategories] = useState([]);
@@ -77,10 +79,10 @@ const ProductCreate = ({ history }) => {
     brand,
   } = values;
   const handleClickOpen = () => {
-    history.push('/admin/product/list');
+    history.push("/admin/product/list");
   };
   const handleChange = (name) => (e) => {
-    const value = name === 'description' ? e.editor.getData() : e.target.value;
+    const value = name === "description" ? e.editor.getData() : e.target.value;
     // formData.set(name, e.target.value);
     // setValues({...values,[name]: e.target.value,formData });
     setValues({ ...values, [name]: value });
@@ -132,10 +134,10 @@ const ProductCreate = ({ history }) => {
       .then((res) => {
         if (res.data == 0) {
           setShowSub(false);
-          message.error('No Sub-Category Found');
+          message.error("No Sub-Category Found");
         } else {
           setSubOptions(res.data);
-          message.success('Sub-Category Found');
+          message.success("Sub-Category Found");
           setShowSub(true);
         }
       })
@@ -150,10 +152,10 @@ const ProductCreate = ({ history }) => {
       .then((res) => {
         if (res.data == 0) {
           setShowSubSub(false);
-          message.error('No Sub-Sub Category Found');
+          message.error("No Sub-Sub Category Found");
         } else {
           setSubSubOptions(res.data);
-          message.success('Sub-Sub Category Found');
+          message.success("Sub-Sub Category Found");
           setShowSubSub(true);
         }
       })
@@ -171,25 +173,25 @@ const ProductCreate = ({ history }) => {
       .then((data) => {
         setValues({
           ...values,
-          item: '',
-          name: '',
-          price: '',
-          discountPrice: '',
-          category: '',
-          sub: '',
-          subSub: '',
-          quantity: '',
-          image: '',
-          shipping: '',
-          color: '',
-          size: '',
-          brand: '',
-          description: '',
+          item: "",
+          name: "",
+          price: "",
+          discountPrice: "",
+          category: "",
+          sub: "",
+          subSub: "",
+          quantity: "",
+          image: "",
+          shipping: "",
+          color: "",
+          size: "",
+          brand: "",
+          description: "",
           status: 0,
         });
         // setDescription("");
-        toast.success('Created Successfully!');
-        history.push('/admin/product/list');
+        toast.success("Created Successfully!");
+        history.push("/admin/product/list");
       })
       .catch((err) => {
         console.log(err);
@@ -252,7 +254,7 @@ const ProductCreate = ({ history }) => {
                             <select
                               name="category"
                               className="form-control"
-                              onChange={handleChange('category')}
+                              onChange={handleChange("category")}
                               value={category}
                               onChange={handleCatagoryChange}
                             >
@@ -276,7 +278,7 @@ const ProductCreate = ({ history }) => {
                                 mode="multiple"
                                 className="form-control"
                                 placeholder="Please select"
-                                onChange={handleChange('sub')}
+                                onChange={handleChange("sub")}
                                 value={sub}
                                 onChange={handleSubCatagoryChange}
                               >
@@ -300,7 +302,7 @@ const ProductCreate = ({ history }) => {
                               <select
                                 name="subSub"
                                 className="form-control"
-                                onChange={handleChange('subSub')}
+                                onChange={handleChange("subSub")}
                                 value={subSub}
                               >
                                 <option>Please select</option>
@@ -322,7 +324,7 @@ const ProductCreate = ({ history }) => {
                             <select
                               name="brand"
                               className="form-control"
-                              onChange={handleChange('brand')}
+                              onChange={handleChange("brand")}
                               value={brand}
                             >
                               <option>Please select</option>
@@ -341,7 +343,7 @@ const ProductCreate = ({ history }) => {
                             <select
                               name="color"
                               className="form-control"
-                              onChange={handleChange('color')}
+                              onChange={handleChange("color")}
                               value={color}
                             >
                               <option>Please select</option>
@@ -361,7 +363,7 @@ const ProductCreate = ({ history }) => {
                             <select
                               name="size"
                               className="form-control"
-                              onChange={handleChange('size')}
+                              onChange={handleChange("size")}
                               value={size}
                             >
                               <option>Please select</option>
@@ -385,7 +387,7 @@ const ProductCreate = ({ history }) => {
                                 id="item"
                                 name="item"
                                 value={item}
-                                onChange={handleChange('item')}
+                                onChange={handleChange("item")}
                                 placeholder="Item SKU"
                                 size={32}
                                 maxLength={128}
@@ -393,7 +395,7 @@ const ProductCreate = ({ history }) => {
                                 data-emoji_font="true"
                                 style={{
                                   fontFamily:
-                                    'Arial, Helvetica, sans-serif, Segoe UI Emoji, Segoe UI Symbol, Symbola, EmojiSymbols !important',
+                                    "Arial, Helvetica, sans-serif, Segoe UI Emoji, Segoe UI Symbol, Symbola, EmojiSymbols !important",
                                 }}
                               />
                             </div>
@@ -410,7 +412,7 @@ const ProductCreate = ({ history }) => {
                                 id="name"
                                 name="name"
                                 value={name}
-                                onChange={handleChange('name')}
+                                onChange={handleChange("name")}
                                 placeholder="Product's Name"
                                 size={32}
                                 maxLength={128}
@@ -418,7 +420,7 @@ const ProductCreate = ({ history }) => {
                                 data-emoji_font="true"
                                 style={{
                                   fontFamily:
-                                    'Arial, Helvetica, sans-serif, Segoe UI Emoji, Segoe UI Symbol, Symbola, EmojiSymbols !important',
+                                    "Arial, Helvetica, sans-serif, Segoe UI Emoji, Segoe UI Symbol, Symbola, EmojiSymbols !important",
                                 }}
                               />
                             </div>
@@ -435,7 +437,7 @@ const ProductCreate = ({ history }) => {
                                 id="price"
                                 name="price"
                                 value={price}
-                                onChange={handleChange('price')}
+                                onChange={handleChange("price")}
                                 placeholder="Price"
                                 size={32}
                                 maxLength={128}
@@ -443,7 +445,7 @@ const ProductCreate = ({ history }) => {
                                 data-emoji_font="true"
                                 style={{
                                   fontFamily:
-                                    'Arial, Helvetica, sans-serif, Segoe UI Emoji, Segoe UI Symbol, Symbola, EmojiSymbols !important',
+                                    "Arial, Helvetica, sans-serif, Segoe UI Emoji, Segoe UI Symbol, Symbola, EmojiSymbols !important",
                                 }}
                               />
                             </div>
@@ -459,7 +461,7 @@ const ProductCreate = ({ history }) => {
                                 id="discountPrice"
                                 name="discountPrice"
                                 value={discountPrice}
-                                onChange={handleChange('discountPrice')}
+                                onChange={handleChange("discountPrice")}
                                 placeholder="Discount Price"
                                 size={32}
                                 maxLength={128}
@@ -467,7 +469,7 @@ const ProductCreate = ({ history }) => {
                                 data-emoji_font="true"
                                 style={{
                                   fontFamily:
-                                    'Arial, Helvetica, sans-serif, Segoe UI Emoji, Segoe UI Symbol, Symbola, EmojiSymbols !important',
+                                    "Arial, Helvetica, sans-serif, Segoe UI Emoji, Segoe UI Symbol, Symbola, EmojiSymbols !important",
                                 }}
                               />
                             </div>
@@ -483,7 +485,7 @@ const ProductCreate = ({ history }) => {
                                 id="quantity"
                                 name="quantity"
                                 value={quantity}
-                                onChange={handleChange('quantity')}
+                                onChange={handleChange("quantity")}
                                 placeholder="Quantity"
                                 size="{32}"
                                 maxlength="{32}"
@@ -502,7 +504,7 @@ const ProductCreate = ({ history }) => {
                               <Radio.Group
                                 name="radiogroup"
                                 value={shipping}
-                                onChange={handleChange('shipping')}
+                                onChange={handleChange("shipping")}
                               >
                                 <Radio value={0}>Yes</Radio>
                                 <Radio value={1}>No</Radio>
@@ -518,7 +520,7 @@ const ProductCreate = ({ history }) => {
                               <Radio.Group
                                 name="radiogroup"
                                 value={status}
-                                onChange={handleChange('status')}
+                                onChange={handleChange("status")}
                               >
                                 <Radio value={0}>Show</Radio>
                                 <Radio value={1}>Hide</Radio>
@@ -528,7 +530,7 @@ const ProductCreate = ({ history }) => {
 
                           <div className="ty-control-group">
                             {loading ? (
-                              <Spin size="large" tip="Loading...">
+                              <Spin indicator={antIcon}>
                                 <FileMultipleUpload
                                   values={values}
                                   setValues={setValues}
@@ -555,7 +557,7 @@ const ProductCreate = ({ history }) => {
                               height="350px"
                               value={description}
                               // onChange={handleDescription}
-                              onChange={handleChange('description')}
+                              onChange={handleChange("description")}
                             />
                           </div>
                           <div className="ty-profile-field__buttons buttons-container">

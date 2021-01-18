@@ -12,6 +12,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { addToWishlist } from "../../functions/user";
 import { Helmet } from "react-helmet";
 import Spinner from "../../components/Spinner";
+import Loader from "../../components/Loader";
 
 const ProductDetailHome = (props) => {
   const [product, setProduct] = useState({});
@@ -22,14 +23,15 @@ const ProductDetailHome = (props) => {
   const [subSub, setSubSub] = useState({});
   const [recentProducts, setRecentProducts] = useState([]);
   const { TabPane } = Tabs;
-  const { user, cart, load } = useSelector((state) => ({ ...state }));
+  const { user, cart, load, spin } = useSelector((state) => ({ ...state }));
   const dispatch = useDispatch();
   const [tooltip, setTooltip] = useState("Click to add this product");
-  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-
-  // const render = require('react-render-html');
 
   const loadDetailProduct = (pslug) => {
+    dispatch({
+      type: "SET_SPIN",
+      payload: true,
+    });
     getDetailProduct(pslug).then((data) => {
       setProduct(data.product);
       setContent(data.product.description);
@@ -39,6 +41,12 @@ const ProductDetailHome = (props) => {
       // var date = new Date();
       var currentProductId = data.product._id;
       var howManyItems = 5;
+      const delayed = setTimeout(() => {
+        dispatch({
+          type: "SET_SPIN",
+          payload: false,
+        });
+      }, 200);
       // currentValues=[];
       if (currentProductId && !getCookie("lastVisited")) {
         setCookie("lastVisited", data.product._id);
@@ -136,7 +144,7 @@ const ProductDetailHome = (props) => {
     }
 
     loadDetailProduct(pslug1);
-  }, [props]);
+  }, []);
 
   return (
     <>
@@ -224,12 +232,18 @@ const ProductDetailHome = (props) => {
                                     style={{ width: 575 }}
                                   >
                                     {product.image && (
-                                      <Image
-                                        src={product.image[1].url}
-                                        alt={product.name}
-                                        title
-                                        style={{ opacity: 1 }}
-                                      />
+                                      <>
+                                        {spin ? (
+                                          <Loader />
+                                        ) : (
+                                          <Image
+                                            src={product.image[1].url}
+                                            alt={product.name}
+                                            title
+                                            style={{ opacity: 1 }}
+                                          />
+                                        )}
+                                      </>
                                     )}
                                   </div>
                                 </div>
@@ -243,284 +257,296 @@ const ProductDetailHome = (props) => {
                       className="ut2-pb__right"
                       style={{ borderRadius: "16px" }}
                     >
-                      <div className="top-product-layer">
-                        <div className="ut2-pb__rating">
-                          <div className="ty-discussion__rating-wrapper">
-                            <span className="ty-nowrap no-rating">
-                              <i className="ty-icon-star-empty" />
-                              <i className="ty-icon-star-empty" />
-                              <i className="ty-icon-star-empty" />
-                              <i className="ty-icon-star-empty" />
-                              <i className="ty-icon-star-empty" />
-                            </span>
-                            <a
-                              id="opener_discussion_login_form_new_post_main_info_title_9060"
-                              className="cm-dialog-opener cm-dialog-auto-size ty-discussion__review-write"
-                              data-ca-target-id="new_discussion_post_login_form_popup"
-                              rel="nofollow"
-                              title="Sign in"
-                              href="/"
-                            >
-                              Write a review
-                            </a>
-                          </div>
-                        </div>
-                        <div className="ut2-pb__sku">
-                          <div
-                            className="ty-control-group ty-sku-item cm-hidden-wrapper"
-                            id="sku_update_9060"
-                          >
-                            <input
-                              type="hidden"
-                              name="appearance[show_sku]"
-                              defaultValue={1}
-                            />
-                            <label
-                              className="ty-control-group__label"
-                              id="sku_9060"
-                            >
-                              Item #:
-                            </label>
-                            <span
-                              className="ty-control-group__item cm-reload-9060"
-                              id="product_code_9060"
-                            >
-                              {product.item}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="cols-wrap">
-                        <div className="ab__deal_of_the_day">
-                          <div className>
-                            <div className="action-title">
-                              Color Club Nail Lacquers Sale
-                            </div>
-                            <div className="actions-link">
-                              <a href="/" title target="_blank">
-                                <span>Promotion details</span>
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-left">
-                          <div className="prices-container price-wrap">
-                            {product.discountPrice ? (
-                              <div className="ty-product-prices">
-                                <span
-                                  className="cm-reload-9060"
-                                  id="old_price_update_9060"
-                                >
-                                  <span
-                                    className="ty-list-price ty-nowrap"
-                                    id="line_old_price_9060"
-                                  >
-                                    <span className="ty-strike">
-                                      <bdi>
-                                        <span className="ty-list-price ty-nowrap">
-                                          $
-                                        </span>
-                                        <span
-                                          id="sec_old_price_9060"
-                                          className="ty-list-price ty-nowrap"
-                                        >
-                                          {product.price}
-                                        </span>
-                                      </bdi>
-                                    </span>
-                                  </span>
+                      {spin ? (
+                        <Loader />
+                      ) : (
+                        <>
+                          {" "}
+                          <div className="top-product-layer">
+                            <div className="ut2-pb__rating">
+                              <div className="ty-discussion__rating-wrapper">
+                                <span className="ty-nowrap no-rating">
+                                  <i className="ty-icon-star-empty" />
+                                  <i className="ty-icon-star-empty" />
+                                  <i className="ty-icon-star-empty" />
+                                  <i className="ty-icon-star-empty" />
+                                  <i className="ty-icon-star-empty" />
                                 </span>
-                                <div className="ut2-pb__price-actual">
-                                  <span
-                                    className="cm-reload-9060 ty-price-update"
-                                    id="price_update_9060"
-                                  >
-                                    <span
-                                      className="ty-price"
-                                      id="line_discounted_price_9060"
-                                    >
-                                      <bdi>
-                                        <span className="ty-price-num">$</span>
-                                        <span
-                                          id="sec_discounted_price_9060"
-                                          className="ty-price-num"
-                                        >
-                                          {product.discountPrice}
-                                        </span>
-                                      </bdi>
-                                    </span>
-                                  </span>
-                                </div>
-                                <span
-                                  className="cm-reload-9060"
-                                  id="line_discount_update_9060"
+                                <a
+                                  id="opener_discussion_login_form_new_post_main_info_title_9060"
+                                  className="cm-dialog-opener cm-dialog-auto-size ty-discussion__review-write"
+                                  data-ca-target-id="new_discussion_post_login_form_popup"
+                                  rel="nofollow"
+                                  title="Sign in"
+                                  href="/"
                                 >
-                                  <span
-                                    className="ty-list-price ty-save-price ty-nowrap"
-                                    id="line_discount_value_9060"
-                                  >
-                                    You save:{" "}
-                                    <bdi>
-                                      <span className="ty-list-price ty-nowrap">
-                                        $
-                                      </span>
-                                      <span
-                                        id="sec_discount_value_9060"
-                                        className="ty-list-price ty-nowrap"
-                                      >
-                                        {(
-                                          product.price - product.discountPrice
-                                        ).toFixed(2)}
-                                      </span>
-                                    </bdi>
-                                  </span>
-                                </span>
+                                  Write a review
+                                </a>
                               </div>
-                            ) : (
-                              <div className="ty-product-prices">
-                                <div className="ut2-pb__price-actual">
-                                  <span
-                                    className="cm-reload-9060 ty-price-update"
-                                    id="price_update_9060"
-                                  >
-                                    <span
-                                      className="ty-price"
-                                      id="line_discounted_price_9060"
-                                    >
-                                      <bdi>
-                                        <span className="ty-price-num">$</span>
-                                        <span
-                                          id="sec_discounted_price_9060"
-                                          className="ty-price-num"
-                                        >
-                                          {product.price}
-                                        </span>
-                                      </bdi>
-                                    </span>
-                                  </span>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                          <div
-                            className="cm-reload-9060 stock-wrap"
-                            id="product_amount_update_9060"
-                          >
-                            <input
-                              type="hidden"
-                              name="appearance[show_product_amount]"
-                              defaultValue={1}
-                            />
-                            <div className="ty-control-group product-list-field">
-                              <span
-                                className="ty-qty-in-stock ty-control-group__item"
-                                id="in_stock_info_9060"
-                              >
-                                {product.quantity > 0 ? (
-                                  <>
-                                    <i className="ty-icon-ok" />
-                                    In stock
-                                  </>
-                                ) : (
-                                  <>
-                                    <i className="ty-icon-ok" />
-                                    Out of stock
-                                  </>
-                                )}
-                              </span>
                             </div>
-                          </div>
-
-                          <div className="ut2-pb__advanced-option clearfix">
-                            <div
-                              className="cm-reload-9060"
-                              id="advanced_options_update_9060"
-                            ></div>
-                          </div>
-                          <div className="ut2-qty__wrap  ut2-pb__field-group">
-                            <div
-                              className="cm-reload-9060"
-                              id="qty_update_9060"
-                            >
+                            <div className="ut2-pb__sku">
                               <div
-                                className="ty-qty clearfix changer"
-                                id="qty_9060"
+                                className="ty-control-group ty-sku-item cm-hidden-wrapper"
+                                id="sku_update_9060"
                               >
+                                <input
+                                  type="hidden"
+                                  name="appearance[show_sku]"
+                                  defaultValue={1}
+                                />
                                 <label
                                   className="ty-control-group__label"
-                                  htmlFor="qty_count_9060"
+                                  id="sku_9060"
                                 >
-                                  Quantity:
-                                </label>{" "}
-                                <div className="ty-center ty-value-changer cm-value-changer">
-                                  <a className="cm-increase ty-value-changer__increase">
-                                    +
-                                  </a>
-                                  <input
-                                    type="text"
-                                    size={5}
-                                    className="ty-value-changer__input cm-amount"
-                                    id="qty_count_9060"
-                                    name="product_data[9060][amount]"
-                                    defaultValue={1}
-                                    data-ca-min-qty={1}
-                                  />
-                                  <a className="cm-decrease ty-value-changer__decrease">
-                                    −
+                                  Item #:
+                                </label>
+                                <span
+                                  className="ty-control-group__item cm-reload-9060"
+                                  id="product_code_9060"
+                                >
+                                  {product.item}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="cols-wrap">
+                            <div className="ab__deal_of_the_day">
+                              <div className>
+                                <div className="action-title">
+                                  Color Club Nail Lacquers Sale
+                                </div>
+                                <div className="actions-link">
+                                  <a href="/" title target="_blank">
+                                    <span>Promotion details</span>
                                   </a>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                          <div className="ut2-pb__button ty-product-block__button">
-                            <div
-                              className="cm-reload-9060 "
-                              id="add_to_cart_update_9060"
-                            >
-                              <Tooltip title={tooltip}>
-                                <a
-                                  className="ty-btn__primary ty-btn__add-to-cart cm-ajax cm-ajax-full-render ty-btn"
-                                  href="/cart"
-                                  onClick={() => handleAddToCart(product)}
-                                >
-                                  <span>
-                                    <i className="fa fa-shopping-cart fa-fw" />
-                                    <span>Add to cart</span>
+                            <div className="col-left">
+                              <div className="prices-container price-wrap">
+                                {product.discountPrice ? (
+                                  <div className="ty-product-prices">
+                                    <span
+                                      className="cm-reload-9060"
+                                      id="old_price_update_9060"
+                                    >
+                                      <span
+                                        className="ty-list-price ty-nowrap"
+                                        id="line_old_price_9060"
+                                      >
+                                        <span className="ty-strike">
+                                          <bdi>
+                                            <span className="ty-list-price ty-nowrap">
+                                              $
+                                            </span>
+                                            <span
+                                              id="sec_old_price_9060"
+                                              className="ty-list-price ty-nowrap"
+                                            >
+                                              {product.price}
+                                            </span>
+                                          </bdi>
+                                        </span>
+                                      </span>
+                                    </span>
+                                    <div className="ut2-pb__price-actual">
+                                      <span
+                                        className="cm-reload-9060 ty-price-update"
+                                        id="price_update_9060"
+                                      >
+                                        <span
+                                          className="ty-price"
+                                          id="line_discounted_price_9060"
+                                        >
+                                          <bdi>
+                                            <span className="ty-price-num">
+                                              $
+                                            </span>
+                                            <span
+                                              id="sec_discounted_price_9060"
+                                              className="ty-price-num"
+                                            >
+                                              {product.discountPrice}
+                                            </span>
+                                          </bdi>
+                                        </span>
+                                      </span>
+                                    </div>
+                                    <span
+                                      className="cm-reload-9060"
+                                      id="line_discount_update_9060"
+                                    >
+                                      <span
+                                        className="ty-list-price ty-save-price ty-nowrap"
+                                        id="line_discount_value_9060"
+                                      >
+                                        You save:{" "}
+                                        <bdi>
+                                          <span className="ty-list-price ty-nowrap">
+                                            $
+                                          </span>
+                                          <span
+                                            id="sec_discount_value_9060"
+                                            className="ty-list-price ty-nowrap"
+                                          >
+                                            {(
+                                              product.price -
+                                              product.discountPrice
+                                            ).toFixed(2)}
+                                          </span>
+                                        </bdi>
+                                      </span>
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <div className="ty-product-prices">
+                                    <div className="ut2-pb__price-actual">
+                                      <span
+                                        className="cm-reload-9060 ty-price-update"
+                                        id="price_update_9060"
+                                      >
+                                        <span
+                                          className="ty-price"
+                                          id="line_discounted_price_9060"
+                                        >
+                                          <bdi>
+                                            <span className="ty-price-num">
+                                              $
+                                            </span>
+                                            <span
+                                              id="sec_discounted_price_9060"
+                                              className="ty-price-num"
+                                            >
+                                              {product.price}
+                                            </span>
+                                          </bdi>
+                                        </span>
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                              <div
+                                className="cm-reload-9060 stock-wrap"
+                                id="product_amount_update_9060"
+                              >
+                                <input
+                                  type="hidden"
+                                  name="appearance[show_product_amount]"
+                                  defaultValue={1}
+                                />
+                                <div className="ty-control-group product-list-field">
+                                  <span
+                                    className="ty-qty-in-stock ty-control-group__item"
+                                    id="in_stock_info_9060"
+                                  >
+                                    {product.quantity > 0 ? (
+                                      <>
+                                        <i className="ty-icon-ok" />
+                                        In stock
+                                      </>
+                                    ) : (
+                                      <>
+                                        <i className="ty-icon-ok" />
+                                        Out of stock
+                                      </>
+                                    )}
                                   </span>
-                                </a>
-                              </Tooltip>
-                              <a
-                                className="ut2-add-to-wish label cm-submit"
-                                onClick={handleAddToWishlist}
-                                style={{
-                                  fontSize: "12px",
-                                  fontWeight: "normal",
-                                }}
-                              >
-                                <i className="ut2-icon-baseline-favorite" />
-                                Add to wish list
-                              </a>
-                              <a
-                                className="ut2-add-to-compare cm-ajax cm-ajax-full-render label cm-tooltip"
-                                style={{
-                                  fontSize: "12px",
-                                  fontWeight: "normal",
-                                }}
-                              >
-                                <i className="ut2-icon-baseline-equalizer" />{" "}
-                                Compare{" "}
-                              </a>
-                              {/*add_to_cart_update_9060*/}
+                                </div>
+                              </div>
+
+                              <div className="ut2-pb__advanced-option clearfix">
+                                <div
+                                  className="cm-reload-9060"
+                                  id="advanced_options_update_9060"
+                                ></div>
+                              </div>
+                              <div className="ut2-qty__wrap  ut2-pb__field-group">
+                                <div
+                                  className="cm-reload-9060"
+                                  id="qty_update_9060"
+                                >
+                                  <div
+                                    className="ty-qty clearfix changer"
+                                    id="qty_9060"
+                                  >
+                                    <label
+                                      className="ty-control-group__label"
+                                      htmlFor="qty_count_9060"
+                                    >
+                                      Quantity:
+                                    </label>{" "}
+                                    <div className="ty-center ty-value-changer cm-value-changer">
+                                      <a className="cm-increase ty-value-changer__increase">
+                                        +
+                                      </a>
+                                      <input
+                                        type="text"
+                                        size={5}
+                                        className="ty-value-changer__input cm-amount"
+                                        id="qty_count_9060"
+                                        name="product_data[9060][amount]"
+                                        defaultValue={1}
+                                        data-ca-min-qty={1}
+                                      />
+                                      <a className="cm-decrease ty-value-changer__decrease">
+                                        −
+                                      </a>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="ut2-pb__button ty-product-block__button">
+                                <div
+                                  className="cm-reload-9060 "
+                                  id="add_to_cart_update_9060"
+                                >
+                                  <Tooltip title={tooltip}>
+                                    <a
+                                      className="ty-btn__primary ty-btn__add-to-cart cm-ajax cm-ajax-full-render ty-btn"
+                                      href="/cart"
+                                      onClick={() => handleAddToCart(product)}
+                                    >
+                                      <span>
+                                        <i className="fa fa-shopping-cart fa-fw" />
+                                        <span>Add to cart</span>
+                                      </span>
+                                    </a>
+                                  </Tooltip>
+                                  <a
+                                    className="ut2-add-to-wish label cm-submit"
+                                    onClick={handleAddToWishlist}
+                                    style={{
+                                      fontSize: "12px",
+                                      fontWeight: "normal",
+                                    }}
+                                  >
+                                    <i className="ut2-icon-baseline-favorite" />
+                                    Add to wish list
+                                  </a>
+                                  <a
+                                    className="ut2-add-to-compare cm-ajax cm-ajax-full-render label cm-tooltip"
+                                    style={{
+                                      fontSize: "12px",
+                                      fontWeight: "normal",
+                                    }}
+                                  >
+                                    <i className="ut2-icon-baseline-equalizer" />{" "}
+                                    Compare{" "}
+                                  </a>
+                                  {/*add_to_cart_update_9060*/}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-right">
+                              <div className="brand ut2-pb__product-brand">
+                                <div className="ty-features-list"></div>
+                              </div>
+                              <div></div>
                             </div>
                           </div>
-                        </div>
-                        <div className="col-right">
-                          <div className="brand ut2-pb__product-brand">
-                            <div className="ty-features-list"></div>
-                          </div>
-                          <div></div>
-                        </div>
-                      </div>
+                        </>
+                      )}
                     </div>
                   </div>
 

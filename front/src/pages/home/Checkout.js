@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   getUserCart,
   emptyUserCart,
@@ -8,41 +8,44 @@ import {
   changeShippingMethod,
   applyCoupon,
   saveShippingBilling,
-} from '../../functions/user';
-import { message, Image, Alert } from 'antd';
-import { toast } from 'react-toastify';
+  saveShippingBillingBothSame,
+} from "../../functions/user";
+import { message, Image, Alert } from "antd";
+import { toast } from "react-toastify";
 
-import { Steps } from 'antd';
+import { Steps } from "antd";
 import {
   CreditCardOutlined,
   SmileOutlined,
   FileOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
+import { Helmet } from "react-helmet";
 
 const Checkout = ({ history }) => {
   const initialState = {
-    ship_name: '',
-    ship_email: '',
-    ship_phone: '',
-    ship_address: '',
-    ship_city: '',
-    ship_state: '',
-    ship_zip: '',
-    bill_name: '',
-    bill_address: '',
-    bill_city: '',
-    bill_state: '',
-    bill_zip: '',
+    ship_name: "",
+    ship_email: "",
+    ship_phone: "",
+    ship_address: "",
+    ship_city: "",
+    ship_state: "",
+    ship_zip: "",
+    bill_name: "",
+    bill_address: "",
+    bill_city: "",
+    bill_state: "",
+    bill_zip: "",
   };
   const [values, setValues] = useState(initialState);
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
+  const [different, setDifferent] = useState(false);
 
   const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
-  const [discountError, setDiscountError] = useState('');
-  const [coupon, setCoupon] = useState('');
-  const [shipping, setShipping] = useState('');
-  const [shipOption, setShipOption] = useState('');
+  const [discountError, setDiscountError] = useState("");
+  const [coupon, setCoupon] = useState("");
+  const [shipping, setShipping] = useState("");
+  const [shipOption, setShipOption] = useState("");
   const [cartTotalBeforeTax, setCartTotalBeforeTax] = useState(0);
 
   const dispatch = useDispatch();
@@ -68,7 +71,7 @@ const Checkout = ({ history }) => {
   const loadProductInCart = (token) => {
     // setLoading(true);
     getUserCart(token).then((res) => {
-      console.log('user cart res', JSON.stringify(res.data, null, 4));
+      console.log("user cart res", JSON.stringify(res.data, null, 4));
       setProducts(res.data.products);
       setTotal(res.data.cartTotal);
       setCartTotalBeforeTax(res.data.cartTotalBeforeTax);
@@ -78,17 +81,20 @@ const Checkout = ({ history }) => {
   };
   const handleChangeShipping = (e) => {
     dispatch({
-      type: 'SET_LOADING',
+      type: "SET_LOADING",
       payload: true,
     });
     changeShippingMethod(e.target.value, user.token).then((res) => {
       dispatch({
-        type: 'SET_LOADING',
+        type: "SET_LOADING",
         payload: false,
       });
       loadProductInCart(user.token);
-      message.success('Shipping Method Update Successfully');
+      message.success("Shipping Method Update Successfully");
     });
+  };
+  const handleChangeShippingBillingAddress = (e) => {
+    setDifferent(!different);
   };
 
   const handleEditCart = () => {
@@ -96,21 +102,31 @@ const Checkout = ({ history }) => {
   };
   const emptyCart = () => {
     // remove from local storage
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('cart');
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("cart");
     }
     // remove from redux
     dispatch({
-      type: 'ADD_TO_CART',
+      type: "ADD_TO_CART",
       payload: [],
+    });
+    dispatch({
+      type: "SET_LOADING",
+      payload: true,
     });
     // remove from backend
     emptyUserCart(user.token).then((res) => {
       setProducts([]);
       setTotal(0);
       setTotalAfterDiscount(0);
-      setCoupon('');
-      message.success('Your Cart is empty.');
+      setCoupon("");
+      message.success("Your Cart is empty.");
+      const delayed = setTimeout(() => {
+        dispatch({
+          type: "SET_LOADING",
+          payload: false,
+        });
+      }, 1000);
     });
   };
 
@@ -124,7 +140,7 @@ const Checkout = ({ history }) => {
         setTotalAfterDiscount(res.data);
         // update redux coupon applied true/false
         dispatch({
-          type: 'COUPON_APPLIED',
+          type: "COUPON_APPLIED",
           payload: true,
         });
       }
@@ -133,7 +149,7 @@ const Checkout = ({ history }) => {
         setDiscountError(res.data.err);
         // update redux coupon applied true/false
         dispatch({
-          type: 'COUPON_APPLIED',
+          type: "COUPON_APPLIED",
           payload: false,
         });
       }
@@ -142,16 +158,53 @@ const Checkout = ({ history }) => {
 
   const clickSubmit = (event) => {
     event.preventDefault();
-    saveShippingBilling(values, user.token)
-      .then((data) => {
-        // setDescription("");
-        // toast.success('Created Successfully!');
-        history.push('/checkout-payment');
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error(err.response.data.error);
-      });
+    dispatch({
+      type: "SET_LOADING",
+      payload: true,
+    });
+    if (different) {
+      saveShippingBilling(values, user.token)
+        .then((data) => {
+          history.push("/checkout-payment");
+          const delayed = setTimeout(() => {
+            dispatch({
+              type: "SET_LOADING",
+              payload: false,
+            });
+          }, 1000);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error(err.response.data.error);
+          const delayed = setTimeout(() => {
+            dispatch({
+              type: "SET_LOADING",
+              payload: false,
+            });
+          }, 1000);
+        });
+    } else {
+      saveShippingBillingBothSame(values, user.token)
+        .then((data) => {
+          history.push("/checkout-payment");
+          const delayed = setTimeout(() => {
+            dispatch({
+              type: "SET_LOADING",
+              payload: false,
+            });
+          }, 1000);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error(err.response.data.error);
+          const delayed = setTimeout(() => {
+            dispatch({
+              type: "SET_LOADING",
+              payload: false,
+            });
+          }, 1000);
+        });
+    }
   };
 
   useEffect(() => {
@@ -160,6 +213,9 @@ const Checkout = ({ history }) => {
   }, []);
   return (
     <>
+      <Helmet>
+        <title>Shipping & Order Review | ABC Nails Supply</title>
+      </Helmet>
       <div className="tygh-content clearfix">
         <div className="container-fluid  content-grid">
           <div className="container-fluid-row">
@@ -175,7 +231,7 @@ const Checkout = ({ history }) => {
                       <bdi>Checkout</bdi>
                     </span>
                   </div>
-                  {/* Inline script moved to the bottom of the page */}{' '}
+                  {/* Inline script moved to the bottom of the page */}{" "}
                   {/*breadcrumbs_10*/}
                 </div>
               </div>
@@ -188,16 +244,20 @@ const Checkout = ({ history }) => {
                   <Steps>
                     <Step
                       status="process"
-                      title="Shipping & Order"
+                      title="Step 1: Shipping & Order"
                       icon={<CreditCardOutlined twoToneColor="#eb2f96" />}
                     />
                     <Step
                       status="wait"
-                      title="Payment"
+                      title="Step 2: Payment"
                       icon={<FileOutlined twoToneColor="#52c41a" />}
                     />
 
-                    <Step status="wait" title="Done" icon={<SmileOutlined />} />
+                    <Step
+                      status="wait"
+                      title="Step 3: Done"
+                      icon={<SmileOutlined />}
+                    />
                   </Steps>
                   <h1 className="ty-mainbox-title">
                     <span className="ty-checkout__title">
@@ -205,7 +265,7 @@ const Checkout = ({ history }) => {
                     </span>
                   </h1>
                   <div className="ty-mainbox-body">
-                    {/* Inline script moved to the bottom of the page */}{' '}
+                    {/* Inline script moved to the bottom of the page */}{" "}
                     {/* Inline script moved to the bottom of the page */}
                     <a name="checkout_top" />
                     {/* Inline script moved to the bottom of the page */}
@@ -220,10 +280,10 @@ const Checkout = ({ history }) => {
                           id="step_one"
                         >
                           <h3 className="ty-step__title-active clearfix">
-                            <span className="ty-step__title-left">1A</span>
+                            <span className="ty-step__title-left">1</span>
                             <i className="ty-step__title-arrow ty-icon-down-micro" />
                             <span className="ty-step__title-txt">
-                              Shipping address
+                              Shipping Address
                             </span>
                           </h3>
                           <div
@@ -254,7 +314,7 @@ const Checkout = ({ history }) => {
                                       <input
                                         id="ship_name"
                                         name="ship_name"
-                                        onChange={handleChange('ship_name')}
+                                        onChange={handleChange("ship_name")}
                                         value={ship_name}
                                         type="text"
                                         name="name"
@@ -273,7 +333,7 @@ const Checkout = ({ history }) => {
                                       <input
                                         id="ship_email"
                                         name="ship_email"
-                                        onChange={handleChange('ship_email')}
+                                        onChange={handleChange("ship_email")}
                                         value={ship_email}
                                         type="text"
                                         name="email"
@@ -290,7 +350,7 @@ const Checkout = ({ history }) => {
                                         type="text"
                                         id="ship_phone"
                                         name="ship_phone"
-                                        onChange={handleChange('ship_phone')}
+                                        onChange={handleChange("ship_phone")}
                                         value={ship_phone}
                                         size="{32}"
                                         placeholder="Phone"
@@ -306,7 +366,7 @@ const Checkout = ({ history }) => {
                                         type="text"
                                         id="ship_address"
                                         name="ship_address"
-                                        onChange={handleChange('ship_address')}
+                                        onChange={handleChange("ship_address")}
                                         value={ship_address}
                                         size="{32}"
                                         placeholder="Address"
@@ -326,7 +386,7 @@ const Checkout = ({ history }) => {
                                         type="text"
                                         id="ship_city"
                                         name="ship_city"
-                                        onChange={handleChange('ship_city')}
+                                        onChange={handleChange("ship_city")}
                                         value={ship_city}
                                         size="{32}"
                                         className="ty-input-text  "
@@ -340,7 +400,7 @@ const Checkout = ({ history }) => {
                                         className="ty-profile-field__select-state cm-state cm-location-billing"
                                         id="ship_state"
                                         name="ship_state"
-                                        onChange={handleChange('ship_state')}
+                                        onChange={handleChange("ship_state")}
                                         value={ship_state}
                                       >
                                         <option value="No" selected>
@@ -420,7 +480,7 @@ const Checkout = ({ history }) => {
                                         type="text"
                                         id="ship_zip"
                                         name="ship_zip"
-                                        onChange={handleChange('ship_zip')}
+                                        onChange={handleChange("ship_zip")}
                                         value={ship_zip}
                                         size="{32}"
                                         placeholder="Zip Code"
@@ -437,12 +497,18 @@ const Checkout = ({ history }) => {
                                 <div className="ty-control-group clearfix">
                                   <label htmlFor="sw_sa">
                                     <input
+                                      onChange={
+                                        handleChangeShippingBillingAddress
+                                      }
                                       type="checkbox"
                                       name="ship_to_another"
                                       className="checkbox cm-switch-availability cm-switch-inverse cm-switch-visibility"
+                                      style={{
+                                        display: "inline-block",
+                                        marginRight: "5px",
+                                      }}
                                     />
-                                    Billing Address & Shipping Address are the
-                                    same.
+                                    Shipping & Billing Address are different
                                   </label>
                                 </div>
                               </div>
@@ -450,6 +516,7 @@ const Checkout = ({ history }) => {
                                 className="ty-step__container-active"
                                 data-ct-checkout="shipping_options"
                                 id="step_three"
+                                style={{ display: different ? "" : "none" }}
                               >
                                 <h3 className="ty-step__title-active clearfix">
                                   <span className="ty-step__title-left">
@@ -477,7 +544,7 @@ const Checkout = ({ history }) => {
                                           type="text"
                                           id="bill_name"
                                           name="bill_name"
-                                          onChange={handleChange('bill_name')}
+                                          onChange={handleChange("bill_name")}
                                           value={bill_name}
                                           size="{32}"
                                           placeholder="Your Full name"
@@ -494,7 +561,7 @@ const Checkout = ({ history }) => {
                                           id="bill_address"
                                           name="bill_address"
                                           onChange={handleChange(
-                                            'bill_address'
+                                            "bill_address"
                                           )}
                                           value={bill_address}
                                           size="{32}"
@@ -515,7 +582,7 @@ const Checkout = ({ history }) => {
                                           type="text"
                                           id="bill_city"
                                           name="bill_city"
-                                          onChange={handleChange('bill_city')}
+                                          onChange={handleChange("bill_city")}
                                           value={bill_city}
                                           size="{32}"
                                           className="ty-input-text  "
@@ -526,10 +593,10 @@ const Checkout = ({ history }) => {
                                           State
                                         </label>
                                         <select
-                                          className="ty-profile-field__select-state cm-state cm-location-billing"
+                                          className="ty-profile-field__select-state"
                                           id="bill_state"
                                           name="bill_state"
-                                          onChange={handleChange('bill_state')}
+                                          onChange={handleChange("bill_state")}
                                           value={bill_state}
                                         >
                                           <option value="No" selected>
@@ -621,7 +688,7 @@ const Checkout = ({ history }) => {
                                           type="text"
                                           id="bill_zip"
                                           name="bill_zip"
-                                          onChange={handleChange('bill_zip')}
+                                          onChange={handleChange("bill_zip")}
                                           value={bill_zip}
                                           size="{32}"
                                           placeholder="Zip Code"
@@ -697,11 +764,11 @@ const Checkout = ({ history }) => {
                                     <div className="ty-shipping-options__group">
                                       <label className="ty-valign ty-shipping-options__title">
                                         <bdi>
-                                          {' '}
-                                          Pick Up At Store -{' '}
+                                          {" "}
+                                          Pick Up At Store -{" "}
                                           <span className="ty-strong">
                                             Free
-                                          </span>{' '}
+                                          </span>{" "}
                                         </bdi>
                                       </label>
                                     </div>
@@ -721,6 +788,7 @@ const Checkout = ({ history }) => {
                         >
                           <h3 className="ty-step__title-active clearfix">
                             <span className="ty-step__title-left">
+                              3
                               <i className="ty-icon-ok" />
                             </span>
                             <i className="ty-step__title-arrow ty-icon-down-micro" />
@@ -788,7 +856,7 @@ const Checkout = ({ history }) => {
                                               alt={p.product.name}
                                               width={60}
                                               height={60}
-                                              style={{ opacity: '1' }}
+                                              style={{ opacity: "1" }}
                                             />
                                           </Link>
                                         </td>
@@ -839,8 +907,8 @@ const Checkout = ({ history }) => {
                                             $
                                             <span>
                                               {shipOption == 0
-                                                ? '8.00'
-                                                : 'FREE'}
+                                                ? "8.00"
+                                                : "FREE"}
                                             </span>
                                           </bdi>
                                         </span>
@@ -918,7 +986,7 @@ const Checkout = ({ history }) => {
                                   <input
                                     onChange={(e) => {
                                       setCoupon(e.target.value);
-                                      setDiscountError('');
+                                      setDiscountError("");
                                     }}
                                     value={coupon}
                                     type="text"
@@ -934,7 +1002,7 @@ const Checkout = ({ history }) => {
                                   >
                                     <i
                                       class="fa fa-play fa-dw"
-                                      style={{ fontSize: '13px' }}
+                                      style={{ fontSize: "13px" }}
                                     />
                                   </button>
                                   {discountError && (
@@ -952,7 +1020,7 @@ const Checkout = ({ history }) => {
                               {/* Inline script moved to the bottom of the page */}
                               <div
                                 className="checkout-buttons"
-                                style={{ float: 'right' }}
+                                style={{ float: "right" }}
                               >
                                 <button
                                   className="ty-btn__big ty-btn__primary cm-checkout-place-order ty-btn"

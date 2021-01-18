@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from "react";
-import UserMenu from "../../components/user/UserMenu";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import Invoice from "../../components/order/Invoice";
-import { getUserOrders } from "../../functions/user";
+import { getAdminDetailOrder } from "../../../functions/adminOrders";
 import { useSelector } from "react-redux";
+import AdminMenu from "../../../components/admin/AdminMenu";
 import { Steps, Avatar } from "antd";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import Invoice from "../../../components/order/Invoice";
 
-const UserOrders = () => {
-  const [orders, setOrders] = useState({});
+const AdminDetailOrder = (props) => {
   const { user } = useSelector((state) => ({ ...state }));
+  const token = user.token;
   const { Step } = Steps;
-  const loadUserOrders = () =>
-    getUserOrders(user.token).then((res) => {
-      console.log(JSON.stringify(res.data, null, 4));
+  const [orders, setOrders] = useState([]);
+  const loadAdminDetailOrder = (orderId) => {
+    getAdminDetailOrder(orderId, token).then((res) => {
       setOrders(res.data);
-    });
 
+      console.log("ADMIN DETAIL ORDER", JSON.stringify(res.data, null, 4));
+    });
+  };
   const showDownloadLink = (order) => (
     <PDFDownloadLink
       document={<Invoice order={order} />}
@@ -32,18 +34,17 @@ const UserOrders = () => {
     </PDFDownloadLink>
   );
   useEffect(() => {
-    loadUserOrders();
-  }, []);
+    loadAdminDetailOrder(props.match.params.orderId);
+  }, [props]);
   return (
     <>
       <div id="wrapper">
-        <UserMenu />
-
+        <AdminMenu />
         <div id="page-wrapper">
           <div className="container-fluid">
             <div className="row">
               <div className="col-lg-12">
-                <h1 className="page-header">Orders</h1>
+                <h1 className="page-header">Orders Detail</h1>
               </div>
               {/* /.col-lg-12 */}
             </div>
@@ -56,7 +57,11 @@ const UserOrders = () => {
                       <div className="row">
                         <div className="col-xs-10">
                           <i className="fa fa-shopping-cart" />
-                          &nbsp; Order ID #:<b> {order.trackId}</b> &nbsp;|
+                          &nbsp; Order Tracking ID #:<b>
+                            {" "}
+                            {order.trackId}
+                          </b>{" "}
+                          &nbsp;|
                           {showDownloadLink(order)}
                           &nbsp; |&nbsp;{" "}
                           <i className="fa fa-calendar-check-o" />
@@ -77,18 +82,6 @@ const UserOrders = () => {
                               currency: "USD",
                             }
                           )}{" "}
-                        </div>
-
-                        <div className="col-xs-2 text-right">
-                          <div>
-                            <button
-                              type="button"
-                              class="btn btn-outline btn-danger btn-sm"
-                            >
-                              <i className="fa fa-remove" />
-                              &nbsp; Request Cancel This Order
-                            </button>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -111,7 +104,7 @@ const UserOrders = () => {
                       <br></br>
                       <br></br>
                       <br></br>
-                      <div className="col-xs-6">
+                      <div className="col-xs-8">
                         <table className="table">
                           <thead className="thead-light">
                             <tr>
@@ -146,13 +139,10 @@ const UserOrders = () => {
                           </tbody>
                         </table>
                       </div>
-                      <div className="col-xs-6">
-                        <b>ORDER UPDATE:</b>
+                      <div className="col-xs-4">
+                        <b>ORDER PROCESS MANAGEMENT:</b>
 
-                        <p>
-                          <b>11/10/20:</b> We have received your order and will
-                          prepare it soon.
-                        </p>
+                        <p></p>
                       </div>
                     </div>
                   </div>
@@ -167,4 +157,4 @@ const UserOrders = () => {
   );
 };
 
-export default UserOrders;
+export default AdminDetailOrder;

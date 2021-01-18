@@ -47,6 +47,7 @@ import CheckoutFinish from "./pages/home/CheckoutFinish";
 import AdminOrders from "./pages/admin/order/AdminOrders";
 import Spinner from "./components/Spinner";
 import SubHome from "./pages/home/SubHome";
+import AdminDetailOrder from "./pages/admin/order/AdminDetailOrder";
 
 // code tạo animation cho trang chậm để loading
 // $("body").load(function() {
@@ -172,7 +173,11 @@ function App() {
               path="/admin/orders/list"
               component={AdminOrders}
             />
-
+            <AdminRoute
+              exact
+              path="/admin/order/:orderId"
+              component={AdminDetailOrder}
+            />
             <UserRoute exact path="/checkout" component={Checkout} />
             <UserRoute
               exact

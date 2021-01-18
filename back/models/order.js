@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const { ObjectId } = mongoose.Schema;
 
@@ -8,7 +8,7 @@ const orderSchema = new mongoose.Schema(
       {
         product: {
           type: ObjectId,
-          ref: 'Product',
+          ref: "Product",
         },
         count: Number,
       },
@@ -25,9 +25,10 @@ const orderSchema = new mongoose.Schema(
       // 4: "Ready for pickup at store",
       // 5: "Cancelled",
     },
-    orderdBy: { type: ObjectId, ref: 'User' },
+    orderdBy: { type: ObjectId, ref: "User" },
+    //chú ý chỗ này viết sai chính tả
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Order', orderSchema);
+module.exports = mongoose.model("Order", orderSchema);

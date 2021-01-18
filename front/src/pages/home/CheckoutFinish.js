@@ -1,13 +1,14 @@
-import { Link } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
-import { Steps, Result, Card, Avatar } from 'antd';
+import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Steps, Result, Card, Avatar } from "antd";
 import {
   CreditCardOutlined,
   SmileOutlined,
   FileOutlined,
-} from '@ant-design/icons';
-import { useSelector } from 'react-redux';
-import { getLatestOrder } from '../../functions/user';
+} from "@ant-design/icons";
+import { useSelector } from "react-redux";
+import { getLatestOrder } from "../../functions/user";
+import { Helmet } from "react-helmet";
 
 const CheckoutFinish = () => {
   const { Step } = Steps;
@@ -16,12 +17,15 @@ const CheckoutFinish = () => {
 
   useEffect(() => {
     getLatestOrder(user.token).then((res) => {
-      console.log('create payment intent', res.data);
+      console.log("create payment intent", res.data);
       setOrder(res.data);
     });
   }, []);
   return (
     <>
+      <Helmet>
+        <title>Your order has been placed | ABC Nails Supply</title>
+      </Helmet>
       <div className="tygh-content clearfix">
         <div className="container-fluid  content-grid">
           <div className="container-fluid-row">
@@ -37,7 +41,7 @@ const CheckoutFinish = () => {
                       <bdi>Checkout</bdi>
                     </span>
                   </div>
-                  {/* Inline script moved to the bottom of the page */}{' '}
+                  {/* Inline script moved to the bottom of the page */}{" "}
                   {/*breadcrumbs_10*/}
                 </div>
               </div>
@@ -50,26 +54,22 @@ const CheckoutFinish = () => {
                   <Steps>
                     <Step
                       status="finish"
-                      title="Shipping & Order"
+                      title="Step 1: Shipping & Order"
                       icon={<CreditCardOutlined twoToneColor="#eb2f96" />}
                     />
                     <Step
                       status="finish"
-                      title="Payment"
+                      title="Step 2: Payment"
                       icon={<FileOutlined twoToneColor="#52c41a" />}
                     />
 
                     <Step
                       status="process"
-                      title="Done"
+                      title="Step 3: Done"
                       icon={<SmileOutlined />}
                     />
                   </Steps>
-                  <h1 className="ty-mainbox-title">
-                    <span className="ty-checkout__title">
-                      Secure checkout <i class="fa fa-lock" />
-                    </span>
-                  </h1>
+
                   <div className="ty-mainbox-body">
                     <a name="checkout_top" />
 
@@ -83,15 +83,6 @@ const CheckoutFinish = () => {
                           data-ct-checkout="user_info"
                           id="step_one"
                         >
-                          <h3 className="ty-step__title-active clearfix">
-                            <span className="ty-step__title-left">
-                              <i className="ty-icon-ok" />
-                            </span>
-                            <i className="ty-step__title-arrow ty-icon-down-micro" />
-                            <span className="ty-step__title-txt">
-                              You're done with your order
-                            </span>
-                          </h3>
                           <div
                             className="ty-step__container-active ty-step-two"
                             data-ct-checkout="billing_shipping_address"
@@ -114,9 +105,9 @@ const CheckoutFinish = () => {
                                   subTitle="Expected delivery from 7-10 working days."
                                 >
                                   <h3>
-                                    Tracking Order Number:{' '}
-                                    <b>{order.trackId}</b> - Here is summary of
-                                    what you have ordered:
+                                    Tracking Order Number:{" "}
+                                    <b>{order.trackId}</b>
+                                    <br></br>
                                   </h3>
 
                                   <div className="table-responsive">

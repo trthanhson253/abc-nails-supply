@@ -228,6 +228,26 @@ const CategoryHome = (props) => {
               </div>
             </div>
           </div>
+          <div className="container-fluid-row">
+            <div className="row-fluid ">
+              {cate.description ? (
+                <>
+                  <div
+                    style={{
+                      borderStyle: "solid",
+                      padding: "15px",
+                      borderColor: "#F0F0F0",
+                    }}
+                  >
+                    {renderHTML(cate.description)}
+                  </div>{" "}
+                  <hr />
+                </>
+              ) : (
+                <hr></hr>
+              )}
+            </div>
+          </div>
 
           <div className="container-fluid-row">
             <div className="row-fluid ">
@@ -239,14 +259,7 @@ const CategoryHome = (props) => {
                       className="ty-pagination-container cm-pagination-container"
                       id="pagination_contents"
                     >
-                      {cate.description ? (
-                        <>
-                          <div>{renderHTML(cate.description)}</div>
-                        </>
-                      ) : (
-                        <></>
-                      )}
-
+                      <div></div>
                       <div className="ty-sort-container">
                         <div
                           className="ut2-selected-product-filters cm-product-filters"
@@ -345,7 +358,13 @@ const CategoryHome = (props) => {
                                 <li className="cm-product-filters-checkbox-container ty-product-filters__group">
                                   {subCates.map((c) => (
                                     <li className="cm-product-filters-checkbox-container ty-product-filters__group">
-                                      <b>{c.name}</b>
+                                      <Checkbox
+                                        // onChange={handleChangeBrand(c)}
+                                        name="subCates"
+                                        // value={checkedBrand.indexOf(c === -1)}
+                                      >
+                                        {c.name}
+                                      </Checkbox>
                                     </li>
                                   ))}
                                 </li>

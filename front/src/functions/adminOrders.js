@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axios from "axios";
 
 export const getOrders = async (token) =>
   await axios.get(`${process.env.REACT_APP_API}/admin/orders`, {
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });
@@ -15,9 +15,18 @@ export const changeStatus = async (orderId, orderStatus, token) =>
     { orderId, orderStatus },
     {
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     }
   );
+
+export const getAdminDetailOrder = async (orderId, token) =>
+  await axios.get(`${process.env.REACT_APP_API}/admin/order/${orderId}`, {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });

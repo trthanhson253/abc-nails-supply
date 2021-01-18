@@ -1,17 +1,18 @@
-import { Link } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
-import StripeCheckout from '../../components/StripeCheckout';
-import '../../stripe.css';
-import { Steps, Card } from 'antd';
+import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import StripeCheckout from "../../components/StripeCheckout";
+import "../../stripe.css";
+import { Steps, Card } from "antd";
 import {
   CreditCardOutlined,
   SmileOutlined,
   FileOutlined,
-} from '@ant-design/icons';
-import { getBillingAndShippingAddress } from '../../functions/user';
+} from "@ant-design/icons";
+import { getBillingAndShippingAddress } from "../../functions/user";
+import { Helmet } from "react-helmet";
 const promise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
 
 const CheckoutPayment = () => {
@@ -31,6 +32,9 @@ const CheckoutPayment = () => {
   }, []);
   return (
     <>
+      <Helmet>
+        <title>Payment | ABC Nails Supply</title>
+      </Helmet>
       <div className="tygh-content clearfix">
         <div className="container-fluid  content-grid">
           <div className="container-fluid-row">
@@ -46,8 +50,6 @@ const CheckoutPayment = () => {
                       <bdi>Checkout</bdi>
                     </span>
                   </div>
-                  {/* Inline script moved to the bottom of the page */}{' '}
-                  {/*breadcrumbs_10*/}
                 </div>
               </div>
             </div>
@@ -59,16 +61,20 @@ const CheckoutPayment = () => {
                   <Steps>
                     <Step
                       status="finish"
-                      title="Shipping & Order"
+                      title="Step 1: Shipping & Order"
                       icon={<CreditCardOutlined twoToneColor="#eb2f96" />}
                     />
                     <Step
                       status="process"
-                      title="Payment"
+                      title="Step 2: Payment"
                       icon={<FileOutlined twoToneColor="#52c41a" />}
                     />
 
-                    <Step status="wait" title="Done" icon={<SmileOutlined />} />
+                    <Step
+                      status="wait"
+                      title="Step 3: Done"
+                      icon={<SmileOutlined />}
+                    />
                   </Steps>
                   <h1 className="ty-mainbox-title">
                     <span className="ty-checkout__title">
@@ -89,12 +95,10 @@ const CheckoutPayment = () => {
                           id="step_one"
                         >
                           <h3 className="ty-step__title-active clearfix">
-                            <span className="ty-step__title-left">
-                              <i className="ty-icon-ok" />
-                            </span>
+                            <span className="ty-step__title-left">4</span>
                             <i className="ty-step__title-arrow ty-icon-down-micro" />
                             <span className="ty-step__title-txt">
-                              Review Information
+                              Shipping & Billing Information
                             </span>
                           </h3>
                           <div
@@ -118,8 +122,8 @@ const CheckoutPayment = () => {
                                     title="SHIPPING ADDRESS"
                                     type="inner"
                                     style={{
-                                      borderRadius: '5px',
-                                      height: '220px',
+                                      borderRadius: "5px",
+                                      height: "220px",
                                     }}
                                     extra={<Link to="/checkout">Edit</Link>}
                                   >
@@ -134,11 +138,11 @@ const CheckoutPayment = () => {
                                       {billingAndShippingAddress.ship_state}
                                       &nbsp;
                                       {billingAndShippingAddress.ship_zip}
-                                      ,United States{' '}
+                                      ,United States{" "}
                                     </p>
 
                                     <p>
-                                      Phone:{' '}
+                                      Phone:{" "}
                                       {billingAndShippingAddress.ship_phone}
                                     </p>
                                   </Card>
@@ -162,8 +166,8 @@ const CheckoutPayment = () => {
                                     title="BILLING ADDRESS"
                                     type="inner"
                                     style={{
-                                      borderRadius: '5px',
-                                      height: '220px',
+                                      borderRadius: "5px",
+                                      height: "220px",
                                     }}
                                     extra={<Link to="/checkout">Edit</Link>}
                                   >
@@ -178,7 +182,7 @@ const CheckoutPayment = () => {
                                       {billingAndShippingAddress.bill_state}
                                       &nbsp;
                                       {billingAndShippingAddress.bill_zip}
-                                      ,United States{' '}
+                                      ,United States{" "}
                                     </p>
                                   </Card>
                                 </div>
@@ -196,7 +200,7 @@ const CheckoutPayment = () => {
                           id="step_five"
                         >
                           <h3 className="ty-step__title-active clearfix">
-                            <span className="ty-step__title-left">3</span>
+                            <span className="ty-step__title-left">5</span>
                             <i className="ty-step__title-arrow ty-icon-down-micro" />
                             <span className="ty-step__title-txt">Payment</span>
                           </h3>

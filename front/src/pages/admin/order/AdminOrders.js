@@ -1,11 +1,11 @@
-import { Link } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
-import { getOrders, changeStatus } from '../../../functions/adminOrders';
-import { useSelector, useDispatch } from 'react-redux';
-import { toast } from 'react-toastify';
-import AdminMenu from '../../../components/admin/AdminMenu';
+import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { getOrders, changeStatus } from "../../../functions/adminOrders";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import AdminMenu from "../../../components/admin/AdminMenu";
 
-const AdminOrders = () => {
+const AdminOrders = ({ history }) => {
   const [orders, setOrders] = useState([]);
   const { user } = useSelector((state) => ({ ...state }));
 
@@ -21,9 +21,12 @@ const AdminOrders = () => {
 
   const handleStatusChange = (orderId, orderStatus) => {
     changeStatus(orderId, orderStatus, user.token).then((res) => {
-      toast.success('Status updated');
+      toast.success("Status updated");
       loadOrders();
     });
+  };
+  const handleClickDetailOrder = (orderId) => {
+    history.push(`/admin/order/${orderId}`);
   };
   //   const renderStatus = (status) => (
   //     {}
@@ -62,6 +65,7 @@ const AdminOrders = () => {
                           <tr>
                             <th>Order ID</th>
                             <th>Order Placed Date</th>
+                            <th>Order Placed By</th>
                             <th>Total Charge</th>
                             <th>Number of Items</th>
                             <th>Status</th>
@@ -79,18 +83,20 @@ const AdminOrders = () => {
                               </td>
                               <td>
                                 {(order.paymentIntent.amount /= 100).toLocaleString(
-                                  'en-US',
+                                  "en-US",
                                   {
-                                    style: 'currency',
-                                    currency: 'USD',
+                                    style: "currency",
+                                    currency: "USD",
                                   }
                                 )}
                               </td>
                               <td>{order.products.length}</td>
+                              <td>{order.orderdBy.name}</td>
+
                               <td>
                                 {order.orderStatus == 0 && (
                                   <span class="label label-default">
-                                    {' '}
+                                    {" "}
                                     Order Received
                                   </span>
                                 )}
@@ -129,6 +135,9 @@ const AdminOrders = () => {
                                   <button
                                     type="button"
                                     class="btn btn-primary btn-circle"
+                                    onClick={() =>
+                                      handleClickDetailOrder(order.trackId)
+                                    }
                                   >
                                     <i class="fa fa-edit"></i>
                                   </button>
