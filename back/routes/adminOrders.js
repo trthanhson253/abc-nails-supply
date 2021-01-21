@@ -9,6 +9,7 @@ const {
   orders,
   orderStatus,
   getAdminDetailOrder,
+  updateOrderProgress,
 } = require("../controllers/adminOrders");
 
 // routes
@@ -18,6 +19,12 @@ router.get(
   requireSignin,
   adminCheck,
   getAdminDetailOrder
+);
+router.post(
+  "/admin/order/update-progress/:orderId",
+  requireSignin,
+  adminCheck,
+  updateOrderProgress
 );
 router.put("/admin/order-status", requireSignin, adminCheck, orderStatus);
 

@@ -134,3 +134,49 @@
     transform: rotate(360deg);
   }
 }
+
+/* TRACK ORDER PAGE */
+.container {
+  padding-bottom: 50px;
+}
+.box3 {
+  width: 100%;
+  float: left;
+  padding: 12px 12px 20px 12px;
+  box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+}
+.box3:hover {
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+}
+.mt30 {
+  margin-top: 50px;
+}
+.appointment-sec {
+  width: 100%;
+  float: left;
+  border: 0px solid #dedddd;
+  padding: 30px 220px;
+  position: relative;
+}
+.text-center {
+  text-align: center;
+}
+.appointment-sec p {
+  display: inline-block;
+  font-family: georgia, helvetica, serif;
+  font-size: 18px;
+  color: #505050;
+  margin-top: 10px;
+  line-height: 30px;
+  margin-top: 20px;
+}
+.appointment-sec p a {
+  color: #232b8d;
+  text-decoration: underline;
+  font-family: georgia, helvetica, serif;
+  font-size: 18px;
+}
+#onestepcheckout .checkout-summary .table th.right,
+#onestepcheckout .checkout-summary .table td.right {
+  text-align: right;
+}

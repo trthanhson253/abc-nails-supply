@@ -9691,7 +9691,7 @@ td.ty-cart-content__description {
   margin: 25px 20px;
 }
 .ty-step__container-active .ty-step__title-txt {
-  margin-left: 5px;
+  margin-left: 45px;
   font-size: 18px;
 }
 .ty-step__container-active .ty-step__title-left {
@@ -25958,8 +25958,8 @@ div[class^="span"].top-links-grid .ty-text-links-btn {
 }
 .ty-minicart-count {
   top: -4px;
-  background: pink;
-  color: #8c8c8c;
+  background: #00a3cb;
+  color: white;
   -webkit-font-smoothing: auto;
 }
 .ut2-wishlist-count,

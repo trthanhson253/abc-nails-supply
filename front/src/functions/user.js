@@ -158,3 +158,20 @@ export const getLatestOrder = async (token) =>
       Authorization: `Bearer ${token}`,
     },
   });
+
+export const getDetailOrderBaseOnTrackId = async (trackId) =>
+  await axios.get(`${process.env.REACT_APP_API}/track-order/${trackId}`);
+
+export const requestCancelOrder = async (trackId, token) => {
+  console.log("token", token);
+  await axios.get(
+    `${process.env.REACT_APP_API}/user/order/request-cancel/${trackId}`,
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};

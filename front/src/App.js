@@ -48,6 +48,7 @@ import AdminOrders from "./pages/admin/order/AdminOrders";
 import Spinner from "./components/Spinner";
 import SubHome from "./pages/home/SubHome";
 import AdminDetailOrder from "./pages/admin/order/AdminDetailOrder";
+import TrackOrder from "./pages/TrackOrder";
 
 // code tạo animation cho trang chậm để loading
 // $("body").load(function() {
@@ -137,6 +138,7 @@ function App() {
             <Route exact path="/detail" component={ProductDetailHome} />
             <Route exact path="/search" component={Search} />
             <Route exact path="/cart" component={Cart} />
+            <Route exact path="/track-order/:trackId" component={TrackOrder} />
 
             <AdminRoute exact path="/admin" component={AdminDashboard} />
             <AdminRoute

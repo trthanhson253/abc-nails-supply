@@ -27,6 +27,8 @@ const {
   getBillingAndShippingAddress,
   getLatestOrder,
   saveShippingBillingBothSame,
+  getDetailOrderBaseOnTrackId,
+  requestCancelOrder,
 } = require("../controllers/user");
 
 router.post("/user/cart", requireSignin, authCheck, userCart); // save cart
@@ -67,6 +69,13 @@ router.get(
 router.post("/user/order", requireSignin, authCheck, createOrder); // stripe
 router.get("/user/orders", requireSignin, authCheck, orders);
 router.get("/user/orders/getLatest", requireSignin, authCheck, getLatestOrder);
+router.get("/track-order/:trackId", getDetailOrderBaseOnTrackId);
+router.get(
+  "/user/order/request-cancel/:trackId",
+  requireSignin,
+  authCheck,
+  requestCancelOrder
+);
 
 // coupon
 router.post(

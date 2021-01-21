@@ -31,7 +31,9 @@ const Cart = ({ history }) => {
             payload: false,
           });
         }, 1000);
-        if (res.data.ok) history.push("/checkout");
+        if (res.data.ok) {
+          history.push("/checkout");
+        }
       })
       .catch((err) => console.log("cart save err", err));
   };
@@ -182,13 +184,13 @@ const Cart = ({ history }) => {
                           </div>
                           <div className="ty-float-right ty-cart-content__right-buttons">
                             {user ? (
-                              <Link
+                              <button
                                 onClick={saveOrderToDb}
                                 className=" cm-dialog-auto-size ty-btn ty-btn__primary"
                                 to="/checkout"
                               >
                                 Proceed to checkout
-                              </Link>
+                              </button>
                             ) : (
                               <Link
                                 className=" ty-btn ty-btn__tertiary text-button"

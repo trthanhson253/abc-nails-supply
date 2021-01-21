@@ -123,28 +123,35 @@ const CheckoutPayment = () => {
                                     type="inner"
                                     style={{
                                       borderRadius: "5px",
-                                      height: "220px",
                                     }}
                                     extra={<Link to="/checkout">Edit</Link>}
                                   >
-                                    <p>
-                                      <b>
-                                        {billingAndShippingAddress.ship_name}
-                                      </b>
-                                    </p>
-                                    <p>
-                                      {billingAndShippingAddress.ship_address},
-                                      {billingAndShippingAddress.ship_city},
-                                      {billingAndShippingAddress.ship_state}
-                                      &nbsp;
-                                      {billingAndShippingAddress.ship_zip}
-                                      ,United States{" "}
-                                    </p>
-
-                                    <p>
-                                      Phone:{" "}
-                                      {billingAndShippingAddress.ship_phone}
-                                    </p>
+                                    {billingAndShippingAddress ? (
+                                      <>
+                                        <b>
+                                          {billingAndShippingAddress.ship_name}
+                                        </b>
+                                        <span style={{ display: "block" }}>
+                                          {" "}
+                                          {
+                                            billingAndShippingAddress.ship_address
+                                          }
+                                          ,{billingAndShippingAddress.ship_city}
+                                          ,
+                                          {billingAndShippingAddress.ship_state}
+                                          &nbsp;
+                                          {billingAndShippingAddress.ship_zip}
+                                          ,United States
+                                        </span>
+                                        <span style={{ display: "block" }}>
+                                          {" "}
+                                          Phone:{" "}
+                                          {billingAndShippingAddress.ship_phone}
+                                        </span>
+                                      </>
+                                    ) : (
+                                      <>No information found</>
+                                    )}
                                   </Card>
                                 </div>
                               </div>
@@ -167,23 +174,30 @@ const CheckoutPayment = () => {
                                     type="inner"
                                     style={{
                                       borderRadius: "5px",
-                                      height: "220px",
                                     }}
                                     extra={<Link to="/checkout">Edit</Link>}
                                   >
-                                    <p>
-                                      <b>
-                                        {billingAndShippingAddress.bill_name}
-                                      </b>
-                                    </p>
-                                    <p>
-                                      {billingAndShippingAddress.bill_address},
-                                      {billingAndShippingAddress.bill_city},
-                                      {billingAndShippingAddress.bill_state}
-                                      &nbsp;
-                                      {billingAndShippingAddress.bill_zip}
-                                      ,United States{" "}
-                                    </p>
+                                    {billingAndShippingAddress ? (
+                                      <>
+                                        <b>
+                                          {billingAndShippingAddress.bill_name}
+                                        </b>
+                                        <span style={{ display: "block" }}>
+                                          {" "}
+                                          {
+                                            billingAndShippingAddress.bill_address
+                                          }
+                                          ,{billingAndShippingAddress.bill_city}
+                                          ,
+                                          {billingAndShippingAddress.bill_state}
+                                          &nbsp;
+                                          {billingAndShippingAddress.bill_zip}
+                                          ,United States
+                                        </span>
+                                      </>
+                                    ) : (
+                                      <>No information found</>
+                                    )}
                                   </Card>
                                 </div>
                               </div>

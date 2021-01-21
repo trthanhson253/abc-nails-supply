@@ -10,6 +10,9 @@ import { Image, message } from "antd";
 
 const Header = () => {
   let { user, cart, load } = useSelector((state) => ({ ...state }));
+  const [values, setValues] = useState({ trackId: "" });
+  const { trackId } = values;
+
   let history = useHistory();
   let dispatch = useDispatch();
   const [subs, setSubs] = useState([]);
@@ -64,7 +67,12 @@ const Header = () => {
   //  message.success("Your cart is empty")
   // }
   // };
-
+  const handleChange = (name) => (e) => {
+    setValues({
+      ...values,
+      [name]: e.target.value,
+    });
+  };
   const handleRemove = (p) => (e) => {
     // console.log(p._id, "to remove");
     let cart = [];
@@ -115,7 +123,11 @@ const Header = () => {
     toast.success(`Logout Success`);
     history.push("/login");
   };
-
+  const clickSubmit = (event) => {
+    event.preventDefault();
+    history.push(`/track-order/${values.trackId}`);
+    setValues({ trackId: "" });
+  };
   return (
     <>
       <div className="tygh-header clearfix">
@@ -195,19 +207,15 @@ const Header = () => {
                     </Link>
                     {/*abt__ut2_compared_products*/}
                   </div>
-                  <div
-                    className="ut2-wishlist-count"
-                    id="abt__ut2_wishlist_count"
-                  >
+                  <div class="ut2-wishlist-count" id="abt__ut2_wishlist_count">
                     <Link
-                      className="cm-tooltip ty-wishlist__a "
+                      class="cm-tooltip ty-wishlist__a active"
                       to="/user/wishlist"
                       rel="nofollow"
-                      title="WishList"
                     >
-                      <i className="ut2-icon-baseline-favorite-border" />
+                      <i class="ut2-icon-baseline-favorite-border"></i>
+                      <span class="count">5</span>
                     </Link>
-                    {/*abt__ut2_wishlist_count*/}
                   </div>
                 </div>
               </div>
@@ -520,7 +528,6 @@ const Header = () => {
                             )}
                           </div>
                         </div>
-                        {/*cart_status_684*/}
                       </div>
                     </div>
                     <div className="ut2-top-my-account ty-float-right">
@@ -632,48 +639,47 @@ const Header = () => {
                               </>
                             )}
                           </ul>
-
-                          <div
-                            className="ty-account-info__orders updates-wrapper track-orders"
-                            id="track_orders_block_685"
-                          >
-                            <div className="ty-account-info__orders-txt">
-                              Track my order(s)
-                            </div>
-                            <div className="ty-account-info__orders-input ty-control-group ty-input-append">
-                              <label
-                                htmlFor="track_order_item685"
-                                className="cm-required hidden"
-                              >
+                          <form onSubmit={clickSubmit}>
+                            <div
+                              className="ty-account-info__orders updates-wrapper track-orders"
+                              id="track_orders_block_685"
+                            >
+                              <div className="ty-account-info__orders-txt">
                                 Track my order(s)
-                              </label>
-                              <input
-                                type="text"
-                                size={20}
-                                className="ty-input-text cm-hint"
-                                id="track_order_item685"
-                                name="track_data"
-                                defaultValue="Order ID/Email"
-                              />
-                              <button
-                                title="Go"
-                                className="ty-btn-go"
-                                type="submit"
-                              >
-                                <i
-                                  class="fa fa-play fa-dw"
-                                  style={{ fontSize: "13px" }}
+                              </div>
+                              <div className="ty-account-info__orders-input ty-control-group ty-input-append">
+                                <label
+                                  htmlFor="track_order_item685"
+                                  className="cm-required hidden"
+                                >
+                                  Track my order(s)
+                                </label>
+                                <input
+                                  type="text"
+                                  size={20}
+                                  className="ty-input-text cm-hint"
+                                  name="trackId"
+                                  placeHolder="Tracking Order ID"
+                                  name="name"
+                                  onChange={handleChange("trackId")}
+                                  value={trackId}
+                                  required
                                 />
-                              </button>
-                              <input
-                                type="hidden"
-                                name="dispatch"
-                                defaultValue="orders.track_request"
-                              />
+                                <button
+                                  title="Go"
+                                  className="ty-btn-go"
+                                  type="submit"
+                                  onClick={clickSubmit}
+                                >
+                                  <i
+                                    class="fa fa-play fa-dw"
+                                    style={{ fontSize: "13px" }}
+                                  />
+                                </button>
+                              </div>
                             </div>
+                          </form>
 
-                            {/*track_orders_block_685*/}
-                          </div>
                           <div className="ty-account-info__buttons buttons-container">
                             {!user && (
                               <>

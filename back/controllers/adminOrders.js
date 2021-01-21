@@ -34,3 +34,29 @@ exports.getAdminDetailOrder = async (req, res) => {
 
   res.json(order);
 };
+
+exports.updateOrderProgress = (req, res) => {
+  console.log(req.body);
+  Order.findOne({ trackId: req.params.orderId }).exec((err, oldOrder) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Not Found Order",
+      });
+    }
+
+    oldOrder.orderStatus = req.body.orderStatus;
+    oldOrder.deliveryId = req.body.deliveryId;
+    oldOrder.reason.push({
+      name: req.body.reasonNumber,
+      date: Date.now(),
+    });
+    oldOrder.save((err, result) => {
+      if (err) {
+        return res.status(400).json({
+          error: "cannot save",
+        });
+      }
+      res.json(result);
+    });
+  });
+};

@@ -30,3 +30,16 @@ export const getAdminDetailOrder = async (orderId, token) =>
       Authorization: `Bearer ${token}`,
     },
   });
+
+export const updateOrderProgress = async (order, orderId, token) =>
+  await axios.post(
+    `${process.env.REACT_APP_API}/admin/order/update-progress/${orderId}`,
+    order,
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );

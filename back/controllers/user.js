@@ -54,18 +54,15 @@ exports.userCart = async (req, res) => {
     orderdBy: user._id,
   }).save();
 
-  console.log("new cart ----> ", newCart);
+  // console.log("new cart ----> ", newCart);
   res.json({ ok: true });
 };
 
 exports.getUserCart = async (req, res) => {
-  const user = await User.findOne({ email: req.user.email }).exec();
+  // const user = await User.findOne({ email: req.user.email }).exec();
 
-  let cart = await Cart.findOne({ orderdBy: user._id })
-    .populate(
-      "products.product",
-      "_id name price image totalAfterDiscount shipOption"
-    )
+  let cart = await Cart.findOne({ orderdBy: req.user._id })
+    .populate("products.product", "_id name price image")
     .exec();
 
   const {
@@ -75,6 +72,7 @@ exports.getUserCart = async (req, res) => {
     shipOption,
     cartTotalBeforeTax,
   } = cart;
+  console.log("cart", cart);
   res.json({
     products,
     cartTotal,
@@ -185,7 +183,13 @@ exports.createOrder = async (req, res) => {
     paymentIntent,
     trackId: shortId.generate(),
     orderdBy: user._id,
-  }).save();
+    orderStatus: 0,
+  });
+  newOrder.reason.push({
+    name: 0,
+    date: Date.now(),
+  });
+  newOrder.save();
 
   // decrement quantity, increment sold
   let bulkOption = products.map((item) => {
@@ -408,4 +412,49 @@ exports.getLatestOrder = async (req, res) => {
   // console.log('order', order);
 
   res.json(order);
+};
+
+exports.getDetailOrderBaseOnTrackId = async (req, res) => {
+  // let order = await Order.findOne({ trackId: req.params.trackId })
+  //   .sort({ createdAt: -1 })
+  //   .limit(1)
+  //   .exec();
+
+  // res.json(order);
+
+  Order.findOne({ trackId: req.params.trackId }).exec((err, order) => {
+    if (!order) {
+      return res.status(400).json({
+        error: "Cannot Find Order",
+      });
+    }
+
+    res.json(order);
+  });
+};
+
+exports.requestCancelOrder = (req, res) => {
+  console.log("req.params.trackId", req.params.trackId);
+
+  Order.findOne({ trackId: req.params.trackId }).exec((err, oldOrder) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Not Found Order",
+      });
+    }
+
+    oldOrder.orderStatus = 5;
+    oldOrder.reason.push({
+      name: 5,
+      date: Date.now(),
+    });
+    oldOrder.save((err, result) => {
+      if (err) {
+        return res.status(400).json({
+          error: "cannot save",
+        });
+      }
+      res.json(result);
+    });
+  });
 };

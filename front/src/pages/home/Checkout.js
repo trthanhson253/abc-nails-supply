@@ -13,13 +13,15 @@ import {
 import { message, Image, Alert } from "antd";
 import { toast } from "react-toastify";
 
-import { Steps } from "antd";
+import { Steps, Collapse, Card } from "antd";
+
 import {
   CreditCardOutlined,
   SmileOutlined,
   FileOutlined,
 } from "@ant-design/icons";
 import { Helmet } from "react-helmet";
+import { getBillingAndShippingAddress } from "../../functions/user";
 
 const Checkout = ({ history }) => {
   const initialState = {
@@ -36,6 +38,7 @@ const Checkout = ({ history }) => {
     bill_state: "",
     bill_zip: "",
   };
+  const { Panel } = Collapse;
   const [values, setValues] = useState(initialState);
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
@@ -47,7 +50,9 @@ const Checkout = ({ history }) => {
   const [shipping, setShipping] = useState("");
   const [shipOption, setShipOption] = useState("");
   const [cartTotalBeforeTax, setCartTotalBeforeTax] = useState(0);
-
+  const [billingAndShippingAddress, setBillingAndShippingAddress] = useState(
+    {}
+  );
   const dispatch = useDispatch();
   const { user } = useSelector((state) => ({ ...state }));
   const { Step } = Steps;
@@ -68,10 +73,11 @@ const Checkout = ({ history }) => {
   const handleChange = (name) => (e) => {
     setValues({ ...values, [name]: e.target.value });
   };
-  const loadProductInCart = (token) => {
+  const loadProductInCart = () => {
     // setLoading(true);
-    getUserCart(token).then((res) => {
-      console.log("user cart res", JSON.stringify(res.data, null, 4));
+    getUserCart(user.token).then((res) => {
+      // console.log("user cart res", JSON.stringify(res.data, null, 4));
+      console.log("res.data.products", res.data.products);
       setProducts(res.data.products);
       setTotal(res.data.cartTotal);
       setCartTotalBeforeTax(res.data.cartTotalBeforeTax);
@@ -89,7 +95,7 @@ const Checkout = ({ history }) => {
         type: "SET_LOADING",
         payload: false,
       });
-      loadProductInCart(user.token);
+      loadProductInCart();
       message.success("Shipping Method Update Successfully");
     });
   };
@@ -206,10 +212,38 @@ const Checkout = ({ history }) => {
         });
     }
   };
-
+  const loadBillingAndShippingAddress = () => {
+    getBillingAndShippingAddress(user.token).then((res) => {
+      // console.log('res', res.data.shippingAndBillingAddress);
+      setBillingAndShippingAddress(res.data.shippingAndBillingAddress);
+    });
+  };
+  const useThisShippingAddress = () => {
+    setValues({
+      ...values,
+      ship_name: billingAndShippingAddress.ship_name,
+      ship_email: billingAndShippingAddress.ship_email,
+      ship_phone: billingAndShippingAddress.ship_phone,
+      ship_address: billingAndShippingAddress.ship_address,
+      ship_city: billingAndShippingAddress.ship_city,
+      ship_state: billingAndShippingAddress.ship_state,
+      ship_zip: billingAndShippingAddress.ship_zip,
+    });
+  };
+  const useThisBillingAddress = () => {
+    setValues({
+      ...values,
+      bill_name: billingAndShippingAddress.bill_name,
+      bill_address: billingAndShippingAddress.bill_address,
+      bill_city: billingAndShippingAddress.bill_city,
+      bill_state: billingAndShippingAddress.bill_state,
+      bill_zip: billingAndShippingAddress.bill_zip,
+    });
+  };
   useEffect(() => {
     // let token = user.token;
-    loadProductInCart(user.token);
+    loadProductInCart();
+    loadBillingAndShippingAddress();
   }, []);
   return (
     <>
@@ -304,6 +338,76 @@ const Checkout = ({ history }) => {
                               >
                                 <div className="checkout__block">
                                   <div className="clearfix">
+                                    <div
+                                      id="step_two_body"
+                                      className="ty-step__body-active cm-skip-save-fields"
+                                    >
+                                      <div className="clearfix">
+                                        <div className="checkout__block"></div>
+                                      </div>
+                                      <div
+                                        className="clearfix"
+                                        data-ct-address="billing-address"
+                                      >
+                                        <div className="span16">
+                                          {billingAndShippingAddress && (
+                                            <Card
+                                              title="Your Default Shipping Address"
+                                              type="inner"
+                                              style={{
+                                                borderRadius: "5px",
+                                              }}
+                                            >
+                                              <b>
+                                                {
+                                                  billingAndShippingAddress.ship_name
+                                                }
+                                              </b>
+                                              <span
+                                                style={{ display: "block" }}
+                                              >
+                                                {" "}
+                                                {
+                                                  billingAndShippingAddress.ship_address
+                                                }
+                                                ,
+                                                {
+                                                  billingAndShippingAddress.ship_city
+                                                }
+                                                ,
+                                                {
+                                                  billingAndShippingAddress.ship_state
+                                                }
+                                                &nbsp;
+                                                {
+                                                  billingAndShippingAddress.ship_zip
+                                                }
+                                                ,United States
+                                              </span>
+                                              <span
+                                                style={{ display: "block" }}
+                                              >
+                                                {" "}
+                                                Phone:{" "}
+                                                {
+                                                  billingAndShippingAddress.ship_phone
+                                                }
+                                              </span>
+
+                                              <button
+                                                type="button"
+                                                class="btn btn-outline btn-primary btn-sm"
+                                                onClick={useThisShippingAddress}
+                                                style={{ float: "right" }}
+                                              >
+                                                Use this Shipping Address
+                                              </button>
+                                            </Card>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+
                                     <div className="ty-control-group ty-profile-field__item ty-billing-email">
                                       <label
                                         htmlFor="elm_32"
@@ -531,6 +635,43 @@ const Checkout = ({ history }) => {
                                   className="clearfix"
                                   data-ct-address="billing-address"
                                 >
+                                  <div className="span16">
+                                    {billingAndShippingAddress && (
+                                      <Card
+                                        title="Your Default Billing Address"
+                                        type="inner"
+                                        style={{
+                                          borderRadius: "5px",
+                                        }}
+                                      >
+                                        <b>
+                                          {billingAndShippingAddress.bill_name}
+                                        </b>
+                                        <span style={{ display: "block" }}>
+                                          {" "}
+                                          {
+                                            billingAndShippingAddress.bill_address
+                                          }
+                                          ,{billingAndShippingAddress.bill_city}
+                                          ,
+                                          {billingAndShippingAddress.bill_state}
+                                          &nbsp;
+                                          {billingAndShippingAddress.bill_zip}
+                                          ,United States
+                                        </span>
+
+                                        <button
+                                          type="button"
+                                          class="btn btn-outline btn-primary btn-sm"
+                                          onClick={useThisBillingAddress}
+                                          style={{ float: "right" }}
+                                        >
+                                          Use this Billing Address
+                                        </button>
+                                      </Card>
+                                    )}
+                                  </div>
+
                                   <div className="checkout__block">
                                     <div className="clearfix">
                                       <div className="ty-control-group ty-profile-field__item ty-billing-email">
@@ -816,7 +957,7 @@ const Checkout = ({ history }) => {
                                     >
                                       <button
                                         type="button"
-                                        class="btn btn-primary"
+                                        class="btn btn-primary btn-sm"
                                         onClick={emptyCart}
                                       >
                                         <i class="fa fa-bitbucket" /> Empty Cart
@@ -828,7 +969,7 @@ const Checkout = ({ history }) => {
                                     >
                                       <button
                                         type="button"
-                                        class="btn btn-default"
+                                        class="btn btn-default btn-sm"
                                         onClick={handleEditCart}
                                       >
                                         <i class="fa fa-edit" />
@@ -880,7 +1021,7 @@ const Checkout = ({ history }) => {
                                   </tbody>
                                   <tfoot>
                                     <tr>
-                                      <td colspan="{6}" className="right">
+                                      <td colspan="3" className="right">
                                         Subtotal Total
                                       </td>
                                       <td
@@ -895,7 +1036,7 @@ const Checkout = ({ history }) => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td colspan="{6}" className="right">
+                                      <td colspan="3" className="right">
                                         Handling & Shipping
                                       </td>
                                       <td
@@ -916,7 +1057,7 @@ const Checkout = ({ history }) => {
                                     </tr>
                                     <tr>
                                       <td
-                                        colspan="{3}"
+                                        colspan="3"
                                         className="taxes ty-strong right"
                                       >
                                         Taxes
@@ -925,7 +1066,7 @@ const Checkout = ({ history }) => {
                                     </tr>
                                     <tr>
                                       <td
-                                        colspan="{3}"
+                                        colspan="3"
                                         className="right"
                                         data-ct-checkout-summary="tax-name Georgia (GA)"
                                       >
@@ -950,7 +1091,7 @@ const Checkout = ({ history }) => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td colspan="{3}" className="right last">
+                                      <td colspan="3" className="right last">
                                         <h4>Order Total</h4>
                                       </td>
                                       <td className="right last">
