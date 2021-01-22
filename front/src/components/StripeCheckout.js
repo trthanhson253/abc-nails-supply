@@ -95,6 +95,14 @@ const StripeCheckout = () => {
           payload: false,
         });
       }, 3000);
+      dispatch({
+        type: "CHECKOUT_APPLIED",
+        payload: {
+          address: true,
+          payment: false,
+          finish: true,
+        },
+      });
       history.push("/checkout-finish");
     }
   };

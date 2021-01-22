@@ -15,18 +15,22 @@ import { getBillingAndShippingAddress } from "../../functions/user";
 import { Helmet } from "react-helmet";
 const promise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
 
-const CheckoutPayment = () => {
+const CheckoutPayment = ({ history }) => {
   const { Step } = Steps;
-  const { user } = useSelector((state) => ({ ...state }));
+  const { user, checkout } = useSelector((state) => ({ ...state }));
   const [billingAndShippingAddress, setBillingAndShippingAddress] = useState(
     {}
   );
+  if (!checkout.payment) {
+    history.push("/cart");
+  }
   const loadBillingAndShippingAddress = (token) => {
     getBillingAndShippingAddress(token).then((res) => {
       // console.log('res', res.data.shippingAndBillingAddress);
       setBillingAndShippingAddress(res.data.shippingAndBillingAddress);
     });
   };
+
   useEffect(() => {
     loadBillingAndShippingAddress(user.token);
   }, []);
@@ -168,7 +172,10 @@ const CheckoutPayment = () => {
                                 className="clearfix"
                                 data-ct-address="billing-address"
                               >
-                                <div className="span16">
+                                <div
+                                  className="span16"
+                                  style={{ paddingBottom: "50px" }}
+                                >
                                   <Card
                                     title="BILLING ADDRESS"
                                     type="inner"

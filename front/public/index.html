@@ -74,7 +74,7 @@
 
     <script>
       $(document).ready(function () {
-        $('#dataTables-example').DataTable({
+        $("#dataTables-example").DataTable({
           responsive: true,
         });
       });
@@ -83,98 +83,64 @@
     <script type="text/javascript">
       (function (_, $) {
         _.tr({
-          cannot_buy: 'You cannot buy the product with these option variants',
-          no_products_selected: 'No products selected',
+          cannot_buy: "You cannot buy the product with these option variants",
+          no_products_selected: "No products selected",
           error_no_items_selected:
-            'No items selected! At least one check box must be selected to perform this action.',
+            "No items selected! At least one check box must be selected to perform this action.",
           delete_confirmation:
-            'Are you sure you want to delete the selected items?',
-          text_out_of_stock: 'Out of stock',
-          items: 'item(s)',
+            "Are you sure you want to delete the selected items?",
+          text_out_of_stock: "Out of stock",
+          items: "item(s)",
           text_required_group_product:
-            'Please select a product for the required group [group_name]',
-          save: 'Save',
-          close: 'Close',
-          notice: 'Notice',
-          warning: 'Warning',
-          error: 'Error',
-          empty: 'Empty',
-          text_are_you_sure_to_proceed: 'Are you sure you want to proceed?',
-          text_invalid_url: 'You have entered an invalid URL',
+            "Please select a product for the required group [group_name]",
+          save: "Save",
+          close: "Close",
+          notice: "Notice",
+          warning: "Warning",
+          error: "Error",
+          empty: "Empty",
+          text_are_you_sure_to_proceed: "Are you sure you want to proceed?",
+          text_invalid_url: "You have entered an invalid URL",
           error_validator_email:
-            'The email address in the <b>[field]<\/b> field is invalid.',
+            "The email address in the <b>[field]<\/b> field is invalid.",
           error_validator_phone:
-            'The phone number in the <b>[field]<\/b> field is invalid. The correct format is (555) 555-55-55 or 55 55 555 5555.',
+            "The phone number in the <b>[field]<\/b> field is invalid. The correct format is (555) 555-55-55 or 55 55 555 5555.",
           error_validator_phone_mask:
-            'The phone number in the <b>[field]<\/b> field is invalid.',
+            "The phone number in the <b>[field]<\/b> field is invalid.",
           error_validator_integer:
-            'The value of the <b>[field]<\/b> field is invalid. It should be integer.',
+            "The value of the <b>[field]<\/b> field is invalid. It should be integer.",
           error_validator_multiple:
-            'The <b>[field]<\/b> field does not contain the selected options.',
+            "The <b>[field]<\/b> field does not contain the selected options.",
           error_validator_password:
-            'The passwords in the <b>[field2]<\/b> and <b>[field]<\/b> fields do not match.',
-          error_validator_required: 'The <b>[field]<\/b> field is mandatory.',
+            "The passwords in the <b>[field2]<\/b> and <b>[field]<\/b> fields do not match.",
+          error_validator_required: "The <b>[field]<\/b> field is mandatory.",
           error_validator_zipcode:
-            'The ZIP / Postal code in the <b>[field]<\/b> field is incorrect. The correct format is [extra].',
+            "The ZIP / Postal code in the <b>[field]<\/b> field is incorrect. The correct format is [extra].",
           error_validator_message:
-            'The value of the <b>[field]<\/b> field is invalid.',
+            "The value of the <b>[field]<\/b> field is invalid.",
           text_page_loading:
-            'Loading... Your request is being processed, please wait.',
-          error_ajax: 'Oops, something went wrong ([error]). Please try again.',
-          text_changes_not_saved: 'Your changes have not been saved.',
+            "Loading... Your request is being processed, please wait.",
+          error_ajax: "Oops, something went wrong ([error]). Please try again.",
+          text_changes_not_saved: "Your changes have not been saved.",
           text_data_changed:
-            'Your changes have not been saved.Press OK to continue, or Cancel to stay on the current page.',
-          placing_order: 'Placing the order',
-          file_browser: 'File browser',
-          browse: 'Browse...',
-          more: 'More',
-          text_no_products_found: 'No products found',
+            "Your changes have not been saved.Press OK to continue, or Cancel to stay on the current page.",
+          placing_order: "Placing the order",
+          file_browser: "File browser",
+          browse: "Browse...",
+          more: "More",
+          text_no_products_found: "No products found",
           cookie_is_disabled:
             'For a complete shopping experience, please <a href="http://www.wikihow.com/Enable-Cookies-in-Your-Internet-Web-Browser" target="_blank">set your browser to accept cookies<\/a>',
-          insert_image: 'Insert image',
-          image_url: 'Image URL',
-          loading: 'Loading...',
-        });
-
-        $.extend(_, {
-          index_script: 'index.php',
-          changes_warning: /*'Y'*/ 'N',
-          currencies: {
-            primary: {
-              decimals_separator: '.',
-              thousands_separator: ',',
-              decimals: '2',
-            },
-            secondary: {
-              decimals_separator: '.',
-              thousands_separator: ',',
-              decimals: '2',
-              coefficient: '1.00000',
-            },
-          },
-          default_editor: 'redactor2',
-          default_previewer: 'swiper',
-          current_path: '',
-          current_location: 'https://www.happynailsupply.com',
-          images_dir:
-            'https://www.happynailsupply.com/design/themes/responsive/media/images',
-          notice_displaying_time: 5,
-          cart_language: 'en',
-          language_direction: 'ltr',
-          default_language: 'en',
-          cart_prices_w_taxes: false,
-          regexp: [],
-          current_url: 'https://www.happynailsupply.com/',
-          current_host: 'www.happynailsupply.com',
-          init_context: '',
-          phone_validation_mode: 'any_digits',
+          insert_image: "Insert image",
+          image_url: "Image URL",
+          loading: "Loading...",
         });
 
         $(document).ready(function () {
-          $.runCart('C');
+          $.runCart("C");
         });
 
-        _.security_hash = '9015f7214ad6c5db7036646ea0b626ad';
+        _.security_hash = "9015f7214ad6c5db7036646ea0b626ad";
       })(Tygh, Tygh.$);
     </script>
     <script type="text/javascript">
@@ -183,131 +149,131 @@
           abt__ut2: {
             settings: {
               general: {
-                brand_feature_id: '1',
-                blog_page_id: '',
-                menu_min_height: '475px',
-                enable_fixed_header_panel: 'N',
+                brand_feature_id: "1",
+                blog_page_id: "",
+                menu_min_height: "475px",
+                enable_fixed_header_panel: "N",
               },
               category: {
-                show_subcategories: 'Y',
-                description_position: 'none',
+                show_subcategories: "Y",
+                description_position: "none",
               },
-              features: { description_position: 'bottom' },
+              features: { description_position: "bottom" },
               product_list: {
-                show_gallery: 'N',
-                lazy_load: 'Y',
-                limit_product_variations: '10',
-                decolorate_out_of_stock_products: 'N',
+                show_gallery: "N",
+                lazy_load: "Y",
+                limit_product_variations: "10",
+                decolorate_out_of_stock_products: "N",
                 products_multicolumns: {
                   grid_item_height: {
-                    desktop: '440',
-                    tablet: '',
-                    mobile: '340',
+                    desktop: "440",
+                    tablet: "",
+                    mobile: "340",
                   },
-                  show_sku: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
-                  show_qty: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
-                  show_buttons: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_sku: { desktop: "Y", tablet: "Y", mobile: "Y" },
+                  show_qty: { desktop: "Y", tablet: "Y", mobile: "Y" },
+                  show_buttons: { desktop: "Y", tablet: "Y", mobile: "Y" },
                   show_buttons_on_hover: {
-                    desktop: 'Y',
-                    tablet: 'N',
-                    mobile: 'N',
+                    desktop: "Y",
+                    tablet: "N",
+                    mobile: "N",
                   },
                   grid_item_bottom_content: {
-                    desktop: 'none',
-                    tablet: 'none',
-                    mobile: 'none',
+                    desktop: "none",
+                    tablet: "none",
+                    mobile: "none",
                   },
-                  show_brand_logo: { desktop: 'N', tablet: 'N', mobile: 'N' },
-                  show_you_save: { desktop: 'N', tablet: 'N', mobile: 'N' },
+                  show_brand_logo: { desktop: "N", tablet: "N", mobile: "N" },
+                  show_you_save: { desktop: "N", tablet: "N", mobile: "N" },
                 },
                 products_without_options: {
-                  show_sku: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
-                  show_amount: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
-                  show_qty: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_sku: { desktop: "Y", tablet: "Y", mobile: "Y" },
+                  show_amount: { desktop: "Y", tablet: "Y", mobile: "Y" },
+                  show_qty: { desktop: "Y", tablet: "Y", mobile: "Y" },
                   grid_item_bottom_content: {
-                    desktop: 'features_and_variations',
-                    tablet: 'none',
-                    mobile: 'none',
+                    desktop: "features_and_variations",
+                    tablet: "none",
+                    mobile: "none",
                   },
-                  show_options: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
-                  show_brand_logo: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_options: { desktop: "Y", tablet: "Y", mobile: "Y" },
+                  show_brand_logo: { desktop: "Y", tablet: "Y", mobile: "Y" },
                 },
                 short_list: {
-                  show_sku: { desktop: 'Y', tablet: 'Y', mobile: 'N' },
-                  show_qty: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
-                  show_button: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_sku: { desktop: "Y", tablet: "Y", mobile: "N" },
+                  show_qty: { desktop: "Y", tablet: "Y", mobile: "Y" },
+                  show_button: { desktop: "Y", tablet: "Y", mobile: "Y" },
                   show_button_quick_view: {
-                    desktop: 'N',
-                    tablet: 'N',
-                    mobile: 'N',
+                    desktop: "N",
+                    tablet: "N",
+                    mobile: "N",
                   },
                   show_button_wishlist: {
-                    desktop: 'Y',
-                    tablet: 'Y',
-                    mobile: 'Y',
+                    desktop: "Y",
+                    tablet: "Y",
+                    mobile: "Y",
                   },
                   show_button_compare: {
-                    desktop: 'Y',
-                    tablet: 'N',
-                    mobile: 'N',
+                    desktop: "Y",
+                    tablet: "N",
+                    mobile: "N",
                   },
                 },
                 show_fixed_filters_button: {
-                  desktop: 'N',
-                  tablet: 'N',
-                  mobile: 'Y',
+                  desktop: "N",
+                  tablet: "N",
+                  mobile: "Y",
                 },
-                max_features: { desktop: '4', tablet: '4', mobile: '4' },
-                price_display_format: 'col',
-                show_rating: 'Y',
+                max_features: { desktop: "4", tablet: "4", mobile: "4" },
+                price_display_format: "col",
+                show_rating: "Y",
               },
               products: {
                 view: {
-                  show_qty: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
-                  show_sku: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
-                  show_features: { desktop: 'Y', tablet: 'Y', mobile: 'Y' },
+                  show_qty: { desktop: "Y", tablet: "Y", mobile: "Y" },
+                  show_sku: { desktop: "Y", tablet: "Y", mobile: "Y" },
+                  show_features: { desktop: "Y", tablet: "Y", mobile: "Y" },
                   show_short_description: {
-                    desktop: 'N',
-                    tablet: 'N',
-                    mobile: 'N',
+                    desktop: "N",
+                    tablet: "N",
+                    mobile: "N",
                   },
                   show_sticky_add_to_cart: {
-                    desktop: 'N',
-                    tablet: 'N',
-                    mobile: 'Y',
+                    desktop: "N",
+                    tablet: "N",
+                    mobile: "Y",
                   },
-                  show_brand_logo: { desktop: 'Y', tablet: 'Y', mobile: 'N' },
-                  brand_link_behavior: 'to_category_with_filter',
+                  show_brand_logo: { desktop: "Y", tablet: "Y", mobile: "N" },
+                  brand_link_behavior: "to_category_with_filter",
                 },
-                custom_block_id: '',
-                addon_buy_together: { view: 'as_block_above_tabs' },
+                custom_block_id: "",
+                addon_buy_together: { view: "as_block_above_tabs" },
                 addon_required_products: {
                   list_type: {
-                    desktop: 'grid_list',
-                    tablet: 'grid_list',
-                    mobile: 'grid_list',
+                    desktop: "grid_list",
+                    tablet: "grid_list",
+                    mobile: "grid_list",
                   },
-                  item_quantity: { desktop: '4', tablet: 2, mobile: 2 },
+                  item_quantity: { desktop: "4", tablet: 2, mobile: 2 },
                 },
                 addon_social_buttons: {
-                  view: { desktop: 'Y', tablet: 'N', mobile: 'N' },
+                  view: { desktop: "Y", tablet: "N", mobile: "N" },
                 },
               },
               load_more: {
-                product_list: 'Y',
-                blog: 'Y',
-                mode: 'on_button_click',
-                before_end: '300px',
+                product_list: "Y",
+                blog: "Y",
+                mode: "on_button_click",
+                before_end: "300px",
               },
               addons: {
                 wishlist_products: {
-                  item_quantity: { desktop: '4', tablet: 2, mobile: 2 },
+                  item_quantity: { desktop: "4", tablet: 2, mobile: 2 },
                 },
               },
             },
-            controller: 'index',
-            mode: 'index',
-            device: 'desktop',
+            controller: "index",
+            mode: "index",
+            device: "desktop",
           },
         });
       })(Tygh, Tygh.$);
@@ -320,21 +286,21 @@
     </script>
     <script type="text/javascript">
       Tygh.tr(
-        'buy_together_fill_the_mandatory_fields',
-        'Please specify product options before adding this product combination to the cart.'
+        "buy_together_fill_the_mandatory_fields",
+        "Please specify product options before adding this product combination to the cart."
       );
     </script>
     <script type="text/javascript">
       (function (_, $) {
         _.geo_maps = {
-          provider: 'google',
-          api_key: '',
+          provider: "google",
+          api_key: "",
           yandex_commercial: false,
-          language: 'en',
+          language: "en",
         };
 
         _.tr({
-          geo_maps_google_search_bar_placeholder: 'Search',
+          geo_maps_google_search_bar_placeholder: "Search",
           geo_maps_cannot_select_location:
             "This location couldn't be selected due to technical reasons. If you encounter any difficulties when placing an order, please contact us.",
         });
@@ -344,11 +310,11 @@
       (function (_, $) {
         $.extend(_, {
           ab__dotd: {
-            current_dispatch: 'index.index',
+            current_dispatch: "index.index",
             current_promotion_id: 0,
-            max_height: '250',
-            more: 'More',
-            less: 'Less',
+            max_height: "250",
+            more: "More",
+            less: "Less",
           },
         });
       })(Tygh, Tygh.$);
@@ -358,27 +324,27 @@
         $.extend(_, {
           ab__stt: {
             settings: {
-              position: 'bottom_right',
-              transition: '600',
-              icon: 'arrow_3',
-              margin_top: '0',
-              margin_right: '10',
-              margin_bottom: '10',
-              margin_left: '0',
-              font_size: '50',
-              units: 'px',
-              font_weight: 'normal',
-              color: 'color.tpl',
-              hide_on_mobile: 'N',
-              show_in_admin_panel: 'N',
-              ab__stt_color: '#7f2680',
-              code: 'ABA-0WLpvCT1j0laEkZh0yANW',
-              build: '602',
-              status: 'A',
-              priority: '2016',
-              unmanaged: '0',
+              position: "bottom_right",
+              transition: "600",
+              icon: "arrow_3",
+              margin_top: "0",
+              margin_right: "10",
+              margin_bottom: "10",
+              margin_left: "0",
+              font_size: "50",
+              units: "px",
+              font_weight: "normal",
+              color: "color.tpl",
+              hide_on_mobile: "N",
+              show_in_admin_panel: "N",
+              ab__stt_color: "#7f2680",
+              code: "ABA-0WLpvCT1j0laEkZh0yANW",
+              build: "602",
+              status: "A",
+              priority: "2016",
+              unmanaged: "0",
             },
-            units: 'px',
+            units: "px",
             transition: 600,
           },
         });
@@ -387,7 +353,7 @@
     <script type="text/javascript">
       (function (_, $) {
         _.tr({
-          'ab__sm.random_char': 'abcdefghijklmnopqrstuvwxyz',
+          "ab__sm.random_char": "abcdefghijklmnopqrstuvwxyz",
         });
 
         $.extend(_, {
@@ -402,18 +368,18 @@
       (function (_, $) {
         $.extend(_, {
           ab__smc: {
-            max_height: '250',
-            description_element_classes: '',
-            additional_classes_for_parent: '',
-            additional_classes: 'ab-smc',
+            max_height: "250",
+            description_element_classes: "",
+            additional_classes_for_parent: "",
+            additional_classes: "ab-smc",
             show_button: false,
             transition: 0.01,
             exclude: { parent_selectors: [], selectors_in_content: [] },
-            selector: '.ab-smc',
+            selector: ".ab-smc",
             additional_selector: { parent_selectors: [] },
           },
         });
-        _.tr({ 'ab__smc.more': 'More', 'ab__smc.less': 'Less' });
+        _.tr({ "ab__smc.more": "More", "ab__smc.less": "Less" });
       })(Tygh, Tygh.$);
     </script>
     <script type="text/javascript">
@@ -421,7 +387,7 @@
         $.extend(_, {
           ab__fn: {
             settings: {
-              load_by_ajax: 'Y',
+              load_by_ajax: "Y",
             },
             blocks: {},
             scrollers_settings: {},
@@ -429,7 +395,7 @@
         });
 
         _.tr({
-          'ab__fn.delimeter_text': 'Show more [x] of [y]',
+          "ab__fn.delimeter_text": "Show more [x] of [y]",
         });
       })(Tygh, Tygh.$);
     </script>
@@ -439,9 +405,9 @@
           ab__stickers: {
             timeouts: {},
             runtime: {
-              controller_mode: 'index.index',
+              controller_mode: "index.index",
               caching: Boolean(1),
-              addon_version: '1.1.0',
+              addon_version: "1.1.0",
             },
           },
         });
@@ -451,15 +417,15 @@
     <!-- Inline scripts -->
     <script type="text/javascript">
       (function (_, $) {
-        $.ceEvent('on', 'ce.commoninit', function (context) {
-          var slider = context.find('#banner_slider_1147');
+        $.ceEvent("on", "ce.commoninit", function (context) {
+          var slider = context.find("#banner_slider_1147");
           if (slider.length) {
             slider.owlCarousel({
-              direction: 'ltr',
+              direction: "ltr",
               items: 1,
               singleItem: true,
               slideSpeed: 400,
-              autoPlay: '5000',
+              autoPlay: "5000",
               stopOnHover: true,
               pagination: false,
             });
@@ -469,15 +435,15 @@
     </script>
     <script type="text/javascript">
       (function (_, $) {
-        $.ceEvent('on', 'ce.commoninit', function (context) {
-          var slider = context.find('#banner_slider_1148');
+        $.ceEvent("on", "ce.commoninit", function (context) {
+          var slider = context.find("#banner_slider_1148");
           if (slider.length) {
             slider.owlCarousel({
-              direction: 'ltr',
+              direction: "ltr",
               items: 1,
               singleItem: true,
               slideSpeed: 400,
-              autoPlay: '12000',
+              autoPlay: "12000",
               stopOnHover: true,
               pagination: false,
             });
@@ -487,15 +453,15 @@
     </script>
     <script type="text/javascript">
       (function (_, $) {
-        $.ceEvent('on', 'ce.commoninit', function (context) {
-          var slider = context.find('#banner_slider_1149');
+        $.ceEvent("on", "ce.commoninit", function (context) {
+          var slider = context.find("#banner_slider_1149");
           if (slider.length) {
             slider.owlCarousel({
-              direction: 'ltr',
+              direction: "ltr",
               items: 1,
               singleItem: true,
               slideSpeed: 400,
-              autoPlay: '3000',
+              autoPlay: "3000",
               stopOnHover: true,
               pagination: true,
             });
@@ -509,8 +475,8 @@
     ></script>
     <script>
       (function (_, $) {
-        _.ab__fn.blocks['700_145'] = {
-          block_type: 'ab__fast_navigation',
+        _.ab__fn.blocks["700_145"] = {
+          block_type: "ab__fast_navigation",
           columns: {
             number_of_columns_desktop: 6,
             number_of_columns_desktop_small: 6,
@@ -528,13 +494,13 @@
     ></script>
     <script>
       (function (_, $) {
-        $.ceEvent('on', 'ce.commoninit', function (context) {
-          var elm = context.find('#scroll_list_148');
+        $.ceEvent("on", "ce.commoninit", function (context) {
+          var elm = context.find("#scroll_list_148");
 
           if (elm.length) {
             $(
-              '.ty-float-left:contains(.ty-scroller-list),.ty-float-right:contains(.ty-scroller-list)'
-            ).css('width', '100%');
+              ".ty-float-left:contains(.ty-scroller-list),.ty-float-right:contains(.ty-scroller-list)"
+            ).css("width", "100%");
 
             var item = 5,
               itemsDesktop = 5,
@@ -561,14 +527,14 @@
             mobile = [319, itemsMobile];
 
             elm.owlCarousel({
-              direction: 'ltr',
+              direction: "ltr",
               items: item,
               itemsDesktop: desktop,
               itemsDesktopSmall: desktopSmall,
               itemsTablet: tablet,
               itemsTabletSmall: tabletSmall,
               itemsMobile: mobile,
-              autoPlay: '3000',
+              autoPlay: "3000",
               lazyLoad: true,
               slideSpeed: 400,
               stopOnHover: true,
@@ -580,7 +546,7 @@
               pagination: false,
 
               afterUpdate: function () {
-                fn_abt__ut2_calc_cell('afterUpdate');
+                fn_abt__ut2_calc_cell("afterUpdate");
               },
             });
           }
@@ -589,13 +555,13 @@
     </script>
     <script>
       (function (_, $) {
-        $.ceEvent('on', 'ce.commoninit', function (context) {
-          var elm = context.find('#scroll_list_149');
+        $.ceEvent("on", "ce.commoninit", function (context) {
+          var elm = context.find("#scroll_list_149");
 
           if (elm.length) {
             $(
-              '.ty-float-left:contains(.ty-scroller-list),.ty-float-right:contains(.ty-scroller-list)'
-            ).css('width', '100%');
+              ".ty-float-left:contains(.ty-scroller-list),.ty-float-right:contains(.ty-scroller-list)"
+            ).css("width", "100%");
 
             var item = 5,
               itemsDesktop = 5,
@@ -622,14 +588,14 @@
             mobile = [319, itemsMobile];
 
             elm.owlCarousel({
-              direction: 'ltr',
+              direction: "ltr",
               items: item,
               itemsDesktop: desktop,
               itemsDesktopSmall: desktopSmall,
               itemsTablet: tablet,
               itemsTabletSmall: tabletSmall,
               itemsMobile: mobile,
-              autoPlay: '3000',
+              autoPlay: "3000",
               lazyLoad: true,
               slideSpeed: 400,
               stopOnHover: true,
@@ -641,7 +607,7 @@
               pagination: false,
 
               afterUpdate: function () {
-                fn_abt__ut2_calc_cell('afterUpdate');
+                fn_abt__ut2_calc_cell("afterUpdate");
               },
             });
           }
@@ -650,13 +616,13 @@
     </script>
     <script>
       (function (_, $) {
-        $.ceEvent('on', 'ce.commoninit', function (context) {
-          var elm = context.find('#scroll_list_147');
+        $.ceEvent("on", "ce.commoninit", function (context) {
+          var elm = context.find("#scroll_list_147");
 
           if (elm.length) {
             $(
-              '.ty-float-left:contains(.ty-scroller-list),.ty-float-right:contains(.ty-scroller-list)'
-            ).css('width', '100%');
+              ".ty-float-left:contains(.ty-scroller-list),.ty-float-right:contains(.ty-scroller-list)"
+            ).css("width", "100%");
 
             var item = 5,
               itemsDesktop = 5,
@@ -683,14 +649,14 @@
             mobile = [319, itemsMobile];
 
             elm.owlCarousel({
-              direction: 'ltr',
+              direction: "ltr",
               items: item,
               itemsDesktop: desktop,
               itemsDesktopSmall: desktopSmall,
               itemsTablet: tablet,
               itemsTabletSmall: tabletSmall,
               itemsMobile: mobile,
-              autoPlay: '3000',
+              autoPlay: "3000",
               lazyLoad: true,
               slideSpeed: 400,
               stopOnHover: true,
@@ -702,7 +668,7 @@
               pagination: false,
 
               afterUpdate: function () {
-                fn_abt__ut2_calc_cell('afterUpdate');
+                fn_abt__ut2_calc_cell("afterUpdate");
               },
             });
           }

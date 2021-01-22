@@ -31,9 +31,15 @@ const Cart = ({ history }) => {
             payload: false,
           });
         }, 1000);
-        if (res.data.ok) {
-          history.push("/checkout");
-        }
+        dispatch({
+          type: "CHECKOUT_APPLIED",
+          payload: {
+            address: true,
+            payment: false,
+            finish: false,
+          },
+        });
+        if (res.data.ok) history.push("/checkout");
       })
       .catch((err) => console.log("cart save err", err));
   };
@@ -138,7 +144,7 @@ const Cart = ({ history }) => {
     <>
       <Helmet>
         <title>Cart | ABC Nails Supply</title>
-      </Helmet>
+      </Helmet>{" "}
       <div className="tygh-content clearfix">
         <div className="container-fluid  content-grid">
           <div className="container-fluid-row">
@@ -415,13 +421,13 @@ const Cart = ({ history }) => {
                         {user ? (
                           <>
                             {cart.length ? (
-                              <Link
+                              <button
                                 onClick={saveOrderToDb}
                                 className="cm-dialog-auto-size ty-btn ty-btn__primary"
                                 to="/checkout"
                               >
                                 Proceed to checkout
-                              </Link>
+                              </button>
                             ) : (
                               <></>
                             )}

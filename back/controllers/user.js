@@ -58,28 +58,55 @@ exports.userCart = async (req, res) => {
   res.json({ ok: true });
 };
 
-exports.getUserCart = async (req, res) => {
-  // const user = await User.findOne({ email: req.user.email }).exec();
+// exports.getUserCart = async (req, res) => {
+//   // const user = await User.findOne({ email: req.user.email }).exec();
 
-  let cart = await Cart.findOne({ orderdBy: req.user._id })
+//   let cart = await Cart.findOne({ orderdBy: req.user._id })
+//     .populate("products.product", "_id name price image")
+//     .exec();
+
+//   const {
+//     products,
+//     cartTotal,
+//     totalAfterDiscount,
+//     shipOption,
+//     cartTotalBeforeTax,
+//   } = cart;
+//   console.log("cart", cart);
+//   res.json({
+//     products,
+//     cartTotal,
+//     totalAfterDiscount,
+//     shipOption,
+//     cartTotalBeforeTax,
+//   });
+// };
+
+exports.getUserCart = (req, res) => {
+  Cart.findOne({ orderdBy: req.user._id })
     .populate("products.product", "_id name price image")
-    .exec();
-
-  const {
-    products,
-    cartTotal,
-    totalAfterDiscount,
-    shipOption,
-    cartTotalBeforeTax,
-  } = cart;
-  console.log("cart", cart);
-  res.json({
-    products,
-    cartTotal,
-    totalAfterDiscount,
-    shipOption,
-    cartTotalBeforeTax,
-  });
+    .exec((err, cart) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Not Found Cart",
+        });
+      }
+      const {
+        products,
+        cartTotal,
+        totalAfterDiscount,
+        shipOption,
+        cartTotalBeforeTax,
+      } = cart;
+      // console.log("cart", cart);
+      res.json({
+        products,
+        cartTotal,
+        totalAfterDiscount,
+        shipOption,
+        cartTotalBeforeTax,
+      });
+    });
 };
 
 exports.emptyCart = async (req, res) => {

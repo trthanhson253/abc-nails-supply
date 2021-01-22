@@ -10,11 +10,13 @@ import { useSelector } from "react-redux";
 import { getLatestOrder } from "../../functions/user";
 import { Helmet } from "react-helmet";
 
-const CheckoutFinish = () => {
+const CheckoutFinish = ({ history }) => {
   const { Step } = Steps;
-  const { user } = useSelector((state) => ({ ...state }));
+  const { user, checkout } = useSelector((state) => ({ ...state }));
   const [order, setOrder] = useState({});
-
+  if (!checkout.finish) {
+    history.push("/");
+  }
   useEffect(() => {
     getLatestOrder(user.token).then((res) => {
       console.log("create payment intent", res.data);

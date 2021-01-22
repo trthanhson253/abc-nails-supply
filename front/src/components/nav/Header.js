@@ -138,7 +138,7 @@ const Header = () => {
           <div className="container-fluid-row">
             <div className="row-fluid ">
               {" "}
-              <div className="span5 top-logo-grid ">
+              <div className="span3 top-logo-grid ">
                 <div className="top-logo ">
                   <div className="ty-logo-container">
                     <Link to="/" title="ABC Nail Supply">
@@ -155,7 +155,10 @@ const Header = () => {
                   </div>
                 </div>
               </div>
-              <div className="span8 top-header-menu hidden-phone ">
+              <div
+                className="span7 top-header-menu hidden-phone"
+                style={{ width: "37%" }}
+              >
                 <div className="hidden-phone ">
                   <ul id="text_links_678" className="ty-text-links">
                     <li className="ty-text-links__item ty-level-0 ty-menu-item__newest">
@@ -191,7 +194,41 @@ const Header = () => {
                   </ul>
                 </div>
               </div>
-              <div className="span3 top-phoness ">
+              <div className="span4">
+                <form onSubmit={clickSubmit}>
+                  <div
+                    className="ty-account-info__orders updates-wrapper track-orders"
+                    id="track_orders_block_685"
+                    style={{ marginBottom: "20px" }}
+                  >
+                    <div className="ty-account-info__orders-input ty-control-group ty-input-append">
+                      <input
+                        type="text"
+                        size={20}
+                        className="ty-input-text cm-hint"
+                        name="trackId"
+                        placeHolder="Track My Order(s)"
+                        name="name"
+                        onChange={handleChange("trackId")}
+                        value={trackId}
+                        required
+                      />
+                      <button
+                        title="Go"
+                        className="ty-btn-go"
+                        type="submit"
+                        onClick={clickSubmit}
+                      >
+                        <i
+                          class="fa fa-play fa-dw"
+                          style={{ fontSize: "13px" }}
+                        />
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div className="span2 top-phoness ">
                 <div className="top-buttons-grid ty-float-right">
                   <div
                     className="ut2-compared-products"
@@ -273,7 +310,7 @@ const Header = () => {
                                       <li className="ty-menu__submenu-item">
                                         <Link
                                           className="ty-menu__submenu-link "
-                                          to="https://www.ABCnailsupply.com/new-products/"
+                                          to="#"
                                         >
                                           <bdi>New Products</bdi>
                                         </Link>
@@ -281,7 +318,7 @@ const Header = () => {
                                       <li className="ty-menu__submenu-item">
                                         <Link
                                           className="ty-menu__submenu-link "
-                                          to="https://www.ABCnailsupply.com/special-sales/"
+                                          to="#"
                                         >
                                           <bdi>Special Sales</bdi>
                                         </Link>
@@ -289,7 +326,7 @@ const Header = () => {
                                       <li className="ty-menu__submenu-item">
                                         <Link
                                           className="ty-menu__submenu-link "
-                                          to="https://www.ABCnailsupply.com/index.php?dispatch=products.bestsellers"
+                                          to="#"
                                         >
                                           <bdi>Best Sellers</bdi>
                                         </Link>
@@ -297,7 +334,7 @@ const Header = () => {
                                       <li className="ty-menu__submenu-item">
                                         <Link
                                           className="ty-menu__submenu-link "
-                                          to="https://www.ABCnailsupply.com/promotions/"
+                                          to="#"
                                         >
                                           <bdi>Best Deals</bdi>
                                         </Link>
