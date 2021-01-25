@@ -58,7 +58,10 @@ const Search = () => {
   return (
     <form name="search_form" onSubmit={handleSubmit}>
       <div id="live_reload_box">
-        <div className="live-search-box" style={{}}>
+        <div
+          className="live-search-box"
+          style={{ display: loading ? "none" : "" }}
+        >
           <div style={{ maxHeight: "600px" }}>
             {products.length ? (
               <>

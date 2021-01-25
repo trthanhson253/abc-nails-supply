@@ -15,6 +15,7 @@ import Spinner from "../../components/Spinner";
 import Loader from "../../components/Loader";
 
 const ProductDetailHome = (props) => {
+  const [qty, setQty] = useState(1);
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState("");
@@ -26,7 +27,7 @@ const ProductDetailHome = (props) => {
   const { user, cart, load, spin } = useSelector((state) => ({ ...state }));
   const dispatch = useDispatch();
   const [tooltip, setTooltip] = useState("Click to add this product");
-
+  console.log("qty", qty);
   const loadDetailProduct = (pslug) => {
     dispatch({
       type: "SET_SPIN",
@@ -67,7 +68,7 @@ const ProductDetailHome = (props) => {
     });
   };
 
-  const handleAddToCart = (p) => {
+  const handleAddToCart = (item, qty) => {
     // create cart array
     let cart = [];
     if (typeof window !== "undefined") {
@@ -76,10 +77,6 @@ const ProductDetailHome = (props) => {
         cart = JSON.parse(localStorage.getItem("cart"));
       }
       // push new product to cart
-      cart.push({
-        ...product,
-        count: 1,
-      });
 
       // cart.map((item, i) => {
       //   if (item._id == p._id) {
@@ -87,10 +84,29 @@ const ProductDetailHome = (props) => {
       //   }
       // });
       // remove duplicates
-      let unique = _.uniqWith(cart, _.isEqual);
+
+      const existItem = cart.find((x) => x.product._id === item._id);
+
+      if (existItem) {
+        cart.map((x, index) => {
+          if (x.product._id === existItem.product._id) {
+            cart.splice(index, 1);
+            cart.push({
+              product: item,
+              count: parseInt(qty),
+            });
+          }
+        });
+      } else {
+        cart.push({
+          product: item,
+          count: parseInt(qty),
+        });
+      }
+
       // save to local storage
       // console.log('unique', unique)
-      localStorage.setItem("cart", JSON.stringify(unique));
+      localStorage.setItem("cart", JSON.stringify(cart));
       // show tooltip
       dispatch({
         type: "SET_LOADING",
@@ -113,12 +129,11 @@ const ProductDetailHome = (props) => {
       // add to reeux state
       dispatch({
         type: "ADD_TO_CART",
-        payload: unique,
+        payload: cart,
       });
       // show cart items in side drawer
     }
   };
-
   const handleAddToWishlist = (e) => {
     e.preventDefault();
     dispatch({
@@ -430,11 +445,6 @@ const ProductDetailHome = (props) => {
                                 className="cm-reload-9060 stock-wrap"
                                 id="product_amount_update_9060"
                               >
-                                <input
-                                  type="hidden"
-                                  name="appearance[show_product_amount]"
-                                  defaultValue={1}
-                                />
                                 <div className="ty-control-group product-list-field">
                                   <span
                                     className="ty-qty-in-stock ty-control-group__item"
@@ -477,21 +487,20 @@ const ProductDetailHome = (props) => {
                                       Quantity:
                                     </label>{" "}
                                     <div className="ty-center ty-value-changer cm-value-changer">
-                                      <a className="cm-increase ty-value-changer__increase">
-                                        +
-                                      </a>
-                                      <input
-                                        type="text"
-                                        size={5}
+                                      <select
+                                        name="qty"
                                         className="ty-value-changer__input cm-amount"
-                                        id="qty_count_9060"
-                                        name="product_data[9060][amount]"
-                                        defaultValue={1}
-                                        data-ca-min-qty={1}
-                                      />
-                                      <a className="cm-decrease ty-value-changer__decrease">
-                                        −
-                                      </a>
+                                        onChange={(e) => {
+                                          setQty(e.target.value);
+                                        }}
+                                        value={qty}
+                                      >
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                      </select>
                                     </div>
                                   </div>
                                 </div>
@@ -505,7 +514,9 @@ const ProductDetailHome = (props) => {
                                     <a
                                       className="ty-btn__primary ty-btn__add-to-cart cm-ajax cm-ajax-full-render ty-btn"
                                       href="/cart"
-                                      onClick={() => handleAddToCart(product)}
+                                      onClick={() =>
+                                        handleAddToCart(product, qty)
+                                      }
                                     >
                                       <span>
                                         <i className="fa fa-shopping-cart fa-fw" />
@@ -717,5 +728,4 @@ const ProductDetailHome = (props) => {
     </>
   );
 };
-
 export default ProductDetailHome;

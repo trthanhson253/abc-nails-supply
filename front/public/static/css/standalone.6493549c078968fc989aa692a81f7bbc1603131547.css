@@ -3135,7 +3135,8 @@ body .ui-tooltip {
   content: "\e006";
 }
 .ty-icon-flight:before {
-  content: "\e007";
+  font-family: FontAwesome;
+  content:"\f072";
 }
 .ty-icon-ok:before {
   content: url(../img/ok.png);

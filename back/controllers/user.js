@@ -26,10 +26,10 @@ exports.userCart = async (req, res) => {
   for (let i = 0; i < cart.length; i++) {
     let object = {};
 
-    object.product = cart[i]._id;
+    object.product = cart[i].product._id;
     object.count = cart[i].count;
     // get price for creating total
-    let productFromDb = await Product.findById(cart[i]._id)
+    let productFromDb = await Product.findById(cart[i].product._id)
       .select("price")
       .exec();
     object.price = productFromDb.price;

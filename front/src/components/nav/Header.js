@@ -503,16 +503,18 @@ const Header = () => {
                                             width={30}
                                             heigth={45}
                                             className="ty-pict lazyOwl cm-image abt-ut2-lazy-loaded"
-                                            src={c.image[1].url}
-                                            alt={c.name}
+                                            alt={c.product.name}
                                             title
                                             style={{ opacity: "1" }}
+                                            src={c.product.image[1].url}
                                           />
                                         </div>
                                         <div className="ty-cart-items__list-item-desc">
-                                          <a href="#">{c.name}</a>
+                                          <a href="#">{c.product.name}</a>
                                           <p>
-                                            <span>{c.count}</span>
+                                            <span>
+                                              <b>{c.count}</b>
+                                            </span>
                                             <span>&nbsp;x&nbsp;</span>
                                             <bdi>
                                               <span className="none">$</span>
@@ -520,7 +522,7 @@ const Header = () => {
                                                 id="sec_price_407242202_684"
                                                 className="none"
                                               >
-                                                {c.price}
+                                                {c.product.price}
                                               </span>
                                             </bdi>
                                           </p>

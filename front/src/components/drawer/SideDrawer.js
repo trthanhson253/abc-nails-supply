@@ -1,5 +1,5 @@
 import React from "react";
-import { Drawer, Button,Image } from "antd";
+import { Drawer, Button, Image } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -8,7 +8,6 @@ const SideDrawer = () => {
   const { drawer, cart } = useSelector((state) => ({ ...state }));
 
   const imageStyle = {
-
     objectFit: "cover",
   };
 
@@ -27,16 +26,21 @@ const SideDrawer = () => {
       visible={drawer}
     >
       {cart.map((p) => (
-        <div key={p._id} className="row">
+        <div key={p.product._id} className="row">
           <div className="col">
-            {p.image && (
+            {p.product.image && (
               <>
-                <Image width={50} heigth={50} src={p.image[1].url} style={imageStyle} />
+                <Image
+                  width={50}
+                  heigth={50}
+                  src={p.product.image[1].url}
+                  style={imageStyle}
+                />
                 <p className="text-center bg-secondary text-light">
-                  {p.name} x {p.count}
+                  {p.product.name} x {p.count}
                 </p>
               </>
-            ) }
+            )}
           </div>
         </div>
       ))}

@@ -13,7 +13,9 @@ const Cart = ({ history }) => {
 
   const getTotal = () => {
     return cart.reduce((currentValue, nextValue) => {
-      return currentValue + nextValue.count * nextValue.price;
+      console.log("currentValue", currentValue);
+      console.log("nextValue", nextValue);
+      return currentValue + nextValue.count * nextValue.product.price;
     }, 0);
   };
 
@@ -49,10 +51,17 @@ const Cart = ({ history }) => {
       type: "SET_LOADING",
       payload: true,
     });
-    let count = e < 1 ? 1 : e;
+    let count = 0;
+    if (e < 1) {
+      count = 1;
+    } else if (e > p.product.quantity) {
+      count = p.product.quantity;
+    } else {
+      count = e;
+    }
 
-    if (count > p.quantity) {
-      toast.error(`Max available quantity: ${p.quantity}`);
+    if (count > p.product.quantity) {
+      toast.error(`Max available quantity: ${p.product.quantity}`);
       return;
     }
 
@@ -63,8 +72,8 @@ const Cart = ({ history }) => {
         cart = JSON.parse(localStorage.getItem("cart"));
       }
 
-      cart.map((product, i) => {
-        if (product._id == p._id) {
+      cart.map((x, i) => {
+        if (x.product._id === p.product._id) {
           cart[i].count = count;
         }
       });
@@ -120,8 +129,8 @@ const Cart = ({ history }) => {
         cart = JSON.parse(localStorage.getItem("cart"));
       }
       // [1,2,3,4,5]
-      cart.map((product, i) => {
-        if (product._id === p._id) {
+      cart.map((x, i) => {
+        if (x.product._id === p.product._id) {
           cart.splice(i, 1);
         }
       });
@@ -242,8 +251,8 @@ const Cart = ({ history }) => {
                                           }}
                                         >
                                           <ModalImage
-                                            small={c.image[1].url}
-                                            large={c.image[1].url}
+                                            small={c.product.image[1].url}
+                                            large={c.product.image[1].url}
                                           />
                                         </div>
                                       </td>
@@ -255,7 +264,7 @@ const Cart = ({ history }) => {
                                           to="#"
                                           className="ty-cart-content__product-title"
                                         >
-                                          {c.name}
+                                          {c.product.name}
                                         </Link>
                                         <div
                                           className=" ty-cart-content__product-delete ty-delete-big"
@@ -269,17 +278,10 @@ const Cart = ({ history }) => {
                                           <i class="fa fa-remove" />
                                           &nbsp;Delete
                                         </div>
-                                        <div
-                                          className="ty-cart-content__sku ty-sku cm-hidden-wrapper"
-                                          id="sku_2107916490"
-                                        >
+                                        <div className="ty-cart-content__sku ty-sku cm-hidden-wrapper">
                                           Item #:{" "}
-                                          <span
-                                            className="cm-reload-2107916490"
-                                            id="product_code_update_2107916490"
-                                          >
-                                            {c.item}
-                                            {/*product_code_update_2107916490*/}
+                                          <span className="cm-reload-2107916490">
+                                            {c.product.item}
                                           </span>
                                         </div>
                                       </td>
@@ -295,7 +297,7 @@ const Cart = ({ history }) => {
                                             id="sec_product_price_2107916490"
                                             className="ty-sub-price"
                                           >
-                                            {c.price}
+                                            {c.product.price}
                                           </span>
                                         </bdi>
                                       </td>
@@ -305,7 +307,7 @@ const Cart = ({ history }) => {
                                           <div className="ty-center ty-value-changer cm-value-changer">
                                             <InputNumber
                                               min={1}
-                                              max={100}
+                                              max={10}
                                               defaultValue={c.count}
                                               onChange={handleQuantityChange(c)}
                                             />
@@ -322,7 +324,7 @@ const Cart = ({ history }) => {
                                             id="sec_product_subtotal_2107916490"
                                             className="price"
                                           >
-                                            7.00
+                                            {c.product.price * c.count}
                                           </span>
                                         </bdi>
                                       </td>
@@ -387,7 +389,7 @@ const Cart = ({ history }) => {
                                       id="sec_cart_total"
                                       className="ty-price"
                                     >
-                                      11.50
+                                      {getTotal()}
                                     </span>
                                   </bdi>
                                 </span>

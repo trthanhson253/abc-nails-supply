@@ -73,9 +73,9 @@ const Checkout = ({ history }) => {
   const handleChange = (name) => (e) => {
     setValues({ ...values, [name]: e.target.value });
   };
-  if (!checkout.address || cart.length == 0) {
-    history.push("/cart");
-  }
+  // if (!checkout.address || cart.length == 0) {
+  //   history.push("/cart");
+  // }
 
   const loadProductInCart = () => {
     // setLoading(true);
@@ -1120,7 +1120,7 @@ const Checkout = ({ history }) => {
                                       </thead>
                                       <tbody className="tbody">
                                         {products.map((p, i) => (
-                                          <tr key={p._id}>
+                                          <tr key={p.product._id}>
                                             <td width="18%">
                                               <Link to="#">
                                                 <Image

@@ -21,9 +21,9 @@ const CheckoutPayment = ({ history }) => {
   const [billingAndShippingAddress, setBillingAndShippingAddress] = useState(
     {}
   );
-  if (!checkout.payment) {
-    history.push("/cart");
-  }
+  // if (!checkout.payment) {
+  //   history.push("/cart");
+  // }
   const loadBillingAndShippingAddress = (token) => {
     getBillingAndShippingAddress(token).then((res) => {
       // console.log('res', res.data.shippingAndBillingAddress);
