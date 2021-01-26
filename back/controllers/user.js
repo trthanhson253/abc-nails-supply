@@ -44,7 +44,7 @@ exports.userCart = async (req, res) => {
     cartTotal = cartTotal + products[i].price * products[i].count;
   }
   cartTotalBeforeTax = cartTotal;
-  cartTotal = cartTotal * 1.08 + 8;
+  cartTotal = (cartTotal * 1.08 + 8).toFixed(2);
   // console.log("cartTotal", cartTotal);
 
   let newCart = await new Cart({
@@ -131,12 +131,12 @@ exports.shippingChange = async (req, res) => {
 
   if (shipOption == 0) {
     if (shipping == 1) {
-      cartTotal = cartTotal - 8;
+      cartTotal = (cartTotal - 8).toFixed(2);
       shipOption = 1;
     }
   } else {
     if (shipping == 0) {
-      cartTotal = cartTotal + 8;
+      cartTotal = (cartTotal + 8).toFixed(2);
       shipOption = 0;
     }
   }
@@ -167,11 +167,16 @@ exports.applyCouponToUserCart = async (req, res) => {
       err: "Invalid coupon",
     });
   }
-  console.log("VALID COUPON", validCoupon);
+  // console.log("VALID COUPON", validCoupon);
 
   const user = await User.findOne({ email: req.user.email }).exec();
 
-  let { products, cartTotalBeforeTax } = await Cart.findOne({
+  let {
+    products,
+    cartTotalBeforeTax,
+    shipOption,
+    cartTotal,
+  } = await Cart.findOne({
     orderdBy: user._id,
   })
     .populate("products.product", "_id title price")
@@ -184,16 +189,23 @@ exports.applyCouponToUserCart = async (req, res) => {
     cartTotalBeforeTax -
     (cartTotalBeforeTax * validCoupon.discount) / 100
   ).toFixed(2); // 99.99
+  if (shipOption == 0) {
+    cartTotal = (totalAfterDiscount * 1.08 + 8).toFixed(2);
+  } else {
+    cartTotal = (totalAfterDiscount * 1.08).toFixed(2);
+  }
 
-  // console.log('----------> ', totalAfterDiscount);
+  console.log("totalAfterDiscount ", totalAfterDiscount);
+  console.log("cartTotal ", cartTotal);
+  console.log("shipOption ", shipOption);
 
   Cart.findOneAndUpdate(
     { orderdBy: user._id },
-    { totalAfterDiscount },
+    { totalAfterDiscount, cartTotal, shipOption },
     { new: true }
   ).exec();
 
-  res.json(totalAfterDiscount);
+  res.json({ totalAfterDiscount, cartTotal, shipOption });
 };
 
 exports.createOrder = async (req, res) => {

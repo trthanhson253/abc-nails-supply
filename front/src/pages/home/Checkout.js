@@ -143,12 +143,18 @@ const Checkout = ({ history }) => {
 
   const applyDiscountCoupon = (e) => {
     e.preventDefault();
+    dispatch({
+      type: "SET_LOADING",
+      payload: true,
+    });
     // console.log('send coupon to backend', coupon);
     applyCoupon(user.token, coupon).then((res) => {
       // console.log('RES ON COUPON APPLIED', res.data);
 
       if (res.data) {
-        setTotalAfterDiscount(res.data);
+        setTotalAfterDiscount(res.data.totalAfterDiscount);
+        setTotal(res.data.cartTotal);
+        setShipOption(res.data.shipOption);
         // update redux coupon applied true/false
         dispatch({
           type: "COUPON_APPLIED",
@@ -157,13 +163,21 @@ const Checkout = ({ history }) => {
       }
       // error
       if (res.data.err) {
+        loadProductInCart();
         setDiscountError(res.data.err);
+
         // update redux coupon applied true/false
         dispatch({
           type: "COUPON_APPLIED",
           payload: false,
         });
       }
+      const delayed = setTimeout(() => {
+        dispatch({
+          type: "SET_LOADING",
+          payload: false,
+        });
+      }, 1000);
     });
   };
 
@@ -1171,6 +1185,28 @@ const Checkout = ({ history }) => {
                                             </span>
                                           </td>
                                         </tr>
+
+                                        {totalAfterDiscount > 0 && (
+                                          <tr style={{ color: "red" }}>
+                                            <td colspan="3" className="right">
+                                              Subtotal After Applying Coupon
+                                            </td>
+                                            <td
+                                              className="right"
+                                              data-ct-checkout-summary="items"
+                                            >
+                                              <span>
+                                                <bdi>
+                                                  $
+                                                  <span>
+                                                    {totalAfterDiscount}
+                                                  </span>
+                                                </bdi>
+                                              </span>
+                                            </td>
+                                          </tr>
+                                        )}
+
                                         <tr>
                                           <td colspan="3" className="right">
                                             Handling & Shipping
@@ -1220,9 +1256,21 @@ const Checkout = ({ history }) => {
                                               <bdi>
                                                 $
                                                 <span>
-                                                  {(
-                                                    cartTotalBeforeTax * 0.08
-                                                  ).toFixed(2)}
+                                                  {totalAfterDiscount > 0 ? (
+                                                    <>
+                                                      {(
+                                                        totalAfterDiscount *
+                                                        0.08
+                                                      ).toFixed(2)}
+                                                    </>
+                                                  ) : (
+                                                    <>
+                                                      {(
+                                                        cartTotalBeforeTax *
+                                                        0.08
+                                                      ).toFixed(2)}
+                                                    </>
+                                                  )}
                                                 </span>
                                               </bdi>
                                             </span>
@@ -1245,25 +1293,14 @@ const Checkout = ({ history }) => {
                                             </span>
                                           </td>
                                         </tr>
-
-                                        {totalAfterDiscount > 0 && (
-                                          <tr>
-                                            <Alert
-                                              message=" {totalAfterDiscount} is applied"
-                                              type="success"
-                                              showIcon
-                                              closable
-                                            />
-                                          </tr>
-                                        )}
                                       </tfoot>
                                     </table>
-
-                                    {/*checkout_info_summary_687*/}
                                   </div>
 
                                   <form onSubmit={applyDiscountCoupon}>
-                                    <b>Apply Promo Code</b>
+                                    <b>
+                                      Apply Promo Code (only 1 Coupon at a time)
+                                    </b>
                                     <div className="ty-discount-coupon__control-group ty-input-append">
                                       <input
                                         onChange={(e) => {
@@ -1282,6 +1319,7 @@ const Checkout = ({ history }) => {
                                         className="ty-btn-go"
                                         type="button"
                                       >
+                                        APPLY &nbsp;{" "}
                                         <i
                                           class="fa fa-play fa-dw"
                                           style={{ fontSize: "13px" }}
@@ -1295,11 +1333,19 @@ const Checkout = ({ history }) => {
                                           closable
                                         />
                                       )}
+                                      {totalAfterDiscount > 0 && (
+                                        <Alert
+                                          message="Coupon is already applied"
+                                          type="success"
+                                          showIcon
+                                          closable
+                                        />
+                                      )}
                                     </div>
                                   </form>
                                   <div className="clearfix"></div>
                                   <div className="ty-customer-notes"></div>
-                                  {/* Inline script moved to the bottom of the page */}
+
                                   <div
                                     className="checkout-buttons"
                                     style={{ float: "right" }}
@@ -1316,7 +1362,6 @@ const Checkout = ({ history }) => {
                                 </div>
                               </div>
                             </div>
-                            {/*step_five*/}
                           </div>
                         </div>
                       </div>
