@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Image, Tabs, Tooltip, message, Spin, Collapse, Progress } from "antd";
 import { getDetailProduct, getRecentlyView } from "../../functions/product";
-import { getReviewsBasedOnProduct } from "../../functions/review";
+import {
+  getReviewsBasedOnProduct,
+  getReviewsPercent,
+} from "../../functions/review";
 import { setCookie, getCookie } from "../../functions/auth";
 import renderHTML from "react-render-html";
 import ProductCardRelate from "../../components/cards/ProductCardRelate";
@@ -20,6 +23,18 @@ import { createReview } from "../../functions/review";
 import { toast } from "react-toastify";
 
 const ProductDetailHome = (props) => {
+  const [percent, setPercent] = useState({
+    one: "",
+    two: "",
+    three: "",
+    four: "",
+    five: "",
+    onePercent: "",
+    twoPercent: "",
+    threePercent: "",
+    fourPercent: "",
+    fivePercent: "",
+  });
   const [avg, setAvg] = useState(0);
   const [qty, setQty] = useState(1);
   const [reviews, setReviews] = useState([]);
@@ -47,12 +62,12 @@ const ProductDetailHome = (props) => {
     setValues({ ...values, [name]: value });
   };
 
-  const loadDetailProduct = (pslug) => {
+  const loadDetailProduct = () => {
     dispatch({
       type: "SET_SPIN",
       payload: true,
     });
-    getDetailProduct(pslug).then((data) => {
+    getDetailProduct(props.match.params.pslug).then((data) => {
       setProduct(data.product);
       setContent1(data.product.description);
       setCategory(data.product.category);
@@ -172,15 +187,27 @@ const ProductDetailHome = (props) => {
 
   const loadReviewsBasedOnProduct = () => {
     getReviewsBasedOnProduct(props.match.params.pslug).then((res) => {
-      // console.log("getReviewsBasedOnProduct", res.data);
       setReviews(res.data);
     });
   };
-  // const loadAverage = () => {
-  //   getAverageBasedOnProduct(props.match.params.pslug).then((res) => {
-  //     setReviews(res.data);
-  //   });
-  // };
+  const loadReviewsPercent = () => {
+    getReviewsPercent(props.match.params.pslug).then((res) => {
+      // console.log("getReviewsPercent", res.data);
+      setPercent({
+        one: res.data.one,
+        two: res.data.two,
+        three: res.data.three,
+        four: res.data.four,
+        five: res.data.five,
+        onePercent: res.data.onePercent,
+        twoPercent: res.data.twoPercent,
+        threePercent: res.data.threePercent,
+        fourPercent: res.data.fourPercent,
+        fivePercent: res.data.fivePercent,
+      });
+    });
+  };
+
   const clickSubmit = (event) => {
     event.preventDefault();
     createReview(values, product._id, user.token)
@@ -192,6 +219,8 @@ const ProductDetailHome = (props) => {
           rating: "",
         });
         loadReviewsBasedOnProduct();
+        loadReviewsPercent();
+        loadDetailProduct();
       })
       .catch((err) => {
         // console.log("error", err.response.data);
@@ -207,9 +236,9 @@ const ProductDetailHome = (props) => {
       loadRecentlyView(recentlyProduct, pslug1);
     }
 
-    loadDetailProduct(pslug1);
+    loadDetailProduct();
     loadReviewsBasedOnProduct();
-    // loadAverage();
+    loadReviewsPercent();
   }, []);
 
   return (
@@ -918,12 +947,14 @@ const ProductDetailHome = (props) => {
                         </div>
                         <div className="style__StyledProcessBar-sc-103p4dk-2 KCfxa">
                           <Progress
-                            percent={50}
+                            percent={percent.fivePercent}
                             showInfo={false}
                             status="exception"
                           />
                         </div>
-                        <div className="review-rating__number">6</div>
+                        <div className="review-rating__number">
+                          {percent.five}
+                        </div>
                       </div>
                       <div className="review-rating__level">
                         <div className="Stars__StyledStars-sc-15olgyg-0 jucQbJ">
@@ -944,9 +975,15 @@ const ProductDetailHome = (props) => {
                           </span>
                         </div>
                         <div className="style__StyledProcessBar-sc-103p4dk-2 KCfxa">
-                          <div style={{ width: "100%" }} />
+                          <Progress
+                            percent={percent.fourPercent}
+                            showInfo={false}
+                            status="exception"
+                          />
                         </div>
-                        <div className="review-rating__number">6</div>
+                        <div className="review-rating__number">
+                          {percent.four}
+                        </div>
                       </div>
                       <div className="review-rating__level">
                         <div className="Stars__StyledStars-sc-15olgyg-0 jucQbJ">
@@ -967,9 +1004,15 @@ const ProductDetailHome = (props) => {
                           </span>
                         </div>
                         <div className="style__StyledProcessBar-sc-103p4dk-2 KCfxa">
-                          <div style={{ width: "100%" }} />
+                          <Progress
+                            percent={percent.threePercent}
+                            showInfo={false}
+                            status="exception"
+                          />
                         </div>
-                        <div className="review-rating__number">6</div>
+                        <div className="review-rating__number">
+                          {percent.three}
+                        </div>
                       </div>
                       <div className="review-rating__level">
                         <div className="Stars__StyledStars-sc-15olgyg-0 jucQbJ">
@@ -990,9 +1033,15 @@ const ProductDetailHome = (props) => {
                           </span>
                         </div>
                         <div className="style__StyledProcessBar-sc-103p4dk-2 KCfxa">
-                          <div style={{ width: "100%" }} />
+                          <Progress
+                            percent={percent.twoPercent}
+                            showInfo={false}
+                            status="exception"
+                          />
                         </div>
-                        <div className="review-rating__number">6</div>
+                        <div className="review-rating__number">
+                          {percent.two}
+                        </div>
                       </div>
                       <div className="review-rating__level">
                         <div className="Stars__StyledStars-sc-15olgyg-0 jucQbJ">
@@ -1013,9 +1062,15 @@ const ProductDetailHome = (props) => {
                           </span>
                         </div>
                         <div className="style__StyledProcessBar-sc-103p4dk-2 KCfxa">
-                          <div style={{ width: "100%" }} />
+                          <Progress
+                            percent={percent.onePercent}
+                            showInfo={false}
+                            status="exception"
+                          />
                         </div>
-                        <div className="review-rating__number">6</div>
+                        <div className="review-rating__number">
+                          {percent.one}
+                        </div>
                       </div>
                     </div>
                     <div className="no-review">

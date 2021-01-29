@@ -8,6 +8,7 @@ import { loadingReducer } from "./loadingReducer";
 import { spinReducer } from "./spinReducer";
 import { checkOutReducer } from "./checkOutReducer";
 import { orderUpdateReducer } from "./orderUpdateReducer";
+import { searchResultReducer } from "./searchResultReducer";
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   spin: spinReducer,
   checkout: checkOutReducer,
   orderUpdate: orderUpdateReducer,
+  searchResult: searchResultReducer,
 });
 
 export default rootReducer;

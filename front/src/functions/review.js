@@ -29,3 +29,6 @@ export const dislike = async (reviewId, token) =>
       Authorization: `Bearer ${token}`,
     },
   });
+
+export const getReviewsPercent = async (slug) =>
+  await axios.get(`${process.env.REACT_APP_API}/review-percent/${slug}`);

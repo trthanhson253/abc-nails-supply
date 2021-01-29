@@ -4,19 +4,20 @@ const Review = require("../models/review");
 
 exports.create = async (req, res) => {
   const { title, rating, content } = req.body;
-
   const reviews = await Review.find({});
   const user = await User.findById(req.user._id);
-  if (user) {
+  const product = await Product.findById(req.params.productId);
+  if (product) {
+    const foundProduct = reviews.find(
+      (r) => r.product.toString() === req.params.productId.toString()
+    );
     const alreadyReviewed = reviews.find(
       (r) => r.user.toString() === req.user._id.toString()
     );
-    if (alreadyReviewed) {
+    if (foundProduct && alreadyReviewed) {
       res.status(400).json({ error: "Product already reviewed" });
       throw new Error("Product already reviewed");
-    }
-    const product = await Product.findById(req.params.productId);
-    if (product) {
+    } else {
       let newReview = new Review({
         title,
         rating: Number(rating),
@@ -25,19 +26,17 @@ exports.create = async (req, res) => {
         product: product._id,
       });
       await newReview.save();
-      const reviews1 = await Review.find({});
-      product.avg =
-        reviews1.reduce((acc, item) => item.rating + acc, 0) / reviews1.length;
+      const reviews1 = await Review.find({ product: req.params.productId });
+      product.avg = (
+        reviews1.reduce((acc, item) => item.rating + acc, 0) / reviews1.length
+      ).toFixed(2);
       await product.save();
 
       res.status(201).json({ message: "Review added" });
-    } else {
-      res.status(404).json({ error: "Product not found" });
-      throw new Error("Product not found");
     }
   } else {
-    res.status(404).json({ error: "User not found" });
-    throw new Error("User not found");
+    res.status(404).json({ error: "Product not found" });
+    throw new Error("Product not found");
   }
 };
 
@@ -51,6 +50,77 @@ exports.getReviewsBasedOnProduct = async (req, res) => {
   // const avg =
   //   reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length;
   res.json(reviews);
+};
+
+exports.getReviewsPercent = async (req, res) => {
+  const product = await Product.findOne({ slug: req.params.slug });
+  const reviews = await Review.find({ product: product._id });
+  let one,
+    two,
+    three,
+    four,
+    five,
+    count = 0;
+  let onePercent,
+    twoPercent,
+    threePercent,
+    fourPercent,
+    fivePercent = 0;
+  const fiveStar = reviews.filter((r) => r.rating === 5);
+  const fourStar = reviews.filter((r) => r.rating === 4);
+  const threeStar = reviews.filter((r) => r.rating === 3);
+  const twoStar = reviews.filter((r) => r.rating === 2);
+  const oneStar = reviews.filter((r) => r.rating === 1);
+  console.log("fiveStar", fiveStar.length);
+  console.log("fourStar", fourStar.length);
+  console.log("oneStar", oneStar.length);
+  if (fiveStar.length > 0) {
+    five = fiveStar.length;
+    count++;
+  } else {
+    five = 0;
+  }
+  if (fourStar.length > 0) {
+    four = fourStar.length;
+    count++;
+  } else {
+    four = 0;
+  }
+  if (threeStar.length > 0) {
+    three = threeStar.length;
+    count++;
+  } else {
+    three = 0;
+  }
+  if (twoStar.length > 0) {
+    two = twoStar.length;
+    count++;
+  } else {
+    two = 0;
+  }
+  if (oneStar.length > 0) {
+    one = oneStar.length;
+    count++;
+  } else {
+    one = 0;
+  }
+  onePercent = (one * 100) / count;
+  twoPercent = (two * 100) / count;
+  threePercent = (three * 100) / count;
+  fourPercent = (four * 100) / count;
+  fivePercent = (five * 100) / count;
+  res.json({
+    one,
+    two,
+    three,
+    four,
+    five,
+    onePercent,
+    twoPercent,
+    threePercent,
+    fourPercent,
+    fivePercent,
+  });
 };
 
 exports.like = async (req, res) => {

@@ -9,6 +9,7 @@ const {
   //   averageRating,
   //   list,
   //   removeComment,
+  getReviewsPercent,
   dislike,
 } = require("../controllers/review");
 const { runValidation } = require("../validators");
@@ -26,6 +27,7 @@ router.post(
 router.get("/review/:slug", getReviewsBasedOnProduct);
 router.get("/like/:reviewId", requireSignin, authCheck, like);
 router.get("/dislike/:reviewId", requireSignin, authCheck, dislike);
+router.get("/review-percent/:slug", getReviewsPercent);
 // router.post('/reply/:id', reply);
 // router.post('/violate/:id', violate);
 

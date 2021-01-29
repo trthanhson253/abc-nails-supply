@@ -24,7 +24,7 @@ const Shop = () => {
 
   const [sizes, setSizes] = useState([]);
   let dispatch = useDispatch();
-  let { search, spin } = useSelector((state) => ({ ...state }));
+  let { search, spin, searchResult } = useSelector((state) => ({ ...state }));
   const { text } = search;
 
   const fetchProducts = (arg) => {
@@ -106,16 +106,8 @@ const Shop = () => {
   };
 
   useEffect(() => {
-    const delayed = setTimeout(() => {
-      fetchProducts({ query: text });
-      fetchMenuByProductsSearch({ query: text });
-
-      dispatch({
-        type: "SET_SPIN",
-        payload: false,
-      });
-    }, 1000);
-    return () => clearTimeout(delayed);
+    fetchProducts({ query: text });
+    fetchMenuByProductsSearch({ query: text });
   }, [spin]);
 
   useEffect(() => {
@@ -193,11 +185,11 @@ const Shop = () => {
                         </>
                       ) : (
                         <div className="grid-list">
-                          {products.length ? (
+                          {searchResult.length ? (
                             <>
                               {" "}
                               <div id="categories_view_pagination_contents">
-                                {products.map((product) => (
+                                {searchResult.map((product) => (
                                   <ProductCard
                                     product={product}
                                     loading={loading}
@@ -309,7 +301,6 @@ const Shop = () => {
                                   name="product_filters[2]"
                                   data-ca-filter-id={2}
                                   defaultValue={25}
-                                  id="elm_checkbox_177_2_25"
                                 />
                                 <div
                                   title="Black"
@@ -393,7 +384,6 @@ const Shop = () => {
                                   name="product_filters[2]"
                                   data-ca-filter-id={2}
                                   defaultValue={22}
-                                  id="elm_checkbox_177_2_22"
                                 />
                                 <div
                                   title="Blue"
@@ -421,7 +411,6 @@ const Shop = () => {
                                   name="product_filters[2]"
                                   data-ca-filter-id={2}
                                   defaultValue={12}
-                                  id="elm_checkbox_177_2_12"
                                 />
                                 <div
                                   title="Pink"
@@ -449,7 +438,6 @@ const Shop = () => {
                                   name="product_filters[2]"
                                   data-ca-filter-id={2}
                                   defaultValue={18}
-                                  id="elm_checkbox_177_2_18"
                                 />
                                 <div
                                   title="Purple"

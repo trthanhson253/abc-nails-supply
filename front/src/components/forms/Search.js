@@ -13,7 +13,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 const Search = () => {
   const dispatch = useDispatch();
   const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-  const { search, spin } = useSelector((state) => ({ ...state }));
+  const { search, spin, searchResult } = useSelector((state) => ({ ...state }));
   const { text } = search;
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -44,6 +44,10 @@ const Search = () => {
         type: "SET_SPIN",
         payload: false,
       });
+      dispatch({
+        type: "ADD_TO_SEARCH",
+        payload: res.data,
+      });
       setProducts(res.data);
     });
   };
@@ -63,13 +67,13 @@ const Search = () => {
           style={{ display: loading ? "none" : "" }}
         >
           <div style={{ maxHeight: "600px" }}>
-            {products.length ? (
+            {searchResult.length ? (
               <>
                 {loading ? (
                   <></>
                 ) : (
                   <>
-                    {products.map((c) => (
+                    {searchResult.map((c) => (
                       <li className="live-item-li clearfix">
                         <a className="cm-ls-product" href="#">
                           <div className="live-item-container">
