@@ -14,9 +14,9 @@ const CheckoutFinish = ({ history }) => {
   const { Step } = Steps;
   const { user, checkout } = useSelector((state) => ({ ...state }));
   const [order, setOrder] = useState({});
-  if (!checkout.finish) {
-    history.push("/");
-  }
+  // if (!checkout.finish) {
+  //   history.push("/");
+  // }
   useEffect(() => {
     getLatestOrder(user.token).then((res) => {
       console.log("create payment intent", res.data);

@@ -8,7 +8,9 @@ const orderUpdateSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    note: { type: String },
     order: { type: ObjectId, ref: "Order" },
+    deliveryId: { type: String },
   },
   { timestamps: true }
 );

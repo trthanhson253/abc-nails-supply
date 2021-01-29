@@ -8,19 +8,18 @@ const CancelOrderModal = ({
   token,
   order,
   loadUserOrders,
+  loadUserOrderUpdate,
 }) => {
   const clickSubmit = (event) => {
     event.preventDefault();
-    requestCancelOrder(order.trackId, token)
-      .then((data) => {
-        toast.success("Request Cancel Sent Successfully!");
-        handleClose();
-        loadUserOrders();
-      })
-      .catch((err) => {
-        toast.error(err.response.data.error);
-      });
+    requestCancelOrder(order.trackId, token).then((data) => {
+      toast.success("Request Cancel Sent Successfully!");
+      handleClose();
+      loadUserOrders();
+      loadUserOrderUpdate();
+    });
   };
+
   return (
     <>
       <Modal
@@ -42,6 +41,8 @@ const CancelOrderModal = ({
         ]}
       >
         <div className="ty-control-group">
+          {order.trackId}
+
           <label
             htmlFor="login_popup685"
             className="ty-login__filed-label ty-control-group__label cm-required cm-trim cm-email"

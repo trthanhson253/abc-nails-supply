@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { getAdminDetailOrder } from "../../../functions/adminOrders";
+import {
+  getAdminDetailOrder,
+  getAdminOrderUpdate,
+} from "../../../functions/adminOrders";
 import { useSelector } from "react-redux";
 import AdminMenu from "../../../components/admin/AdminMenu";
 import { Steps, Avatar } from "antd";
@@ -14,6 +17,7 @@ const AdminDetailOrder = (props) => {
   const token = user.token;
   const { Step } = Steps;
   const [orders, setOrders] = useState([]);
+  const [orderUpdate, setOrderUpdate] = useState([]);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -23,8 +27,13 @@ const AdminDetailOrder = (props) => {
   const loadAdminDetailOrder = () => {
     getAdminDetailOrder(props.match.params.orderId, token).then((res) => {
       setOrders(res.data);
-
-      console.log("ADMIN DETAIL ORDER", JSON.stringify(res.data, null, 4));
+      // console.log("ADMIN DETAIL ORDER", JSON.stringify(res.data, null, 4));
+    });
+  };
+  const loadOrderUpdate = () => {
+    getAdminOrderUpdate(props.match.params.orderId, token).then((res) => {
+      setOrderUpdate(res.data);
+      // console.log("ADMIN DETAIL ORDER", JSON.stringify(res.data, null, 4));
     });
   };
   const showDownloadLink = (order) => (
@@ -62,6 +71,7 @@ const AdminDetailOrder = (props) => {
 
   useEffect(() => {
     loadAdminDetailOrder();
+    loadOrderUpdate();
   }, [props]);
   return (
     <>
@@ -76,6 +86,7 @@ const AdminDetailOrder = (props) => {
                 order={order}
                 token={token}
                 loadAdminDetailOrder={loadAdminDetailOrder}
+                loadOrderUpdate={loadOrderUpdate}
               />
               <div className="container-fluid">
                 <div className="row">
@@ -184,15 +195,15 @@ const AdminDetailOrder = (props) => {
                         </div>
                         <div className="col-xs-6">
                           <b>ORDER UPDATE:</b>
-                          {order.reason.map((p, i) => (
+                          {orderUpdate.map((p, i) => (
                             <p>
                               <b>
-                                {moment(p.date).format("MM-DD-YYYY")} at{" "}
-                                {moment(p.date).format("hh:mm A")}:
+                                {moment(p.createdAt).format("MM-DD-YYYY")} at{" "}
+                                {moment(p.createdAt).format("hh:mm A")}:
                               </b>{" "}
                               {convertToReason(p.name)}
                               {p.name == "2" && (
-                                <p>Tracking Delivery ID: {order.deliveryId}</p>
+                                <p>Tracking Delivery ID: {p.deliveryId}</p>
                               )}
                             </p>
                           ))}
@@ -204,7 +215,6 @@ const AdminDetailOrder = (props) => {
               </div>
             </>
           ))}
-          ;
         </div>
       </div>
     </>

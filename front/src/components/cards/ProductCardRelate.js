@@ -6,7 +6,7 @@ const ProductCardRelate = ({ sanpham }) => {
     <>
       <div
         className="owl-item"
-        style={{ width: "233px", display: "inline-block" }}
+        style={{ width: "25%", display: "inline-block" }}
       >
         <div className="ut2-gl__item ">
           <form className="cm-disable-empty-files cm-ajax cm-ajax-full-render cm-ajax-status-middle cm-processed-form">
@@ -104,10 +104,7 @@ const ProductCardRelate = ({ sanpham }) => {
                   >
                     {/*old_price_update_129000393*/}
                   </span>
-                  <span
-                    className="cm-reload-129000393 ty-price-update"
-                    id="price_update_129000393"
-                  >
+                  <span className="cm-reload-129000393 ty-price-update">
                     <span
                       className="ty-price"
                       id="line_discounted_price_129000393"
@@ -122,56 +119,9 @@ const ProductCardRelate = ({ sanpham }) => {
                         </span>
                       </bdi>
                     </span>
-                    {/*price_update_129000393*/}
                   </span>
                 </div>
                 <div> </div>
-              </div>
-              <div className="ut2-gl__control bt-2x ut2-view-qty view">
-                <div className="ut2-gl__qty">
-                  <div
-                    className="cm-reload-129000393"
-                    id="qty_update_129000393"
-                  >
-                    <div className="ty-qty clearfix changer" id="qty_129000393">
-                      <div className="ty-center ty-value-changer cm-value-changer">
-                        <a className="cm-increase ty-value-changer__increase">
-                          +
-                        </a>
-                        <input
-                          type="text"
-                          size={5}
-                          className="ty-value-changer__input cm-amount"
-                          id="qty_count_129000393"
-                          name="product_data[393][amount]"
-                          defaultValue={1}
-                          data-ca-min-qty={1}
-                        />
-                        <a className="cm-decrease ty-value-changer__decrease">
-                          −
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="button-container">
-                  <div
-                    className="cm-reload-129000393 "
-                    id="add_to_cart_update_129000393"
-                  >
-                    <button
-                      id="button_cart_129000393"
-                      className="ty-btn__primary ty-btn__add-to-cart cm-form-dialog-closer ty-btn"
-                      type="submit"
-                      name="dispatch[checkout.add..393]"
-                    >
-                      <span>
-                        <i className="ut2-icon-outline-cart" />
-                        <span>Add to cart</span>
-                      </span>
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
           </form>

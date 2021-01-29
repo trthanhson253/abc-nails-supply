@@ -6,14 +6,31 @@ const Footer = () => {
     <>
       <div className="tygh-footer clearfix" id="tygh_footer">
         <div className="container-fluid  ty-footer-grid">
-          <div className="container-fluid-row container-fluid-row-full-width hp-subscribe-social">
+          <div
+            className="container-fluid-row container-fluid-row-full-width hp-subscribe-social"
+            style={{ position: "relative" }}
+          >
             <div className="row-fluid ">
               {" "}
               <div className="span16 ">
                 <div className="row-fluid ">
                   {" "}
-                  <div className="span4  "></div>
-                  <div className="span12  ">
+                  <div className="span4">
+                    <img
+                      className="ty-pict  ty-logo-container__image cm-image"
+                      src={require("../../assets/img/newsletter.png")}
+                      alt="ABC Nail Supply"
+                      title="ABC Nail Supply"
+                      style={{
+                        position: "absolute",
+                        bottom: "15px",
+                        left: "80px",
+                      }}
+                      width={130}
+                      height={50}
+                    />
+                  </div>
+                  <div className="span12">
                     <div className="ty-footer-form-block ty-footer-form-block--responsive">
                       <form
                         action="https://www.ABCnailsupply.com/"
@@ -24,16 +41,12 @@ const Footer = () => {
                         </h3>
                         <div className="ty-footer-form-block__form-container">
                           <div className="ty-footer-form-block__form ty-control-group ty-input-append cm-block-add-subscribe">
-                            <label
-                              className="cm-required cm-email hidden"
-                              htmlFor="subscr_email78"
-                            >
+                            <label className="cm-required cm-email hidden">
                               Email
                             </label>
                             <input
                               type="text"
                               name="subscribe_email"
-                              id="subscr_email78"
                               size={20}
                               defaultValue="Enter e-mail address"
                               className="cm-hint ty-input-text"
@@ -45,19 +58,8 @@ const Footer = () => {
                             >
                               <i className="ty-btn-go__icon ty-icon-right-dir" />
                             </button>
-                            <input
-                              type="hidden"
-                              name="dispatch"
-                              defaultValue="newsletters.add_subscriber"
-                            />
                           </div>
                         </div>
-                        <input
-                          type="hidden"
-                          name="security_hash"
-                          className="cm-no-hide-input"
-                          defaultValue="9015f7214ad6c5db7036646ea0b626ad"
-                        />
                       </form>
                     </div>
                   </div>

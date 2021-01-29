@@ -9,6 +9,7 @@ const AdminUpdateOrderDetailModal = ({
   order,
   token,
   loadAdminDetailOrder,
+  loadOrderUpdate,
 }) => {
   //   const status = [
   //     "We have received your order and will prepare it soon.",
@@ -38,6 +39,7 @@ const AdminUpdateOrderDetailModal = ({
         toast.success("Update Progress Successfully!");
         handleClose();
         loadAdminDetailOrder();
+        loadOrderUpdate();
       })
       .catch((err) => {
         console.log(err);

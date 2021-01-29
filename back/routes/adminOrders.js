@@ -10,6 +10,7 @@ const {
   orderStatus,
   getAdminDetailOrder,
   updateOrderProgress,
+  getAdminOrderUpdate,
 } = require("../controllers/adminOrders");
 
 // routes
@@ -19,6 +20,12 @@ router.get(
   requireSignin,
   adminCheck,
   getAdminDetailOrder
+);
+router.get(
+  "/admin/order-update/:orderId",
+  requireSignin,
+  adminCheck,
+  getAdminOrderUpdate
 );
 router.post(
   "/admin/order/update-progress/:orderId",

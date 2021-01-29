@@ -30,7 +30,7 @@ const TrackOrder = (props) => {
     } else if (orderStatus == 4) {
       return "Your Order Are Ready To Pickup At Our Store";
     } else if (orderStatus == 5) {
-      return "Your Request For Cancel Order Has Been Placed And Is Being Processing";
+      return "Your Request For Cancellation Has Been Placed And Is Being Processing";
     } else if (orderStatus == 6) {
       return "Your Order Has Been Cancelled";
     } else if (orderStatus == 7) {
@@ -119,7 +119,22 @@ const TrackOrder = (props) => {
                       your order. Thank you so much for shopping with us.
                     </>
                   )}
-                  If you have any questions, you can call us at 470 437 6253,
+                  {order.orderStatus == 5 && (
+                    <>
+                      Your order, Tracking Number Id <b>{order.trackId}</b> is
+                      cancelled successfully. Please wait 2-3 business days
+                      before the full refund is get back to you.Thank you so
+                      much for shopping with us.
+                    </>
+                  )}
+                  {order.orderStatus == 6 && (
+                    <>
+                      Your order, Tracking Number Id <b>{order.trackId}</b> is
+                      request for return. Please wait 2-3 business day for us to
+                      process your request
+                    </>
+                  )}
+                  If you have any questions, please call us at 470 437 6253,
                   visit our store,or sign in to your account at &nbsp;
                   <Link to="/login" target="_blank">
                     www.abcnailsupply.com/login

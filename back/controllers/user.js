@@ -3,6 +3,8 @@ const Product = require("../models/product");
 const Cart = require("../models/cart");
 const Coupon = require("../models/coupon");
 const Order = require("../models/order");
+const OrderUpdate = require("../models/orderUpdate");
+
 // const uniqueid = require('uniqueid');
 const shortId = require("shortid");
 const ShippingAndBillingAddress = require("../models/shippingAndBillingAddress");
@@ -131,12 +133,12 @@ exports.shippingChange = async (req, res) => {
 
   if (shipOption == 0) {
     if (shipping == 1) {
-      cartTotal = (cartTotal - 8).toFixed(2);
+      cartTotal = cartTotal - 8.0;
       shipOption = 1;
     }
   } else {
     if (shipping == 0) {
-      cartTotal = (cartTotal + 8).toFixed(2);
+      cartTotal = cartTotal + 8.0;
       shipOption = 0;
     }
   }
@@ -190,9 +192,9 @@ exports.applyCouponToUserCart = async (req, res) => {
     (cartTotalBeforeTax * validCoupon.discount) / 100
   ).toFixed(2); // 99.99
   if (shipOption == 0) {
-    cartTotal = (totalAfterDiscount * 1.08 + 8).toFixed(2);
+    cartTotal = totalAfterDiscount * 1.08 + 8.0;
   } else {
-    cartTotal = (totalAfterDiscount * 1.08).toFixed(2);
+    cartTotal = totalAfterDiscount * 1.08;
   }
 
   console.log("totalAfterDiscount ", totalAfterDiscount);
@@ -224,11 +226,16 @@ exports.createOrder = async (req, res) => {
     orderdBy: user._id,
     orderStatus: 0,
   });
-  newOrder.reason.push({
+  // newOrder.reason.push({
+  //   name: 0,
+  //   date: Date.now(),
+  // });
+  let orderUpdate = await new OrderUpdate({
     name: 0,
-    date: Date.now(),
+    order: newOrder._id,
   });
   newOrder.save();
+  orderUpdate.save();
 
   // decrement quantity, increment sold
   let bulkOption = products.map((item) => {
@@ -248,14 +255,20 @@ exports.createOrder = async (req, res) => {
 };
 
 exports.orders = async (req, res) => {
-  let user = await User.findOne({ email: req.user.email }).exec();
+  // let user = await User.findOne({ email: req.user.email }).exec();
 
-  let userOrders = await Order.find({ orderdBy: user._id })
+  let userOrders = await Order.find({ orderdBy: req.user._id })
     .populate("products.product")
     .sort({ createdAt: -1 })
     .exec();
 
   res.json(userOrders);
+};
+
+exports.userOrderUpdate = async (req, res) => {
+  let userOrder = await Order.findOne({ trackId: req.params.orderId }).exec();
+  let userOrderUpdate = await OrderUpdate.find({ order: userOrder._id }).exec();
+  res.json(userOrderUpdate);
 };
 
 // addToWishlist wishlist removeFromWishlist
@@ -472,28 +485,17 @@ exports.getDetailOrderBaseOnTrackId = async (req, res) => {
   });
 };
 
-exports.requestCancelOrder = (req, res) => {
-  console.log("req.params.trackId", req.params.trackId);
-
-  Order.findOne({ trackId: req.params.trackId }).exec((err, oldOrder) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Not Found Order",
-      });
-    }
-
-    oldOrder.orderStatus = 5;
-    oldOrder.reason.push({
-      name: 5,
-      date: Date.now(),
-    });
-    oldOrder.save((err, result) => {
-      if (err) {
-        return res.status(400).json({
-          error: "cannot save",
-        });
-      }
-      res.json(result);
-    });
+exports.requestCancelOrder = async (req, res) => {
+  let userOrder = await Order.findOneAndUpdate(
+    { trackId: req.params.trackId },
+    { orderStatus: 5 },
+    { new: true }
+  ).exec();
+  let userOrderUpdate = new OrderUpdate({
+    name: 5,
+    order: userOrder._id,
   });
+
+  userOrderUpdate.save();
+  res.json({ ok: true });
 };

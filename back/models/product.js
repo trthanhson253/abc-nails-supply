@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
 const productSchema = new mongoose.Schema(
@@ -21,9 +21,7 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     description: {
-      type: {},
-      min: 20,
-      max: 2000000,
+      type: String,
     },
     price: {
       type: Number,
@@ -37,16 +35,16 @@ const productSchema = new mongoose.Schema(
     },
     category: {
       type: ObjectId,
-      ref: 'Category',
+      ref: "Category",
       required: true,
     },
     sub: {
       type: ObjectId,
-      ref: 'Sub',
+      ref: "Sub",
     },
     subSub: {
       type: ObjectId,
-      ref: 'subSub',
+      ref: "subSub",
     },
     quantity: {
       type: Number,
@@ -80,15 +78,22 @@ const productSchema = new mongoose.Schema(
     brand: {
       type: String,
     },
+    avg: {
+      type: Number,
+      default: 0,
+    },
+    // verifiedPurchase: [
+    //   {
+    //     name: {
+    //       type: ObjectId,
+    //       ref: "Product",
+    //     },
+    //   },
+    // ], // mảng push danh sách người đã mua sản phẩm này tạo verified purchase
     clicks: { type: Number, default: 0 },
-    ratings: [
-      {
-        star: Number,
-        postedBy: { type: ObjectId, ref: 'User' },
-      },
-    ],
+    // reviews: [reviewSchema],
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.model("Product", productSchema);

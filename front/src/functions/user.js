@@ -150,6 +150,18 @@ export const getUserOrders = async (token) =>
     },
   });
 
+export const getUserOrderUpdate = async (orderId, token) =>
+  await axios.get(
+    `${process.env.REACT_APP_API}/user/user-order-update/${orderId}`,
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
 export const getLatestOrder = async (token) =>
   await axios.get(`${process.env.REACT_APP_API}/user/orders/getLatest`, {
     headers: {

@@ -7,6 +7,7 @@ import { couponReducer } from "./couponReducer";
 import { loadingReducer } from "./loadingReducer";
 import { spinReducer } from "./spinReducer";
 import { checkOutReducer } from "./checkOutReducer";
+import { orderUpdateReducer } from "./orderUpdateReducer";
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   load: loadingReducer,
   spin: spinReducer,
   checkout: checkOutReducer,
+  orderUpdate: orderUpdateReducer,
 });
 
 export default rootReducer;

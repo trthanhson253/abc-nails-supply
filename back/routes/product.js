@@ -1,13 +1,13 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
 const {
   productCreateValidator,
   subUpdateValidator,
-} = require('../validators/product');
+} = require("../validators/product");
 
-const { runValidation } = require('../validators');
-const { requireSignin, adminCheck } = require('../middlewares/auth');
+const { runValidation } = require("../validators");
+const { requireSignin, adminCheck } = require("../middlewares/auth");
 
 // controller
 const {
@@ -27,11 +27,11 @@ const {
   //   productStar,
   //   listRelated,
   searchFilters,
-} = require('../controllers/product');
+} = require("../controllers/product");
 
 // routes
 router.post(
-  '/product',
+  "/product",
   productCreateValidator,
   runValidation,
   requireSignin,
@@ -40,26 +40,26 @@ router.post(
 );
 // router.get("/products/total", productsCount);
 
-router.get('/products', listAll); // products/100
-router.post('/products/recentlyProduct', listRecentlyProducts);
+router.get("/products", listAll); // products/100
+router.post("/products/recentlyProduct", listRecentlyProducts);
 
-router.get('/products/subSub/:slug', listProductBySubSub);
+router.get("/products/subSub/:slug", listProductBySubSub);
 
-router.post('/products/category/:cslug', listProductByCategory);
-router.get('/products/category/menu/:cslug', listMenuByCategory);
+router.post("/products/category/:cslug", listProductByCategory);
+router.get("/products/category/menu/:cslug", listMenuByCategory);
 
-router.post('/product/:slug', requireSignin, adminCheck, remove);
-router.get('/product/:slug', read);
+router.post("/product/:slug", requireSignin, adminCheck, remove);
+router.get("/product/:slug", read);
 // router.put("/product/:slug", authCheck, adminCheck, update);
 
 // router.post("/products", list);
 // rating
-// router.put("/product/star/:productId", authCheck, productStar);
+// router.put("/product/reviews/:productId", authCheck, productReview);
 // related
 // router.get("/product/related/:productId", listRelated);
 // search
-router.post('/products/search/filters', searchFilters);
+router.post("/products/search/filters", searchFilters);
 
-router.post('/products/by/search', listByFilters);
+router.post("/products/by/search", listByFilters);
 
 module.exports = router;

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Image, Tabs, Tooltip, message, Spin } from "antd";
+import { Image, Tabs, Tooltip, message, Spin, Collapse, Progress } from "antd";
 import { getDetailProduct, getRecentlyView } from "../../functions/product";
+import { getReviewsBasedOnProduct } from "../../functions/review";
 import { setCookie, getCookie } from "../../functions/auth";
 import renderHTML from "react-render-html";
 import ProductCardRelate from "../../components/cards/ProductCardRelate";
@@ -13,21 +14,39 @@ import { addToWishlist } from "../../functions/user";
 import { Helmet } from "react-helmet";
 import Spinner from "../../components/Spinner";
 import Loader from "../../components/Loader";
+import ReviewProductCard from "../../components/cards/ReviewProductCard";
+import { Editor } from "@tinymce/tinymce-react";
+import { createReview } from "../../functions/review";
+import { toast } from "react-toastify";
 
 const ProductDetailHome = (props) => {
+  const [avg, setAvg] = useState(0);
   const [qty, setQty] = useState(1);
+  const [reviews, setReviews] = useState([]);
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(false);
-  const [content, setContent] = useState("");
+  const [content1, setContent1] = useState("");
   const [category, setCategory] = useState({});
   const [sub, setSub] = useState({});
   const [subSub, setSubSub] = useState({});
   const [recentProducts, setRecentProducts] = useState([]);
   const { TabPane } = Tabs;
+  const { Panel } = Collapse;
   const { user, cart, load, spin } = useSelector((state) => ({ ...state }));
   const dispatch = useDispatch();
   const [tooltip, setTooltip] = useState("Click to add this product");
-  console.log("qty", qty);
+  const initialState = {
+    rating: "",
+    content: "",
+    title: "",
+  };
+  const [values, setValues] = useState(initialState);
+  const { content, title, rating } = values;
+  const handleChange = (name) => (e) => {
+    const value = name === "content" ? e.target.getContent() : e.target.value;
+    setValues({ ...values, [name]: value });
+  };
+
   const loadDetailProduct = (pslug) => {
     dispatch({
       type: "SET_SPIN",
@@ -35,7 +54,7 @@ const ProductDetailHome = (props) => {
     });
     getDetailProduct(pslug).then((data) => {
       setProduct(data.product);
-      setContent(data.product.description);
+      setContent1(data.product.description);
       setCategory(data.product.category);
       setSub(data.product.sub);
       setSubSub(data.product.subSub);
@@ -151,6 +170,36 @@ const ProductDetailHome = (props) => {
     });
   };
 
+  const loadReviewsBasedOnProduct = () => {
+    getReviewsBasedOnProduct(props.match.params.pslug).then((res) => {
+      // console.log("getReviewsBasedOnProduct", res.data);
+      setReviews(res.data);
+    });
+  };
+  // const loadAverage = () => {
+  //   getAverageBasedOnProduct(props.match.params.pslug).then((res) => {
+  //     setReviews(res.data);
+  //   });
+  // };
+  const clickSubmit = (event) => {
+    event.preventDefault();
+    createReview(values, product._id, user.token)
+      .then((data) => {
+        setValues({
+          ...values,
+          content: "",
+          title: "",
+          rating: "",
+        });
+        loadReviewsBasedOnProduct();
+      })
+      .catch((err) => {
+        // console.log("error", err.response.data);
+        // toast.error(err.response.data);
+        toast.error(err.response.data.error);
+      });
+  };
+
   useEffect(() => {
     const pslug1 = props.match.params.pslug;
     if (getCookie("lastVisited")) {
@@ -159,6 +208,8 @@ const ProductDetailHome = (props) => {
     }
 
     loadDetailProduct(pslug1);
+    loadReviewsBasedOnProduct();
+    // loadAverage();
   }, []);
 
   return (
@@ -172,7 +223,10 @@ const ProductDetailHome = (props) => {
           <div className="container-fluid-row">
             <div className="row-fluid ">
               {" "}
-              <div className="span16 main-content-grid ut2-bottom">
+              <div
+                className="span16 main-content-grid ut2-bottom"
+                style={{ paddingBottom: "0" }}
+              >
                 <div className="ut2-pb ty-product-block ty-product-detail">
                   <h1 className="ut2-pb__title" style={{ fontSize: "25px" }}>
                     <bdi>{product.name}</bdi>
@@ -216,20 +270,13 @@ const ProductDetailHome = (props) => {
                       <div
                         className="ut2-pb__img cm-reload-9060"
                         data-ca-previewer="true"
-                        id="product_images_9060_update"
                       >
                         <div
                           className="ab_vg-images-wrapper clearfix"
                           data-ca-previewer="true"
                         >
                           <div style={{ position: "relative", maxHeight: 420 }}>
-                            <input
-                              type="hidden"
-                              name="ab__stickers_output_side"
-                              defaultValue="L"
-                            />
                             <div
-                              id="product_images_90606002011cee7a3"
                               className="ty-product-img cm-preview-wrapper ab-vertical owl-carousel owl-theme"
                               style={{ opacity: 1, display: "block" }}
                             >
@@ -270,7 +317,7 @@ const ProductDetailHome = (props) => {
                     </div>
                     <div
                       className="ut2-pb__right"
-                      style={{ borderRadius: "16px" }}
+                      style={{ borderRadius: "3px" }}
                     >
                       {spin ? (
                         <Loader />
@@ -281,12 +328,83 @@ const ProductDetailHome = (props) => {
                             <div className="ut2-pb__rating">
                               <div className="ty-discussion__rating-wrapper">
                                 <span className="ty-nowrap no-rating">
-                                  <i className="ty-icon-star-empty" />
-                                  <i className="ty-icon-star-empty" />
-                                  <i className="ty-icon-star-empty" />
-                                  <i className="ty-icon-star-empty" />
-                                  <i className="ty-icon-star-empty" />
+                                  {product.avg >= 1 ? (
+                                    <span>
+                                      <span className="icon is-small has-text-warning">
+                                        <i
+                                          className={
+                                            product.avg >= 1
+                                              ? "fa fa-star star-review"
+                                              : "fa fa-star-o star-review"
+                                          }
+                                        />
+                                      </span>
+                                      <span className="icon is-small has-text-warning">
+                                        <i
+                                          className={
+                                            product.avg >= 2
+                                              ? "fa fa-star star-review"
+                                              : product.avg >= 1.5
+                                              ? "fa fa-star-half-o star-review"
+                                              : "fa fa-star-o star-review"
+                                          }
+                                        />
+                                      </span>
+                                      <span className="icon is-small has-text-warning">
+                                        <i
+                                          className={
+                                            product.avg >= 3
+                                              ? "fa fa-star star-review"
+                                              : product.avg >= 2.5
+                                              ? "fa fa-star-half-o star-review"
+                                              : "fa fa-star-o star-review"
+                                          }
+                                        />
+                                      </span>
+                                      <span className="icon is-small has-text-warning">
+                                        <i
+                                          className={
+                                            product.avg >= 4
+                                              ? "fa fa-star star-review"
+                                              : product.avg >= 3.5
+                                              ? "fa fa-star-half-o star-review"
+                                              : "fa fa-star-o star-review"
+                                          }
+                                        />
+                                      </span>
+                                      <span className="icon is-small has-text-warning">
+                                        <i
+                                          className={
+                                            product.avg == 5
+                                              ? "fa fa-star star-review"
+                                              : product.avg >= 4.5
+                                              ? "fa fa-star-half-o star-review"
+                                              : "fa fa-star-o star-review"
+                                          }
+                                        />
+                                      </span>
+                                    </span>
+                                  ) : (
+                                    <span>
+                                      <span className="icon is-small has-text-warning">
+                                        <i className="fa fa-star-o star-review" />
+                                      </span>
+                                      <span className="icon is-small has-text-warning">
+                                        <i className="fa fa-star-o star-review" />
+                                      </span>
+                                      <span className="icon is-small has-text-warning">
+                                        <i className="fa fa-star-o star-review" />
+                                      </span>
+                                      <span className="icon is-small has-text-warning">
+                                        <i className="fa fa-star-o star-review" />
+                                      </span>
+                                      <span className="icon is-small has-text-warning">
+                                        <i className="fa fa-star-o star-review" />
+                                      </span>
+                                    </span>
+                                  )}
                                 </span>
+                                <b>({reviews.length})</b>&nbsp;&nbsp;
                                 <a
                                   id="opener_discussion_login_form_new_post_main_info_title_9060"
                                   className="cm-dialog-opener cm-dialog-auto-size ty-discussion__review-write"
@@ -559,170 +677,862 @@ const ProductDetailHome = (props) => {
                         </>
                       )}
                     </div>
+                    <div className="rightInfo phone">
+                      <ul className="policy ">
+                        <li className="inpr">
+                          <span>
+                            This product includes:{" "}
+                            <a className="stdImg">Box, Product, Warranty </a>
+                          </span>
+                        </li>
+                        <li className="wrpr">
+                          <span>
+                            <b>Returns:</b>&nbsp;100% Satisfaction Guarantee -
+                            If for some reason you are not satisfied with your
+                            purchase, you may return it for refund.&nbsp;
+                            <a>Details</a>
+                          </span>
+                        </li>
+                        <li className="chpr">
+                          <b>Exchanges:</b>&nbsp; If you received an item and
+                          need to exchange it for a different item, you need to
+                          follow the guidelines &nbsp;<a>Details</a>
+                        </li>
+                      </ul>
+                      <div className="promotion-bonus" data-scenario={20201210}>
+                        <b>Payment</b>
+                        <ul>
+                          <li>
+                            <div className="promo_BHX">
+                              <div className="l2">
+                                <span>We Accept Credit Cards.</span>
+                                <div className="content">
+                                  <p className="first-pap">
+                                    <img
+                                      src="https://www.happynailsupply.com/images/companies/1/pages/payment/cards.jpg"
+                                      width="180px"
+                                    />
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                        </ul>
+                        <style
+                          dangerouslySetInnerHTML={{
+                            __html:
+                              "\n        .promotion-bonus {border:1px solid #ddd;border-radius:4px;clear:both;margin-bottom:10px;}\n        .promotion-bonus>b {\n            display: block;\n            overflow: hidden;\n            font-size: 15px;\n            color: #333;\n            padding: 10px 15px 8px 15px;\n            text-transform: uppercase;\n            background-color: #f6f6f6;\n            border-bottom: 1px solid #ddd;\n        }\n        .promotion-bonus>b>i {\n            font-style: normal;\n            font-weight: normal;\n            font-size: 12px;\n            color: #666;\n            display: block;\n            text-transform: none;\n            padding-top: 1px;\n        }\n        .promotion-bonus>ul {padding:10px;}\n        .promotion-bonus>ul>li {position:relative;padding-left:20px;margin-bottom:10px;}\n        .promotion-bonus>ul>li:last-child {margin-bottom:0;}\n        .promotion-bonus>ul>li>i {position:absolute;width:18px;height:18px;background-color:#4A90E2;line-height:19px;color:#fff;text-align:center;left:0;top:0;font-style:normal;border-radius:50%;font-size:11px;}\n        .promotion-bonus>b>i {display:inline-block;vertical-align:bottom;}\n        .promotion-bonus>ul>li>span {line-height:1.4;display:block;}\n        .promotion-bonus>ul>li.last {color:#4A90E2;cursor:pointer;text-align:center;padding-left:0;}\n        .promotion-bonus>ul>li.last:after {\n            content:'';\n            border-top: 1px solid #4A90E2 !important;\n            border-right: 1px solid #4A90E2;\n            transform: rotate(140deg) skew(12deg);\n            width: 6px;\n            height: 6px;\n            margin-bottom: 6px;\n            border-left: none;\n            display: inline-block;\n            vertical-align: middle;\n            margin-left: 8px;\n        }\n        .promotion-bonus>ul>li>div.promo_BHX {border:none;margin:0;padding:0;}\n        .promotion-bonus>ul>li>.promo_BHX .l1 {display:none;}\n        .promotion-bonus>ul>li>.promo_BHX .l2 {width:auto;float:left;}\n        .promotion-bonus>ul>li>i {\n            background: url(/Content/desktop/images/V4/game/check@2x.png);\n            width: 14px;\n            height: 14px;\n            background-size: 14px 14px;\n            text-indent:-9999px;\n            top:3px;\n        }\n\n        .rightInfo.fashion .promotion-bonus {margin-left:15px;margin-right:5px;}\n\n        @media screen and (max-width:640px){\n            .promotion-bonus {margin:10px 10px 0 10px;}\n            .promotion-bonus>b>i {margin-left:5px;}\n        }\n    ",
+                          }}
+                        />
+                      </div>
+                    </div>
                   </div>
+                  <div className="container-fluid-row container-fluid-row-full-width new-popular-special">
+                    <div className="row-fluid ">
+                      <div className="panel-body">
+                        {/* Nav tabs */}
+                        <ul className="nav nav-pills">
+                          <li className="active">
+                            <a
+                              href="#home-pills"
+                              data-toggle="tab"
+                              aria-expanded="true"
+                            >
+                              Your Browsing History
+                            </a>
+                          </li>
+                        </ul>
 
-                  <Tabs type="card" defaultActiveKey="1">
-                    <TabPane
-                      tab={
-                        <span>
-                          <i className="fa fa-files-o fa-fw" /> Description
-                        </span>
-                      }
-                      key="1"
-                    >
-                      <div
-                        style={{
-                          borderStyle: "solid",
-                          padding: "15px",
-                          borderRadius: "10px",
-                          borderColor: "#F0F0F0",
-                        }}
-                      >
-                        {renderHTML(content)}
-                      </div>
-                    </TabPane>
-                    <TabPane
-                      tab={
-                        <span>
-                          <i className="fa fa-star-o fa-fw" /> Specification
-                        </span>
-                      }
-                      key="2"
-                    >
-                      <div
-                        id="content_description"
-                        className="ty-wysiwyg-content content-description"
-                      ></div>
-                      <div
-                        id="content_features"
-                        className="ty-wysiwyg-content content-features"
-                        data-ab-smc-tab-hide="N|N|Y"
-                        data-ab-smc-more="More"
-                        data-ab-smc-less="Less"
-                        data-ab-smc-height="{250}"
-                        data-ab-smc-tab-override-h="N"
-                      >
-                        <div className="ty-product-feature">
-                          <span className="ty-product-feature__label">
-                            Brand:
-                          </span>
-                          <div className="ty-product-feature__value">
-                            {product.quantity}
-                          </div>
-                        </div>
-                        <div className="ty-product-feature">
-                          <span className="ty-product-feature__label">
-                            Color:
-                          </span>
-                          <div className="ty-product-feature__value">
-                            <ul className="ty-product-feature__multiple">
-                              <li className="ty-product-feature__multiple-item">
-                                <span className="ty-compare-checkbox">
-                                  <i className="ty-compare-checkbox__icon ty-icon-ok" />
-                                </span>
-                                <span className="ty-product-feature__prefix" />
-                                Orange
-                                <span className="ty-product-feature__suffix" />
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                        <div className="ty-product-feature">
-                          <span className="ty-product-feature__label">
-                            Shade:
-                          </span>
-                          <div className="ty-product-feature__value">
-                            <ul className="ty-product-feature__multiple">
-                              <li className="ty-product-feature__multiple-item">
-                                <span className="ty-compare-checkbox">
-                                  <i className="ty-compare-checkbox__icon ty-icon-ok" />
-                                </span>
-                                <span className="ty-product-feature__prefix" />
-                                Cream
-                                <span className="ty-product-feature__suffix" />
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                        <div className="ty-product-feature">
-                          <span className="ty-product-feature__label">
-                            Size:
-                          </span>
-                          <div className="ty-product-feature__value">
-                            <ul className="ty-product-feature__multiple">
-                              <li className="ty-product-feature__multiple-item">
-                                <span className="ty-compare-checkbox">
-                                  <i className="ty-compare-checkbox__icon ty-icon-ok" />
-                                </span>
-                                <span className="ty-product-feature__prefix" />
-                                0.5oz
-                                <span className="ty-product-feature__suffix" />
-                              </li>
-                            </ul>
+                        <div className="tab-content">
+                          <div
+                            className="tab-pane fade active in"
+                            id="home-pills"
+                          >
+                            {getCookie("lastVisited") ? (
+                              <>
+                                {recentProducts.map((c) => (
+                                  <ProductCardRelate sanpham={c} />
+                                ))}
+                              </>
+                            ) : (
+                              <h4>No currently products found.</h4>
+                            )}
                           </div>
                         </div>
                       </div>
-                    </TabPane>
-                    <TabPane
-                      tab={
-                        <span>
-                          <i className="fa fa-comments fa-fw" /> Reviews
-                        </span>
-                      }
-                      key="3"
-                    >
-                      Write A Review
-                      <img src="../../assets/img/comment.png" />
-                    </TabPane>
-                  </Tabs>
+                    </div>
+                  </div>
                 </div>
-                <div className="product-details"></div>
               </div>
             </div>
+          </div>
+          <div className="container-fluid-row container-fluid-row-full-width new-popular-special">
+            <div className="row-fluid ">
+              <div class="box_content">
+                <aside class="left_content">
+                  <div className="boxArticle">
+                    <article className="area_article ">
+                      <h2>Description</h2>
+                      {content1 ? (
+                        <>{renderHTML(content1)}</>
+                      ) : (
+                        <i>No Content</i>
+                      )}
+                    </article>
+                  </div>
+                </aside>
+                <aside class="right_content">
+                  <div className="tableparameter">
+                    <h2>Details Information</h2>
+                    <ul className="parameter ">
+                      <li className="p217536 g6459_79_77">
+                        <span>Size:</span>
+                        <div>{product.size}</div>
+                      </li>
+                      <li className="p217536 g72">
+                        <span>Color:</span>
+                        <div>{product.color}</div>
+                      </li>
+                      <li className="p217536 g27">
+                        <span>Brand:</span>
+                        <a>{product.brand}</a>
+                      </li>
+                    </ul>
+                  </div>
+                </aside>
+              </div>
+            </div>
+            <div class="clr"></div>
           </div>
 
           <div className="container-fluid-row container-fluid-row-full-width new-popular-special">
             <div className="row-fluid ">
-              <div className="panel-body">
-                {/* Nav tabs */}
-                <ul className="nav nav-pills">
-                  <li className="active">
-                    <a
-                      href="#home-pills"
-                      data-toggle="tab"
-                      aria-expanded="true"
-                    >
-                      You Recently Viewed
-                    </a>
-                  </li>
-                  <li className>
-                    <a
-                      href="#profile-pills"
-                      data-toggle="tab"
-                      aria-expanded="false"
-                    >
-                      Related Products
-                    </a>
-                  </li>
-                </ul>
-                {/* Tab panes */}
-                <div className="tab-content">
-                  <div className="tab-pane fade active in" id="home-pills">
-                    {getCookie("lastVisited") ? (
-                      <>
-                        {recentProducts.map((c) => (
-                          <ProductCardRelate sanpham={c} />
-                        ))}
-                      </>
-                    ) : (
-                      <h4>No currently products found.</h4>
-                    )}
+              <hr></hr>
+              <div className="customer-reviews__inner">
+                <div className="style__StyledReviewRating-sc-103p4dk-1 bUjLvd review-rating">
+                  <div className="review-rating__heading">Reviews</div>
+                  <div className="review-rating__inner">
+                    <div className="review-rating__summary">
+                      <div className="review-rating__point">
+                        {product.avg}/5
+                      </div>
+                      <div className="Stars__StyledStars-sc-15olgyg-0 jucQbJ">
+                        {product.avg >= 1 ? (
+                          <span>
+                            <span className="icon is-small has-text-warning">
+                              <i
+                                className={
+                                  product.avg >= 1
+                                    ? "fa fa-star star-review"
+                                    : "fa fa-star-o star-review"
+                                }
+                              />
+                            </span>
+                            <span className="icon is-small has-text-warning">
+                              <i
+                                className={
+                                  product.avg >= 2
+                                    ? "fa fa-star star-review"
+                                    : product.avg >= 1.5
+                                    ? "fa fa-star-half-o star-review"
+                                    : "fa fa-star-o star-review"
+                                }
+                              />
+                            </span>
+                            <span className="icon is-small has-text-warning">
+                              <i
+                                className={
+                                  product.avg >= 3
+                                    ? "fa fa-star star-review"
+                                    : product.avg >= 2.5
+                                    ? "fa fa-star-half-o star-review"
+                                    : "fa fa-star-o star-review"
+                                }
+                              />
+                            </span>
+                            <span className="icon is-small has-text-warning">
+                              <i
+                                className={
+                                  product.avg >= 4
+                                    ? "fa fa-star star-review"
+                                    : product.avg >= 3.5
+                                    ? "fa fa-star-half-o star-review"
+                                    : "fa fa-star-o star-review"
+                                }
+                              />
+                            </span>
+                            <span className="icon is-small has-text-warning">
+                              <i
+                                className={
+                                  product.avg == 5
+                                    ? "fa fa-star star-review"
+                                    : product.avg >= 4.5
+                                    ? "fa fa-star-half-o star-review"
+                                    : "fa fa-star-o star-review"
+                                }
+                              />
+                            </span>
+                          </span>
+                        ) : (
+                          <span>
+                            <span className="icon is-small has-text-warning">
+                              <i className="fa fa-star-o star-review" />
+                            </span>
+                            <span className="icon is-small has-text-warning">
+                              <i className="fa fa-star-o star-review" />
+                            </span>
+                            <span className="icon is-small has-text-warning">
+                              <i className="fa fa-star-o star-review" />
+                            </span>
+                            <span className="icon is-small has-text-warning">
+                              <i className="fa fa-star-o star-review" />
+                            </span>
+                            <span className="icon is-small has-text-warning">
+                              <i className="fa fa-star-o star-review" />
+                            </span>
+                          </span>
+                        )}
+                      </div>
+                      <div className="review-rating__total">
+                        {reviews.length} reviews
+                      </div>
+                    </div>
+                    <div className="review-rating__detail">
+                      <div className="review-rating__level">
+                        <div className="Stars__StyledStars-sc-15olgyg-0 jucQbJ">
+                          <span>
+                            <i class="fa fa-star star-review"></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star star-review "></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star star-review "></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star star-review"></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star star-review"></i>
+                          </span>
+                        </div>
+                        <div className="style__StyledProcessBar-sc-103p4dk-2 KCfxa">
+                          <Progress
+                            percent={50}
+                            showInfo={false}
+                            status="exception"
+                          />
+                        </div>
+                        <div className="review-rating__number">6</div>
+                      </div>
+                      <div className="review-rating__level">
+                        <div className="Stars__StyledStars-sc-15olgyg-0 jucQbJ">
+                          <span>
+                            <i class="fa fa-star star-review"></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star star-review "></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star star-review "></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star star-review"></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star-o star-review"></i>
+                          </span>
+                        </div>
+                        <div className="style__StyledProcessBar-sc-103p4dk-2 KCfxa">
+                          <div style={{ width: "100%" }} />
+                        </div>
+                        <div className="review-rating__number">6</div>
+                      </div>
+                      <div className="review-rating__level">
+                        <div className="Stars__StyledStars-sc-15olgyg-0 jucQbJ">
+                          <span>
+                            <i class="fa fa-star star-review"></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star star-review "></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star star-review "></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star-o star-review"></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star-o star-review"></i>
+                          </span>
+                        </div>
+                        <div className="style__StyledProcessBar-sc-103p4dk-2 KCfxa">
+                          <div style={{ width: "100%" }} />
+                        </div>
+                        <div className="review-rating__number">6</div>
+                      </div>
+                      <div className="review-rating__level">
+                        <div className="Stars__StyledStars-sc-15olgyg-0 jucQbJ">
+                          <span>
+                            <i class="fa fa-star star-review"></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star star-review "></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star-o star-review "></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star-o star-review"></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star-o star-review"></i>
+                          </span>
+                        </div>
+                        <div className="style__StyledProcessBar-sc-103p4dk-2 KCfxa">
+                          <div style={{ width: "100%" }} />
+                        </div>
+                        <div className="review-rating__number">6</div>
+                      </div>
+                      <div className="review-rating__level">
+                        <div className="Stars__StyledStars-sc-15olgyg-0 jucQbJ">
+                          <span>
+                            <i class="fa fa-star star-review"></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star-o star-review "></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star-o star-review "></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star-o star-review"></i>
+                          </span>
+                          <span>
+                            <i class="fa fa-star-o star-review"></i>
+                          </span>
+                        </div>
+                        <div className="style__StyledProcessBar-sc-103p4dk-2 KCfxa">
+                          <div style={{ width: "100%" }} />
+                        </div>
+                        <div className="review-rating__number">6</div>
+                      </div>
+                    </div>
+                    <div className="no-review">
+                      <img
+                        className
+                        src="https://stcv4.hnammobile.com/v7/images/icon/review_grey.svg?v=5271"
+                        alt="reviews"
+                      />
+                      <div className="review-heading">
+                        Please review this product{" "}
+                      </div>
+                      <button class="btn-rating">Write Reviews</button>
+                    </div>
                   </div>
-                  <div className="tab-pane fade" id="profile-pills"></div>
                 </div>
+                <div className="style__StyledFilter-sc-103p4dk-4 fwZKR filter-review">
+                  <div className="filter-review__label">Filter:</div>
+                  <div className="filter-review__inner">
+                    <div
+                      data-view-id="pdp_review_filter_item"
+                      data-view-index={0}
+                      className="filter-review__item "
+                    >
+                      <span className="filter-review__check" />
+                      <span className="filter-review__text">Newest</span>
+                    </div>
+
+                    <div
+                      data-view-id="pdp_review_filter_item"
+                      data-view-index={2}
+                      className="filter-review__item "
+                    >
+                      <span className="filter-review__check" />
+                      <span className="filter-review__text">
+                        Verified Purchase
+                      </span>
+                    </div>
+                    <div
+                      data-view-id="pdp_review_filter_item"
+                      data-view-index={3}
+                      className="filter-review__item  "
+                    >
+                      <span className="filter-review__check" />
+                      <span className="filter-review__text">5</span>
+                      <i className="fa fa-star-o star-review"></i>
+                    </div>
+                    <div
+                      data-view-id="pdp_review_filter_item"
+                      data-view-index={4}
+                      className="filter-review__item  "
+                    >
+                      <span className="filter-review__check" />
+                      <span className="filter-review__text">4</span>
+                      <i className="fa fa-star-o star-review"></i>
+                    </div>
+                    <div
+                      data-view-id="pdp_review_filter_item"
+                      data-view-index={5}
+                      className="filter-review__item  "
+                    >
+                      <span className="filter-review__check" />
+                      <span className="filter-review__text">3</span>
+                      <i className="fa fa-star-o star-review"></i>
+                    </div>
+                    <div
+                      data-view-id="pdp_review_filter_item"
+                      data-view-index={6}
+                      className="filter-review__item  "
+                    >
+                      <span className="filter-review__check" />
+                      <span className="filter-review__text">2</span>
+                      <i className="fa fa-star-o star-review"></i>
+                    </div>
+                    <div
+                      data-view-id="pdp_review_filter_item"
+                      data-view-index={7}
+                      className="filter-review__item  "
+                    >
+                      <span className="filter-review__check" />
+                      <span className="filter-review__text">1</span>
+                      <i className="fa fa-star-o star-review"></i>
+                    </div>
+                  </div>
+                </div>
+
+                <div />
+                <Collapse defaultActiveKey={["1"]}>
+                  <Panel header="Review Form" key="1">
+                    <form id="review-form" onSubmit={clickSubmit}>
+                      <p className="intro">Please rate this product</p>
+                      <div className="rating-point">
+                        <span className="star-rating star-5">
+                          <input
+                            type="radio"
+                            name="rating"
+                            value={1}
+                            onChange={handleChange("rating")}
+                          />
+                          <i />
+                          <input
+                            type="radio"
+                            name="rating"
+                            value={2}
+                            onChange={handleChange("rating")}
+                          />
+                          <i />
+                          <input
+                            type="radio"
+                            name="rating"
+                            value={3}
+                            onChange={handleChange("rating")}
+                          />
+                          <i />
+                          <input
+                            type="radio"
+                            name="rating"
+                            value={4}
+                            onChange={handleChange("rating")}
+                          />
+                          <i />
+                          <input
+                            type="radio"
+                            name="rating"
+                            value={5}
+                            onChange={handleChange("rating")}
+                          />
+                          <i />
+                        </span>
+                      </div>
+                      <div className="rowReview">
+                        <div className="comment-group col-lg-12">
+                          <Editor
+                            apiKey="vk5dzbhlfowdjlegve39540n21d7ems2k9hklan44u32j302"
+                            value={content}
+                            onChange={handleChange("content")}
+                            init={{
+                              selector: "textarea#emoticons",
+                              placeholder: "Please write your comment here ...",
+                              height: 150,
+                              menubar: false,
+                              plugins: "emoticons",
+                              toolbar:
+                                "emoticons undo redo bold italic backcolor ",
+                              emoticons_database: "emojis",
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="rowReview">
+                        <div className="comment-group col-lg-10">
+                          <input
+                            type="text"
+                            name="title"
+                            onChange={handleChange("title")}
+                            value={title}
+                            className="comment-fullname"
+                            placeholder="Title"
+                          />
+                        </div>
+                        <div className="comment-group col-lg-2">
+                          <button
+                            type="submit"
+                            className="btn-send-comment"
+                            onClick={clickSubmit}
+                          >
+                            Send{" "}
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </Panel>
+                </Collapse>
+                {reviews.length > 0 ? (
+                  <>
+                    {reviews.map((review, i) => (
+                      <ReviewProductCard
+                        review={review}
+                        loadReviewsBasedOnProduct={loadReviewsBasedOnProduct}
+                      />
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    <br />
+                    <br />
+                    <i class="fa fa-comments"></i>&nbsp;
+                    <i>Be the first one to review this product</i>
+                  </>
+                )}
+
+                <div className="customer-reviews__pagination" />
               </div>
             </div>
           </div>
+          <section className="products">
+            {" "}
+            <div className="container-fluid-row container-fluid-row-full-width">
+              <div className="row-fluid ">
+                <div
+                  className="product-area tm-d recommendedforyou"
+                  data-recoedwidget="true"
+                >
+                  <div className="product-header">
+                    <p className="title">
+                      <font style={{ verticalAlign: "inherit" }}>
+                        <font style={{ verticalAlign: "inherit" }}>
+                          Products Suggestion{" "}
+                        </font>
+                      </font>
+                    </p>
+                  </div>
+                  <div className="product-content">
+                    <div className="list-products">
+                      <div
+                        className="product-item-list product product-item-list "
+                        data-boxxwi="YQQSHK92"
+                        data-bxwidat='{"wt":"Gợi ý cho bạn","al":[],"rid":"07656ec2efc3488383ad43bca4ec9614","pid":"19278","cid":""}'
+                        data-bxwrap
+                        data-recoedproduct="true"
+                        data-bxrfid="19278~`~PDP-Personalized-SuggestionsForYou~`~00~`~PDP"
+                      >
+                        <div className="product-top">
+                          <div className="pay-0">Trả góp 0%</div>
+                        </div>
+                        <div className="product-mid">
+                          <div className="product-image">
+                            <figure className="image-wrapper">
+                              <a
+                                href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-note-10-plus-5g-256gb-han-quoc-99.19278.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
+                                title="Samsung Galaxy Note 10 Plus 5G 256GB Hàn Quốc 99%"
+                              >
+                                <picture className>
+                                  <source
+                                    data-srcset="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/9838009892-samsung-galaxy-note-10-5g-256gb-han-quoc-99.jpg?v=1611692726"
+                                    srcSet="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/9838009892-samsung-galaxy-note-10-5g-256gb-han-quoc-99.jpg?v=1611692726"
+                                    type="image/png"
+                                  />
+                                  <img
+                                    alt="Samsung Galaxy Note 10 Plus 5G 256GB Hàn Quốc 99%"
+                                    data-src="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/9838009892-samsung-galaxy-note-10-5g-256gb-han-quoc-99.jpg?v=1611692726"
+                                  />
+                                </picture>
+                              </a>
+                            </figure>
+                          </div>
+                          <h3 className="product-name">
+                            <a href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-note-10-plus-5g-256gb-han-quoc-99.19278.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize">
+                              Samsung Galaxy Note 10 Plus 5G 256GB Hàn Quốc 99%
+                            </a>
+                          </h3>
+                          <div className="product-price">
+                            <ins>HNAM</ins> 11.399.000đ
+                            <span />
+                          </div>
+                        </div>
+                        <div className="product-bottom">
+                          <a
+                            className="btn buy-now"
+                            href="https://www.hnammobile.com/cart/add?itemid=19278"
+                            onclick="addToCart(this)"
+                          >
+                            Mua ngay
+                          </a>
+                          <a
+                            className="btn pay-0"
+                            href="https://www.hnammobile.com/mua-tra-gop/dien-thoai/samsung-galaxy-note-10-plus-5g-256gb-han-quoc-99.19278.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
+                            onclick="addToCart(this,true)"
+                          >
+                            Trả góp 0%
+                          </a>
+                        </div>
+                      </div>
+                      <div
+                        className="product-item-list product product-item-list "
+                        data-boxxwi="YQQSHK92"
+                        data-bxwidat='{"wt":"Gợi ý cho bạn","al":[],"rid":"07656ec2efc3488383ad43bca4ec9614","pid":"17510","cid":""}'
+                        data-bxwrap
+                        data-recoedproduct="true"
+                        data-bxrfid="17510~`~PDP-Personalized-SuggestionsForYou~`~01~`~PDP"
+                      >
+                        <div className="product-top">
+                          <div className="pay-0">Trả góp 0%</div>
+                        </div>
+                        <div className="product-mid">
+                          <div className="product-image">
+                            <figure className="image-wrapper">
+                              <a
+                                href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-note-9-n960-128gb-han-quoc.17510.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
+                                title="Samsung Galaxy Note 9 N960 128Gb Hàn Quốc ( 99% )"
+                              >
+                                <picture className>
+                                  <source
+                                    data-srcset="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/4472706150_samsung-galaxy-note-9-512gb-ram-8gb.jpg?v=1611686803"
+                                    srcSet="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/4472706150_samsung-galaxy-note-9-512gb-ram-8gb.jpg?v=1611686803"
+                                    type="image/png"
+                                  />
+                                  <img
+                                    alt="Samsung Galaxy Note 9 N960 128Gb Hàn Quốc ( 99% )"
+                                    data-src="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/4472706150_samsung-galaxy-note-9-512gb-ram-8gb.jpg?v=1611686803"
+                                  />
+                                </picture>
+                              </a>
+                            </figure>
+                          </div>
+                          <h3 className="product-name">
+                            <a href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-note-9-n960-128gb-han-quoc.17510.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize">
+                              Samsung Galaxy Note 9 N960 128Gb Hàn Quốc ( 99% )
+                            </a>
+                          </h3>
+                          <div className="product-price">
+                            <ins>HNAM</ins> 6.799.000đ
+                            <span />
+                          </div>
+                        </div>
+                        <div className="product-bottom">
+                          <a
+                            className="btn buy-now"
+                            href="https://www.hnammobile.com/cart/add?itemid=17510"
+                            onclick="addToCart(this)"
+                          >
+                            Mua ngay
+                          </a>
+                          <a
+                            className="btn pay-0"
+                            href="https://www.hnammobile.com/mua-tra-gop/dien-thoai/samsung-galaxy-note-9-n960-128gb-han-quoc.17510.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
+                            onclick="addToCart(this,true)"
+                          >
+                            Trả góp 0%
+                          </a>
+                        </div>
+                      </div>
+                      <div
+                        className="product-item-list product product-item-list "
+                        data-boxxwi="YQQSHK92"
+                        data-bxwidat='{"wt":"Gợi ý cho bạn","al":[],"rid":"07656ec2efc3488383ad43bca4ec9614","pid":"20200","cid":""}'
+                        data-bxwrap
+                        data-recoedproduct="true"
+                        data-bxrfid="20200~`~PDP-Personalized-SuggestionsForYou~`~02~`~PDP"
+                      >
+                        <div className="product-top">
+                          <div className="pay-0">Trả góp 0%</div>
+                        </div>
+                        <div className="product-mid">
+                          <div className="product-image">
+                            <figure className="image-wrapper">
+                              <a
+                                href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-note-9-n960-512gb-han-quoc.20200.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
+                                title="Samsung Galaxy Note 9 N960 512Gb Hàn Quốc ( 99% )"
+                              >
+                                <picture className>
+                                  <source
+                                    data-srcset="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/6852787817-samsung-galaxy-note-9-n960-512gb-han-quoc.jpg?v=1611685989"
+                                    srcSet="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/6852787817-samsung-galaxy-note-9-n960-512gb-han-quoc.jpg?v=1611685989"
+                                    type="image/png"
+                                  />
+                                  <img
+                                    alt="Samsung Galaxy Note 9 N960 512Gb Hàn Quốc ( 99% )"
+                                    data-src="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/6852787817-samsung-galaxy-note-9-n960-512gb-han-quoc.jpg?v=1611685989"
+                                  />
+                                </picture>
+                              </a>
+                            </figure>
+                          </div>
+                          <h3 className="product-name">
+                            <a href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-note-9-n960-512gb-han-quoc.20200.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize">
+                              Samsung Galaxy Note 9 N960 512Gb Hàn Quốc ( 99% )
+                            </a>
+                          </h3>
+                          <div className="product-price">
+                            <ins>HNAM</ins> 7.399.000đ
+                            <span />
+                          </div>
+                        </div>
+                        <div className="product-bottom">
+                          <a
+                            className="btn buy-now"
+                            href="https://www.hnammobile.com/cart/add?itemid=20200"
+                            onclick="addToCart(this)"
+                          >
+                            Mua ngay
+                          </a>
+                          <a
+                            className="btn pay-0"
+                            href="https://www.hnammobile.com/mua-tra-gop/dien-thoai/samsung-galaxy-note-9-n960-512gb-han-quoc.20200.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
+                            onclick="addToCart(this,true)"
+                          >
+                            Trả góp 0%
+                          </a>
+                        </div>
+                      </div>
+                      <div
+                        className="product-item-list product product-item-list "
+                        data-boxxwi="YQQSHK92"
+                        data-bxwidat='{"wt":"Gợi ý cho bạn","al":[],"rid":"07656ec2efc3488383ad43bca4ec9614","pid":"19276","cid":""}'
+                        data-bxwrap
+                        data-recoedproduct="true"
+                        data-bxrfid="19276~`~PDP-Personalized-SuggestionsForYou~`~03~`~PDP"
+                      >
+                        <div className="product-top">
+                          <div className="pay-0 label-oustock">
+                            Tạm hết hàng
+                          </div>
+                        </div>
+                        <div className="product-mid">
+                          <div className="product-image">
+                            <figure className="image-wrapper">
+                              <a
+                                href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-s10-5g-256gb-han-quoc-99.19276.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
+                                title="Samsung Galaxy S10 5G 256GB Hàn Quốc 99%"
+                              >
+                                <picture className>
+                                  <source
+                                    data-srcset="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/1910708309-samsung-galaxy-s10-5g-256gb-han-quoc-99.jpg?v=1611685382"
+                                    srcSet="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/1910708309-samsung-galaxy-s10-5g-256gb-han-quoc-99.jpg?v=1611685382"
+                                    type="image/png"
+                                  />
+                                  <img
+                                    alt="Samsung Galaxy S10 5G 256GB Hàn Quốc 99%"
+                                    data-src="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/1910708309-samsung-galaxy-s10-5g-256gb-han-quoc-99.jpg?v=1611685382"
+                                  />
+                                </picture>
+                              </a>
+                            </figure>
+                          </div>
+                          <h3 className="product-name">
+                            <a href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-s10-5g-256gb-han-quoc-99.19276.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize">
+                              Samsung Galaxy S10 5G 256GB Hàn Quốc 99%
+                            </a>
+                          </h3>
+                          <div className="product-price">
+                            <ins>HNAM</ins> 8.599.000đ
+                            <span />
+                          </div>
+                        </div>
+                        <div className="product-bottom">
+                          <a
+                            className="btn buy-now"
+                            href="https://www.hnammobile.com/cart/add?itemid=19276"
+                            onclick="addToCart(this)"
+                          >
+                            Mua ngay
+                          </a>
+                          <a
+                            className="btn pay-0"
+                            href="https://www.hnammobile.com/mua-tra-gop/dien-thoai/samsung-galaxy-s10-5g-256gb-han-quoc-99.19276.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
+                            onclick="addToCart(this,true)"
+                          >
+                            Trả góp 0%
+                          </a>
+                        </div>
+                      </div>
+                      <div
+                        className="product-item-list product product-item-list "
+                        data-boxxwi="YQQSHK92"
+                        data-bxwidat='{"wt":"Gợi ý cho bạn","al":[],"rid":"07656ec2efc3488383ad43bca4ec9614","pid":"20126","cid":""}'
+                        data-bxwrap
+                        data-recoedproduct="true"
+                        data-bxrfid="20126~`~PDP-Personalized-SuggestionsForYou~`~04~`~PDP"
+                      >
+                        <div className="product-top">
+                          <div className="pay-0">In Stock</div>
+                        </div>
+                        <div className="product-mid">
+                          <div className="product-image">
+                            <figure className="image-wrapper">
+                              <a
+                                href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-s20-ultra-g988-5g-256gb-han-quoc-cu-99.20126.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
+                                title="Samsung Galaxy S20 Ultra G988 5G 256GB Hàn Quốc cũ 99%"
+                              >
+                                <picture className>
+                                  <source
+                                    data-srcset="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/6970814308-samsung-galaxy-s20-ultra-g988-5g-256gb-han-quoc-cu-99.jpg?v=1611691957"
+                                    srcSet="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/6970814308-samsung-galaxy-s20-ultra-g988-5g-256gb-han-quoc-cu-99.jpg?v=1611691957"
+                                    type="image/png"
+                                  />
+                                  <img
+                                    alt="Samsung Galaxy S20 Ultra G988 5G 256GB Hàn Quốc cũ 99%"
+                                    data-src="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/6970814308-samsung-galaxy-s20-ultra-g988-5g-256gb-han-quoc-cu-99.jpg?v=1611691957"
+                                  />
+                                </picture>
+                              </a>
+                            </figure>
+                          </div>
+                          <h3 className="product-name">
+                            <a href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-s20-ultra-g988-5g-256gb-han-quoc-cu-99.20126.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize">
+                              Samsung Galaxy S20 Ultra G988 5G 256GB Hàn Quốc cũ
+                              99%
+                            </a>
+                          </h3>
+                          <div className="product-price">
+                            <ins>HNAM</ins> 16.499.000đ
+                            <span />
+                          </div>
+                        </div>
+                        <div className="product-bottom">
+                          <a
+                            className="btn buy-now"
+                            href="https://www.hnammobile.com/cart/add?itemid=20126"
+                            onclick="addToCart(this)"
+                          >
+                            Mua ngay
+                          </a>
+                          <a
+                            className="btn pay-0"
+                            href="https://www.hnammobile.com/mua-tra-gop/dien-thoai/samsung-galaxy-s20-ultra-g988-5g-256gb-han-quoc-cu-99.20126.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
+                            onclick="addToCart(this,true)"
+                          >
+                            Trả góp 0%
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </>

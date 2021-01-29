@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { message, Radio } from "antd";
+import { message, Radio, Spin, Steps } from "antd";
 import { toast } from "react-toastify";
 import { createProduct } from "../../../functions/product";
 import { useSelector } from "react-redux";
@@ -12,12 +12,10 @@ import { getBrands } from "../../../functions/brand";
 import { getColors } from "../../../functions/color";
 import { getSizes } from "../../../functions/size";
 import AdminMenu from "../../../components/admin/AdminMenu";
-import { Steps } from "antd";
 import FileMultipleUpload from "../../../components/admin/FileMultipleUpload";
-import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import CKEditor from "ckeditor4-react";
-
+// import CKEditor from "ckeditor4-react";
+import { Editor } from "@tinymce/tinymce-react";
 const ProductCreate = ({ history }) => {
   const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
   const initialState = {
@@ -82,7 +80,8 @@ const ProductCreate = ({ history }) => {
     history.push("/admin/product/list");
   };
   const handleChange = (name) => (e) => {
-    const value = name === "description" ? e.editor.getData() : e.target.value;
+    const value =
+      name === "description" ? e.target.getContent() : e.target.value;
     // formData.set(name, e.target.value);
     // setValues({...values,[name]: e.target.value,formData });
     setValues({ ...values, [name]: value });
@@ -552,12 +551,23 @@ const ProductCreate = ({ history }) => {
                             <label className="ty-control-group__title">
                               Description
                             </label>
-                            <CKEditor
-                              type="classic"
-                              height="350px"
+                            <Editor
+                              apiKey="vk5dzbhlfowdjlegve39540n21d7ems2k9hklan44u32j302"
                               value={description}
-                              // onChange={handleDescription}
                               onChange={handleChange("description")}
+                              init={{
+                                height: 1000,
+                                menubar: true,
+                                plugins: [
+                                  "advlist autolink lists link image charmap print preview anchor",
+                                  "searchreplace visualblocks code fullscreen",
+                                  "insertdatetime media table paste code help wordcount",
+                                ],
+                                toolbar:
+                                  "undo redo | formatselect | bold italic backcolor | \
+           alignleft aligncenter alignright alignjustify | \
+           bullist numlist outdent indent | removeformat | help",
+                              }}
                             />
                           </div>
                           <div className="ty-profile-field__buttons buttons-container">

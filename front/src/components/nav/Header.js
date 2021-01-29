@@ -144,7 +144,6 @@ const Header = () => {
                     <Link to="/" title="ABC Nail Supply">
                       <img
                         className="ty-pict  ty-logo-container__image cm-image"
-                        id="det_img_590283576"
                         src={require("../../assets/img/abc-logo.png")}
                         width={374}
                         height={160}
@@ -166,11 +165,7 @@ const Header = () => {
                         New
                       </Link>
                     </li>
-                    <li className="ty-text-links__item ty-level-0 ty-menu-item__sale">
-                      <Link className="ty-text-links__a" to="/special-sales/">
-                        Sales
-                      </Link>
-                    </li>
+
                     <li className="ty-text-links__item ty-level-0 ty-menu-item__hits">
                       <Link className="ty-text-links__a" to="/best-sellers">
                         Best Sellers
@@ -182,13 +177,13 @@ const Header = () => {
                       </Link>
                     </li>
                     <li className="ty-text-links__item ty-level-0">
-                      <Link className="ty-text-links__a" to="/brands">
-                        Brands
+                      <Link className="ty-text-links__a" to="/login">
+                        Login
                       </Link>
                     </li>
                     <li className="ty-text-links__item ty-level-0 ty-menu-item-free">
-                      <Link className="ty-text-links__a" to="/free-items">
-                        Free
+                      <Link className="ty-text-links__a" to="/register">
+                        Signup
                       </Link>
                     </li>
                   </ul>
