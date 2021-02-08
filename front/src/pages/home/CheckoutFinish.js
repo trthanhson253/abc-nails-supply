@@ -7,26 +7,34 @@ import {
   FileOutlined,
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
-import { getLatestOrder } from "../../functions/user";
+// import { getLatestOrder } from "../../functions/user";
 import { Helmet } from "react-helmet";
+import { getCookie, removeCookie } from "../../functions/auth";
 
 const CheckoutFinish = ({ history }) => {
   const { Step } = Steps;
   const { user, checkout } = useSelector((state) => ({ ...state }));
-  const [order, setOrder] = useState({});
-  // if (!checkout.finish) {
-  //   history.push("/");
-  // }
+  const [trackId, setTrackId] = useState("");
+  if (!checkout.finish) {
+    history.push("/");
+  }
+
   useEffect(() => {
-    getLatestOrder(user.token).then((res) => {
-      console.log("create payment intent", res.data);
-      setOrder(res.data);
-    });
-  }, []);
+    // getLatestOrder(user.token).then((res) => {
+    //   console.log("create payment intent", res.data);
+    //   setOrder(res.data);
+    // });
+    if (getCookie("trackId")) {
+      setTrackId(getCookie("trackId"));
+      removeCookie("trackId");
+    }
+  }, [getCookie("trackId")]);
   return (
     <>
       <Helmet>
-        <title>Your order has been placed | ABC Nails Supply</title>
+        <title>
+          Congratulations! Your order has been placed | ABC Nails Supply
+        </title>
       </Helmet>
       <div className="tygh-content clearfix">
         <div className="container-fluid  content-grid">
@@ -43,8 +51,6 @@ const CheckoutFinish = ({ history }) => {
                       <bdi>Checkout</bdi>
                     </span>
                   </div>
-                  {/* Inline script moved to the bottom of the page */}{" "}
-                  {/*breadcrumbs_10*/}
                 </div>
               </div>
             </div>
@@ -107,31 +113,13 @@ const CheckoutFinish = ({ history }) => {
                                   subTitle="Expected delivery from 7-10 working days."
                                 >
                                   <h3>
-                                    Tracking Order Number:{" "}
-                                    <b>{order.trackId}</b>
+                                    Tracking Order Number: <b>{trackId}</b>
                                     <br></br>
                                   </h3>
-
-                                  <div className="table-responsive">
-                                    <table className="table table-striped table-bordered table-hover">
-                                      <thead>
-                                        <tr>
-                                          <th>Image</th>
-                                          <th>Product Item</th>
-                                          <th>Product Name</th>
-                                          <th>Quantity</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        <tbody></tbody>
-                                      </tbody>
-                                    </table>
-                                  </div>
                                 </Result>
                               </div>
                             </div>
                           </div>
-                          {/*step_two*/}
                         </div>
                       </div>
                     </div>

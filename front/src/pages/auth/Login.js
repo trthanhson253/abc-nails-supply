@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { login, setCookie, getCookie } from "../../functions/auth";
 import Spinner from "../../components/Spinner";
-import { message } from "antd";
+import { message, Form, Input, Button } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 const Login = ({ history }) => {
   const [state, setState] = useState({
     email: "",
@@ -15,6 +16,7 @@ const Login = ({ history }) => {
   });
   const [loading, setLoading] = useState(false);
   const { email, password, error, success, buttonText } = state;
+  const [errors, setErrors] = useState([]);
 
   const handleChange = (name) => (e) => {
     setState({
@@ -113,6 +115,7 @@ const Login = ({ history }) => {
       onSubmit={handleSubmit}
       className="cm-processed-form"
     >
+      {errors.email}
       <div className="ty-control-group">
         <label
           htmlFor="login_main_login"
@@ -137,6 +140,7 @@ const Login = ({ history }) => {
           }}
         />
       </div>
+      {errors.password}
       <div className="ty-control-group ty-password-forgot">
         <label
           htmlFor="psw_main_login"

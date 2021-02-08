@@ -4,11 +4,19 @@ const Cart = require("../models/cart");
 const Coupon = require("../models/coupon");
 const Order = require("../models/order");
 const OrderUpdate = require("../models/orderUpdate");
-
+const { orderPlaceEmail } = require("../helpers/email");
+const AWS = require("aws-sdk");
 // const uniqueid = require('uniqueid');
-const shortId = require("shortid");
+// const shortId = require("shortid");
+const nanoid = require("nanoid");
 const ShippingAndBillingAddress = require("../models/shippingAndBillingAddress");
 
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
+const ses = new AWS.SES({ apiVersion: "2010-12-01" });
 exports.userCart = async (req, res) => {
   // console.log("SonTran1",req.body.cart); // {cart: []}
   const { cart } = req.body;
@@ -45,7 +53,7 @@ exports.userCart = async (req, res) => {
   for (let i = 0; i < products.length; i++) {
     cartTotal = cartTotal + products[i].price * products[i].count;
   }
-  cartTotalBeforeTax = cartTotal;
+  cartTotalBeforeTax = cartTotal.toFixed(2);
   cartTotal = (cartTotal * 1.08 + 8).toFixed(2);
   // console.log("cartTotal", cartTotal);
 
@@ -133,12 +141,12 @@ exports.shippingChange = async (req, res) => {
 
   if (shipOption == 0) {
     if (shipping == 1) {
-      cartTotal = cartTotal - 8.0;
+      cartTotal = (cartTotal - 8.0).toFixed(2);
       shipOption = 1;
     }
   } else {
     if (shipping == 0) {
-      cartTotal = cartTotal + 8.0;
+      cartTotal = (cartTotal + 8.0).toFixed(2);
       shipOption = 0;
     }
   }
@@ -187,14 +195,12 @@ exports.applyCouponToUserCart = async (req, res) => {
   // console.log('cartTotal', cartTotal, 'discount%', validCoupon.discount);
 
   // calculate the total after discount
-  let totalAfterDiscount = (
-    cartTotalBeforeTax -
-    (cartTotalBeforeTax * validCoupon.discount) / 100
-  ).toFixed(2); // 99.99
+  let totalAfterDiscount =
+    cartTotalBeforeTax - (cartTotalBeforeTax * validCoupon.discount) / 100; // 99.99
   if (shipOption == 0) {
-    cartTotal = totalAfterDiscount * 1.08 + 8.0;
+    cartTotal = (totalAfterDiscount * 1.08 + 8.0).toFixed(2);
   } else {
-    cartTotal = totalAfterDiscount * 1.08;
+    cartTotal = (totalAfterDiscount * 1.08).toFixed(2);
   }
 
   console.log("totalAfterDiscount ", totalAfterDiscount);
@@ -222,7 +228,7 @@ exports.createOrder = async (req, res) => {
   let newOrder = await new Order({
     products,
     paymentIntent,
-    trackId: shortId.generate(),
+    trackId: nanoid(),
     orderdBy: user._id,
     orderStatus: 0,
   });
@@ -251,7 +257,13 @@ exports.createOrder = async (req, res) => {
   // console.log('PRODUCT QUANTITY-- AND SOLD++', updated);
 
   // console.log('NEW ORDER SAVED', newOrder);
-  res.json({ ok: true });
+
+  //send email
+
+  const params = orderPlaceEmail(user.name, user.email, newOrder);
+  await ses.sendEmail(params).promise();
+
+  res.json({ order: newOrder });
 };
 
 exports.orders = async (req, res) => {
@@ -453,18 +465,18 @@ exports.getBillingAndShippingAddress = async (req, res) => {
   });
 };
 
-exports.getLatestOrder = async (req, res) => {
-  const user = await User.findOne({ email: req.user.email }).exec();
+// exports.getLatestOrder = async (req, res) => {
+//   // const user = await User.findOne({ email: req.user.email }).exec();
 
-  let order = await Order.findOne({ orderdBy: user._id })
-    .sort({ createdAt: -1 })
-    .populate("products.product")
-    .limit(1)
-    .exec();
-  // console.log('order', order);
+//   let order = await Order.findOne({ orderdBy: req.user._id })
+//     .sort({ createdAt: -1 })
+//     .populate("products.product")
+//     .limit(1)
+//     .exec();
+//   console.log("order", order);
 
-  res.json(order);
-};
+//   res.json(order);
+// };
 
 exports.getDetailOrderBaseOnTrackId = async (req, res) => {
   // let order = await Order.findOne({ trackId: req.params.trackId })

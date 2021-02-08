@@ -15,7 +15,9 @@ const Cart = ({ history }) => {
     return cart.reduce((currentValue, nextValue) => {
       console.log("currentValue", currentValue);
       console.log("nextValue", nextValue);
-      return currentValue + nextValue.count * nextValue.product.price;
+      return (currentValue + nextValue.count * nextValue.product.price).toFixed(
+        2
+      );
     }, 0);
   };
 
@@ -324,7 +326,9 @@ const Cart = ({ history }) => {
                                             id="sec_product_subtotal_2107916490"
                                             className="price"
                                           >
-                                            {c.product.price * c.count}
+                                            {(
+                                              c.product.price * c.count
+                                            ).toFixed(2)}
                                           </span>
                                         </bdi>
                                       </td>

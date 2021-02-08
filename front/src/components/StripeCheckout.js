@@ -7,7 +7,7 @@ import { createPaymentIntent } from "../functions/stripe";
 import { useSelector, useDispatch } from "react-redux";
 import { createOrder, emptyUserCart } from "../functions/user";
 import { useHistory } from "react-router-dom";
-
+import { setCookie } from "../functions/auth";
 const StripeCheckout = () => {
   const dispatch = useDispatch();
   const { user, coupon } = useSelector((state) => ({ ...state }));
@@ -67,7 +67,7 @@ const StripeCheckout = () => {
       // here you get result after successful payment
       // create order and save in database for admin to process
       createOrder(payload, user.token).then((res) => {
-        if (res.data.ok) {
+        if (res.data.order) {
           // empty cart from local storage
           if (typeof window !== "undefined") localStorage.removeItem("cart");
           // empty cart from redux
@@ -81,11 +81,12 @@ const StripeCheckout = () => {
             payload: false,
           });
           // empty cart from database
+          setCookie("trackId", res.data.order.trackId);
           emptyUserCart(user.token);
         }
       });
       // empty user cart from redux store and local storage
-      console.log(JSON.stringify(payload, null, 4));
+      // console.log(JSON.stringify(payload, null, 4));
       setError(null);
       setProcessing(false);
       setSucceeded(true);
@@ -126,24 +127,11 @@ const StripeCheckout = () => {
   };
   return (
     <>
-      {!succeeded && (
-        <div>
-          {coupon && totalAfterDiscount !== undefined ? (
-            <p className="alert alert-success">{`Total after discount: $${totalAfterDiscount}`}</p>
-          ) : (
-            <></>
-          )}
-        </div>
-      )}
       <div className="text-center pb-5">
         <Card
           actions={[
             <>
               <DollarOutlined className="text-info" /> <br /> Total: $
-              {cartTotal}
-            </>,
-            <>
-              <CheckOutlined className="text-info" /> <br /> Total payable : $
               {(payable / 100).toFixed(2)}
             </>,
           ]}

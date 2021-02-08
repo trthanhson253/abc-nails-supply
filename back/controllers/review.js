@@ -8,14 +8,16 @@ exports.create = async (req, res) => {
   const user = await User.findById(req.user._id);
   const product = await Product.findById(req.params.productId);
   if (product) {
-    const foundProduct = reviews.find(
+    const foundProduct = reviews.filter(
       (r) => r.product.toString() === req.params.productId.toString()
     );
-    const alreadyReviewed = reviews.find(
+    // console.log("foundProduct", foundProduct);
+    const alreadyReviewed = foundProduct.find(
       (r) => r.user.toString() === req.user._id.toString()
     );
-    if (foundProduct && alreadyReviewed) {
-      res.status(400).json({ error: "Product already reviewed" });
+    // console.log("alreadyReviewed", alreadyReviewed);
+    if (alreadyReviewed) {
+      res.status(400).json({ error: "You already reviewed this product" });
       throw new Error("Product already reviewed");
     } else {
       let newReview = new Review({
@@ -40,10 +42,41 @@ exports.create = async (req, res) => {
   }
 };
 
+exports.remove = async (req, res) => {
+  const review = await Review.findById(req.params.reviewId);
+  const product = await Product.findById(req.params.productId);
+  if (product) {
+    if (review && review.user.toString() === req.user._id.toString()) {
+      await review.remove();
+
+      const reviews = await Review.find({ product: req.params.productId });
+      if (reviews.length == 0) {
+        product.avg = 0;
+      } else {
+        product.avg = (
+          reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length
+        ).toFixed(2);
+      }
+
+      await product.save();
+
+      res.json({ message: "Review removed" });
+    } else {
+      res.status(404);
+      throw new Error(
+        "Cannot removed this review because you are not the owner"
+      );
+    }
+  } else {
+    res.status(404).json({ error: "Product not found" });
+    throw new Error("Product not found");
+  }
+};
+
 exports.getReviewsBasedOnProduct = async (req, res) => {
   const product = await Product.findOne({ slug: req.params.slug });
   const reviews = await Review.find({ product: product._id })
-    .populate("user", "name")
+    .populate("user", "_id name")
     .sort({
       createdAt: -1,
     });
@@ -71,9 +104,9 @@ exports.getReviewsPercent = async (req, res) => {
   const threeStar = reviews.filter((r) => r.rating === 3);
   const twoStar = reviews.filter((r) => r.rating === 2);
   const oneStar = reviews.filter((r) => r.rating === 1);
-  console.log("fiveStar", fiveStar.length);
-  console.log("fourStar", fourStar.length);
-  console.log("oneStar", oneStar.length);
+  // console.log("fiveStar", fiveStar.length);
+  // console.log("fourStar", fourStar.length);
+  // console.log("oneStar", oneStar.length);
   if (fiveStar.length > 0) {
     five = fiveStar.length;
     count++;

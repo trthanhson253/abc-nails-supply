@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Footer = () => {
+  let { user } = useSelector((state) => ({ ...state }));
   return (
     <>
       <div className="tygh-footer clearfix" id="tygh_footer">
@@ -23,11 +25,11 @@ const Footer = () => {
                       title="ABC Nail Supply"
                       style={{
                         position: "absolute",
-                        bottom: "15px",
+                        bottom: "30px",
                         left: "80px",
                       }}
-                      width={130}
-                      height={50}
+                      width={100}
+                      height={20}
                     />
                   </div>
                   <div className="span12">
@@ -83,28 +85,28 @@ const Footer = () => {
                         <i className="ty-footer-menu__icon-open ty-icon-down-open" />
                         <i className="ty-footer-menu__icon-hide ty-icon-up-open" />
                       </div>
-                      <div
-                        className="ty-footer-general__body"
-                        id="footer-general_140"
-                      >
-                        <ul
-                          id="account_info_links_688"
-                          className="ty-account-info__links"
-                        >
+                      <div className="ty-footer-general__body">
+                        <ul className="ty-account-info__links">
+                          {!user && (
+                            <>
+                              {" "}
+                              <li>
+                                <Link to="/login">Sign in</Link>
+                              </li>
+                              <li>
+                                <Link to="/register">Create an account</Link>
+                              </li>
+                            </>
+                          )}
+
                           <li>
-                            <Link to="/login">Sign in</Link>
+                            <Link to="/user/orders">Orders</Link>
                           </li>
                           <li>
-                            <Link to="/register">Create an account</Link>
+                            <Link to="/user/wishlist">Wish list</Link>
                           </li>
                           <li>
-                            <Link to="/orders">Orders</Link>
-                          </li>
-                          <li>
-                            <Link to="/wishlist">Wish list</Link>
-                          </li>
-                          <li>
-                            <Link to="/compare">Comparison List</Link>
+                            <Link to="/user/compare">Comparison List</Link>
                           </li>
                         </ul>
                       </div>

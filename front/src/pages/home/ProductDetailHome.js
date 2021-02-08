@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Image, Tabs, Tooltip, message, Spin, Collapse, Progress } from "antd";
+import {
+  Image,
+  Tabs,
+  Tooltip,
+  message,
+  Spin,
+  Collapse,
+  Progress,
+  Modal,
+} from "antd";
 import { getDetailProduct, getRecentlyView } from "../../functions/product";
 import {
   getReviewsBasedOnProduct,
@@ -8,7 +17,7 @@ import {
 } from "../../functions/review";
 import { setCookie, getCookie } from "../../functions/auth";
 import renderHTML from "react-render-html";
-import ProductCardRelate from "../../components/cards/ProductCardRelate";
+import ProductCardBrowsingHistory from "../../components/cards/ProductCardBrowsingHistory";
 import moment from "moment";
 import { useSelector, useDispatch } from "react-redux";
 import _ from "lodash";
@@ -57,6 +66,8 @@ const ProductDetailHome = (props) => {
   };
   const [values, setValues] = useState(initialState);
   const { content, title, rating } = values;
+  const [visible, setVisible] = useState(false);
+
   const handleChange = (name) => (e) => {
     const value = name === "content" ? e.target.getContent() : e.target.value;
     setValues({ ...values, [name]: value });
@@ -188,6 +199,7 @@ const ProductDetailHome = (props) => {
   const loadReviewsBasedOnProduct = () => {
     getReviewsBasedOnProduct(props.match.params.pslug).then((res) => {
       setReviews(res.data);
+      // console.log("getReviewsBasedOnProduct", res.data);
     });
   };
   const loadReviewsPercent = () => {
@@ -229,13 +241,20 @@ const ProductDetailHome = (props) => {
       });
   };
 
+  const needLogin = () => {
+    setVisible(true);
+  };
   useEffect(() => {
     const pslug1 = props.match.params.pslug;
     if (getCookie("lastVisited")) {
-      const recentlyProduct = getCookie("lastVisited").split("-").slice(-5);
+      const recentlyProduct = getCookie("lastVisited").split("-");
+
+      if (recentlyProduct.length > 5) {
+        recentlyProduct.shift();
+      }
+      setCookie("lastVisited", recentlyProduct.join("-"));
       loadRecentlyView(recentlyProduct, pslug1);
     }
-
     loadDetailProduct();
     loadReviewsBasedOnProduct();
     loadReviewsPercent();
@@ -246,7 +265,19 @@ const ProductDetailHome = (props) => {
       <Helmet>
         <title>{product.name}</title>
       </Helmet>
-
+      <Modal
+        title="Login Require"
+        centered
+        visible={visible}
+        onOk={() => setVisible(false)}
+        onCancel={() => setVisible(false)}
+        width={500}
+      >
+        <p>
+          You need to <Link to="/login">login</Link> or{" "}
+          <Link to="/register">register</Link>
+        </p>
+      </Modal>
       <div className="tygh-content clearfix">
         <div className="container-fluid  content-grid">
           <div className="container-fluid-row">
@@ -435,11 +466,7 @@ const ProductDetailHome = (props) => {
                                 </span>
                                 <b>({reviews.length})</b>&nbsp;&nbsp;
                                 <a
-                                  id="opener_discussion_login_form_new_post_main_info_title_9060"
                                   className="cm-dialog-opener cm-dialog-auto-size ty-discussion__review-write"
-                                  data-ca-target-id="new_discussion_post_login_form_popup"
-                                  rel="nofollow"
-                                  title="Sign in"
                                   href="/"
                                 >
                                   Write a review
@@ -671,28 +698,56 @@ const ProductDetailHome = (props) => {
                                       </span>
                                     </a>
                                   </Tooltip>
-                                  <a
-                                    className="ut2-add-to-wish label cm-submit"
-                                    onClick={handleAddToWishlist}
-                                    style={{
-                                      fontSize: "12px",
-                                      fontWeight: "normal",
-                                    }}
-                                  >
-                                    <i className="ut2-icon-baseline-favorite" />
-                                    Add to wish list
-                                  </a>
-                                  <a
-                                    className="ut2-add-to-compare cm-ajax cm-ajax-full-render label cm-tooltip"
-                                    style={{
-                                      fontSize: "12px",
-                                      fontWeight: "normal",
-                                    }}
-                                  >
-                                    <i className="ut2-icon-baseline-equalizer" />{" "}
-                                    Compare{" "}
-                                  </a>
-                                  {/*add_to_cart_update_9060*/}
+                                  {user ? (
+                                    <>
+                                      <a
+                                        className="ut2-add-to-wish label cm-submit"
+                                        onClick={handleAddToWishlist}
+                                        style={{
+                                          fontSize: "12px",
+                                          fontWeight: "normal",
+                                        }}
+                                      >
+                                        <i className="ut2-icon-baseline-favorite" />
+                                        Add to wish list
+                                      </a>
+                                      <a
+                                        className="ut2-add-to-compare cm-ajax cm-ajax-full-render label cm-tooltip"
+                                        style={{
+                                          fontSize: "12px",
+                                          fontWeight: "normal",
+                                        }}
+                                      >
+                                        <i className="ut2-icon-baseline-equalizer" />{" "}
+                                        Compare{" "}
+                                      </a>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <a
+                                        className="ut2-add-to-wish label cm-submit"
+                                        onClick={needLogin}
+                                        style={{
+                                          fontSize: "12px",
+                                          fontWeight: "normal",
+                                        }}
+                                      >
+                                        <i className="ut2-icon-baseline-favorite" />
+                                        Add to wish list
+                                      </a>
+                                      <a
+                                        className="ut2-add-to-compare cm-ajax cm-ajax-full-render label cm-tooltip"
+                                        onClick={needLogin}
+                                        style={{
+                                          fontSize: "12px",
+                                          fontWeight: "normal",
+                                        }}
+                                      >
+                                        <i className="ut2-icon-baseline-equalizer" />{" "}
+                                        Compare{" "}
+                                      </a>
+                                    </>
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -767,7 +822,7 @@ const ProductDetailHome = (props) => {
                               data-toggle="tab"
                               aria-expanded="true"
                             >
-                              Your Browsing History
+                              Browsing History
                             </a>
                           </li>
                         </ul>
@@ -777,14 +832,14 @@ const ProductDetailHome = (props) => {
                             className="tab-pane fade active in"
                             id="home-pills"
                           >
-                            {getCookie("lastVisited") ? (
+                            {recentProducts.length > 0 ? (
                               <>
                                 {recentProducts.map((c) => (
-                                  <ProductCardRelate sanpham={c} />
+                                  <ProductCardBrowsingHistory sanpham={c} />
                                 ))}
                               </>
                             ) : (
-                              <h4>No currently products found.</h4>
+                              <h5>No recently products found.</h5>
                             )}
                           </div>
                         </div>
@@ -1159,7 +1214,7 @@ const ProductDetailHome = (props) => {
                 <div />
                 <Collapse defaultActiveKey={["1"]}>
                   <Panel header="Review Form" key="1">
-                    <form id="review-form" onSubmit={clickSubmit}>
+                    <div id="review-form">
                       <p className="intro">Please rate this product</p>
                       <div className="rating-point">
                         <span className="star-rating star-5">
@@ -1231,16 +1286,26 @@ const ProductDetailHome = (props) => {
                           />
                         </div>
                         <div className="comment-group col-lg-2">
-                          <button
-                            type="submit"
-                            className="btn-send-comment"
-                            onClick={clickSubmit}
-                          >
-                            Send{" "}
-                          </button>
+                          {user ? (
+                            <button
+                              type="submit"
+                              className="btn-send-comment"
+                              onClick={clickSubmit}
+                            >
+                              Send{" "}
+                            </button>
+                          ) : (
+                            <button
+                              type="submit"
+                              className="btn-send-comment"
+                              onClick={needLogin}
+                            >
+                              Send Login{" "}
+                            </button>
+                          )}
                         </div>
                       </div>
-                    </form>
+                    </div>
                   </Panel>
                 </Collapse>
                 {reviews.length > 0 ? (
@@ -1248,6 +1313,9 @@ const ProductDetailHome = (props) => {
                     {reviews.map((review, i) => (
                       <ReviewProductCard
                         review={review}
+                        product={product}
+                        loadReviewsPercent={loadReviewsPercent}
+                        loadDetailProduct={loadDetailProduct}
                         loadReviewsBasedOnProduct={loadReviewsBasedOnProduct}
                       />
                     ))}

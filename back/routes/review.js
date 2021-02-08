@@ -11,6 +11,7 @@ const {
   //   removeComment,
   getReviewsPercent,
   dislike,
+  remove,
 } = require("../controllers/review");
 const { runValidation } = require("../validators");
 const { requireSignin, authCheck, adminCheck } = require("../middlewares/auth");
@@ -25,9 +26,12 @@ router.post(
   create
 );
 router.get("/review/:slug", getReviewsBasedOnProduct);
+router.delete("/review/:reviewId/:productId", requireSignin, authCheck, remove);
+
 router.get("/like/:reviewId", requireSignin, authCheck, like);
 router.get("/dislike/:reviewId", requireSignin, authCheck, dislike);
 router.get("/review-percent/:slug", getReviewsPercent);
+
 // router.post('/reply/:id', reply);
 // router.post('/violate/:id', violate);
 

@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from "react";
 import renderHTML from "react-render-html";
-import { like, dislike } from "../../functions/review";
+import { like, dislike, remove } from "../../functions/review";
 import { useSelector } from "react-redux";
 var moment = require("moment");
 
 //cha của nó là thẻ ProductDetailHome
-const ReviewProductCard = ({ review, loadReviewsBasedOnProduct }) => {
+const ReviewProductCard = ({
+  review,
+  product,
+  loadReviewsPercent,
+  loadDetailProduct,
+  loadReviewsBasedOnProduct,
+}) => {
   const { user } = useSelector((state) => ({ ...state }));
   const handleLike = () => {
     like(review._id, user.token)
@@ -20,6 +26,17 @@ const ReviewProductCard = ({ review, loadReviewsBasedOnProduct }) => {
     dislike(review._id, user.token)
       .then((data) => {
         loadReviewsBasedOnProduct();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const removeReview = () => {
+    remove(review._id, product._id, user.token)
+      .then((data) => {
+        loadReviewsBasedOnProduct();
+        loadReviewsPercent();
+        loadDetailProduct();
       })
       .catch((err) => {
         console.log(err);
@@ -44,7 +61,7 @@ const ReviewProductCard = ({ review, loadReviewsBasedOnProduct }) => {
               </span>
               <span className="review-comment__avatar-bought">
                 <span className="review-comment__avatar-icon" />
-                <b>Verified Purchase Customer</b>
+                <b>😀 Verified Purchase Customer</b>
               </span>
             </div>
             <div className="review-comment__avatar-date-options">
@@ -116,7 +133,7 @@ const ReviewProductCard = ({ review, loadReviewsBasedOnProduct }) => {
           <>
             {review.likes.map((x) => (
               <>
-                {x.userLike.toString() === user._id.toString() ? (
+                {x.userLike == user._id ? (
                   <span
                     onClick={handleDisLike}
                     className="review-comment__thank"
@@ -190,10 +207,20 @@ const ReviewProductCard = ({ review, loadReviewsBasedOnProduct }) => {
         <span className="review-comment__reply">
           <i class="fa fa-reply"></i>&nbsp;Reply
         </span>
-        |
-        <span className="review-comment__reply" style={{ color: "red" }}>
-          <i class="fa fa-trash"></i>&nbsp;Delete
-        </span>
+        {user && review.user._id == user._id ? (
+          <>
+            |{" "}
+            <span
+              className="review-comment__reply"
+              style={{ color: "red" }}
+              onClick={removeReview}
+            >
+              <i class="fa fa-trash"></i>&nbsp;Delete
+            </span>
+          </>
+        ) : (
+          <></>
+        )}
         |
         <span className="review-comment__reply" style={{ color: "black" }}>
           <i class="fa fa-flag-o"></i>&nbsp;Report Spam

@@ -76,7 +76,7 @@ router.get(
   userOrderUpdate
 );
 
-router.get("/user/orders/getLatest", requireSignin, authCheck, getLatestOrder);
+// router.get("/user/orders/getLatest", requireSignin, authCheck, getLatestOrder);
 router.get("/track-order/:trackId", getDetailOrderBaseOnTrackId);
 
 router.get(

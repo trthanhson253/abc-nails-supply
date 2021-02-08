@@ -56,7 +56,7 @@ exports.getAdminOrderUpdate = async (req, res) => {
 };
 
 exports.updateOrderProgress = (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   Order.findOne({ trackId: req.params.orderId }).exec((err, oldOrder) => {
     if (err) {
       return res.status(400).json({
@@ -69,6 +69,7 @@ exports.updateOrderProgress = (req, res) => {
     orderUpdate.deliveryId = req.body.deliveryId;
     oldOrder.orderStatus = req.body.orderStatus;
     oldOrder.save();
+    console.log("oldOrder", oldOrder);
     // oldOrder.orderStatus = req.body.orderStatus;
     // oldOrder.deliveryId = req.body.deliveryId;
     // oldOrder.reason.push({

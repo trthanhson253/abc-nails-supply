@@ -35280,10 +35280,12 @@ span.ty-sidebox__title-wrapper {
   background: #fff;
 }
 .ty-tygh .live-search-box {
-  top: 39px;
+  top: 43px;
   left: 20px;
   right: 20px;
   width: auto;
+  border-radius:5px;
+  border-color: #BE3060;
   box-shadow:rgb(50 50 93 / 25%) 0px 6px 12px -2px, rgb(0 0 0 / 30%) 0px 3px 7px -3px;
 }
 div.live-search-box .live-info-container {

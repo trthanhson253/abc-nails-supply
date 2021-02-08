@@ -6,7 +6,7 @@ import { removeCookie } from "../../functions/auth";
 import { toast } from "react-toastify";
 import { getCategories, loadMenu } from "../../functions/category";
 import Search from "../forms/Search";
-import { Image, message } from "antd";
+import { Image } from "antd";
 
 const Header = () => {
   let { user, cart, load } = useSelector((state) => ({ ...state }));
@@ -176,16 +176,21 @@ const Header = () => {
                         Deals
                       </Link>
                     </li>
-                    <li className="ty-text-links__item ty-level-0">
-                      <Link className="ty-text-links__a" to="/login">
-                        Login
-                      </Link>
-                    </li>
-                    <li className="ty-text-links__item ty-level-0 ty-menu-item-free">
-                      <Link className="ty-text-links__a" to="/register">
-                        Signup
-                      </Link>
-                    </li>
+                    {!user && (
+                      <>
+                        {" "}
+                        <li className="ty-text-links__item ty-level-0">
+                          <Link className="ty-text-links__a" to="/login">
+                            Login
+                          </Link>
+                        </li>
+                        <li className="ty-text-links__item ty-level-0 ty-menu-item-free">
+                          <Link className="ty-text-links__a" to="/register">
+                            Signup
+                          </Link>
+                        </li>
+                      </>
+                    )}
                   </ul>
                 </div>
               </div>

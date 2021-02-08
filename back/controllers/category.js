@@ -17,9 +17,13 @@ exports.create = async (req, res) => {
 };
 
 exports.list = async (req, res) =>
-  res.json(await Category.find({})
-  .select('_id name slug images')
-  .collation({locale:'en',strength: 2}).sort({ name: 1 }).exec());
+  res.json(
+    await Category.find({})
+      .select("_id name slug images")
+      .collation({ locale: "en", strength: 2 })
+      .sort({ name: 1 })
+      .exec()
+  );
 
 // exports.read = async (req, res) => {
 //   let category = await Category.findOne({ slug: req.params.slug }).exec();
@@ -48,20 +52,22 @@ exports.list = async (req, res) =>
 
 exports.remove = async (req, res) => {
   try {
-    const { images,cateId } = req.body;
-    
-    await Product.deleteMany({ category : cateId});
-    await SubSub.deleteMany({ category : cateId});
-    await Sub.deleteMany({ category : cateId});  
-    const deletedCategory = await Category.findOneAndDelete({ slug: req.params.slug }); 
+    const { images, cateId } = req.body;
+
+    await Product.deleteMany({ category: cateId });
+    await SubSub.deleteMany({ category: cateId });
+    await Sub.deleteMany({ category: cateId });
+    const deletedCategory = await Category.findOneAndDelete({
+      slug: req.params.slug,
+    });
     // res.json(deletedCategory);
-    if(images.length == 2){
+    if (images.length == 2) {
       // console.log(images[1])
       cloudinary.uploader.destroy(images[1].public_id, (err, result) => {
         if (err) return res.json({ success: false, err });
         res.json("ok");
       });
-    }else{
+    } else {
       res.json(deletedCategory);
     }
   } catch (err) {
@@ -88,19 +94,18 @@ exports.getSubSubs = (req, res) => {
 
 exports.loadMenu = async (req, res) => {
   const { id } = req.body;
-  let result=[];
+  let result = [];
 
   const subAll = await Sub.find({ category: id }).exec();
   for (let i = 0; i < subAll.length; i++) {
     let object = {};
     // console.log("subAll",subAll[i]._id);
-    const subSubAll = await SubSub.find({sub:subAll[i]._id}).exec();
+    const subSubAll = await SubSub.find({ sub: subAll[i]._id }).exec();
     // console.log("subSubAll",subSubAll);
-    object.name=subAll[i].name;
-    object.slug=subAll[i].slug;
-    object.subSub=subSubAll;
+    object.name = subAll[i].name;
+    object.slug = subAll[i].slug;
+    object.subSub = subSubAll;
     result.push(object);
   }
   res.json({ result });
 };
-

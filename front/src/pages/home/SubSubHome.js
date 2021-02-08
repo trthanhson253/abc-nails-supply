@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ProductCard from "../../components/cards/ProductCard";
-import ProductCardRelate from "../../components/cards/ProductCardRelate";
+
 import {
   getProductBySubSub,
   getFilteredProducts,

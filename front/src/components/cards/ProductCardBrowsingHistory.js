@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const ProductCardRelate = ({ sanpham }) => {
+const ProductCardBrowsingHistory = ({ sanpham }) => {
   return (
     <>
       <div
@@ -27,29 +27,14 @@ const ProductCardRelate = ({ sanpham }) => {
                 <div className="ut2-gl__buttons">
                   <a
                     className="ut2-quick-view-button cm-dialog-opener cm-tooltip cm-dialog-auto-size"
-                    title="Quick view"
-                    data-ca-view-id={393}
-                    data-ca-target-id="product_quick_view"
-                    href="#"
-                    data-ca-dialog-title="Quick product viewer"
-                    rel="nofollow"
-                  >
-                    <i className="ut2-icon ut2-icon-baseline-visibility" />
-                  </a>
-                  <a
-                    className="ut2-add-to-wish cm-submit cm-tooltip"
                     title="Add to wishlist"
-                    id="button_wishlist_129000393"
-                    data-ca-dispatch="dispatch[wishlist.add..393]"
                   >
-                    <i className="ut2-icon-baseline-favorite" />{" "}
+                    <i className="ut2-icon-baseline-favorite" />
                   </a>
+
                   <a
                     className=" ut2-add-to-compare cm-ajax cm-ajax-full-render cm-tooltip"
                     title="Add to comparison list"
-                    data-ca-target-id="comparison_list,account_info*,abt__ut2_compared_products"
-                    rel="nofollow"
-                    href="#"
                   >
                     <i className="ut2-icon-baseline-equalizer" />{" "}
                   </a>
@@ -64,23 +49,10 @@ const ProductCardRelate = ({ sanpham }) => {
                   <i className="ty-icon-star-empty" />
                 </span>
               </div>
-              <div
-                className="ty-control-group ty-sku-item cm-hidden-wrapper"
-                id="sku_update_129000393"
-              >
-                <input
-                  type="hidden"
-                  name="appearance[show_sku]"
-                  defaultValue={1}
-                />
-                <label className="ty-control-group__label" id="sku_129000393">
-                  Item #:
-                </label>
-                <span
-                  className="ty-control-group__item cm-reload-129000393"
-                  id="product_code_129000393"
-                >
-                  70577{/*product_code_129000393*/}
+              <div className="ty-control-group ty-sku-item cm-hidden-wrapper">
+                <label className="ty-control-group__label">Item #:</label>
+                <span className="ty-control-group__item cm-reload-129000393">
+                  {sanpham.item}
                 </span>
               </div>
               <div className="ut2-gl__name">
@@ -98,25 +70,12 @@ const ProductCardRelate = ({ sanpham }) => {
               >
                 <div>
                   {" "}
-                  <span
-                    className="cm-reload-129000393"
-                    id="old_price_update_129000393"
-                  >
-                    {/*old_price_update_129000393*/}
-                  </span>
+                  <span className="cm-reload-129000393"></span>
                   <span className="cm-reload-129000393 ty-price-update">
-                    <span
-                      className="ty-price"
-                      id="line_discounted_price_129000393"
-                    >
+                    <span className="ty-price">
                       <bdi>
                         <span className="ty-price-num">$</span>
-                        <span
-                          id="sec_discounted_price_129000393"
-                          className="ty-price-num"
-                        >
-                          3.25
-                        </span>
+                        <span className="ty-price-num">{sanpham.price}</span>
                       </bdi>
                     </span>
                   </span>
@@ -131,4 +90,4 @@ const ProductCardRelate = ({ sanpham }) => {
   );
 };
 
-export default ProductCardRelate;
+export default ProductCardBrowsingHistory;

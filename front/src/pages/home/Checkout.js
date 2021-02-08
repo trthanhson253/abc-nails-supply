@@ -73,15 +73,15 @@ const Checkout = ({ history }) => {
   const handleChange = (name) => (e) => {
     setValues({ ...values, [name]: e.target.value });
   };
-  // if (!checkout.address || cart.length == 0) {
-  //   history.push("/cart");
-  // }
+  if (!checkout.address || cart.length == 0) {
+    history.push("/cart");
+  }
 
   const loadProductInCart = () => {
     // setLoading(true);
     getUserCart(user.token).then((res) => {
       // console.log("user cart res", JSON.stringify(res.data, null, 4));
-      console.log("res.data.products", res.data.products);
+      // console.log("res.data.products", res.data.products);
       setProducts(res.data.products);
       setTotal(res.data.cartTotal);
       setCartTotalBeforeTax(res.data.cartTotalBeforeTax);
@@ -1044,7 +1044,6 @@ const Checkout = ({ history }) => {
                                           id="pickup"
                                           type="radio"
                                           className="ty-valign ty-shipping-options__checkbox"
-                                          defaultValue="{8}"
                                         />
                                         <div className="ty-shipping-options__group">
                                           <label className="ty-valign ty-shipping-options__title">
@@ -1058,14 +1057,12 @@ const Checkout = ({ history }) => {
                                           </label>
                                         </div>
                                       </div>
-                                      {/*shipping_rates_list*/}
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                              {/*step_three*/}
                             </div>
-                            {/* Inline script moved to the bottom of the page */}
+
                             <div
                               className="ty-step__container-active ty-step-five"
                               data-ct-checkout="billing_options"
@@ -1159,7 +1156,9 @@ const Checkout = ({ history }) => {
                                               <bdi>
                                                 <span className="price">$</span>
                                                 <span className="price">
-                                                  {p.product.price * p.count}
+                                                  {(
+                                                    p.product.price * p.count
+                                                  ).toFixed(2)}
                                                 </span>
                                               </bdi>
                                             </td>

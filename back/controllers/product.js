@@ -360,15 +360,16 @@ exports.productReview = async (req, res) => {
 const handleQuery = (req, res, query) => {
   console.log("query", query);
   Product.find({ name: { $regex: query, $options: "i" }, status: 0 })
-    .populate("category", "_id name")
-    .populate("sub", "_id name")
-    .populate("subSub", "_id name")
+    .populate("category", "_id name slug")
+    .populate("sub", "_id name slug")
+    .populate("subSub", "_id name slug")
     .exec((err, products) => {
       if (err) {
         return res.status(400).json({
           error: "Not Found",
         });
       }
+      // console.log("products", products);
       res.json(products);
     });
 };
@@ -479,12 +480,12 @@ exports.searchFilters = async (req, res) => {
     price,
     // category,
     // stars,
-    // sub,
+    // sub,/
     // shipping,
     // color,
     brand,
   } = req.body;
-
+  console.log("req.body", req.body);
   if (query) {
     console.log("query --->", query);
     await handleQuery(req, res, query);

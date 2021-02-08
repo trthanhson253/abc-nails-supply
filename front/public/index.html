@@ -78,6 +78,11 @@
           responsive: true,
         });
       });
+      $(document).on("click", function (e) {
+        if ($(e.target).closest(".live-item-li").length === 0) {
+          $(".live-item-li").hide();
+        }
+      });
     </script>
 
     <script type="text/javascript">
