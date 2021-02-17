@@ -79,10 +79,10 @@ const WishList = () => {
                   <h1 className="ty-mainbox-title">Wish list content</h1>
                   <div className="ty-mainbox-body">
                     <div className="grid-list ut2-wl__grid">
-                      {wishlist.length > 0 ? (
+                      {wishlist && wishlist.length > 0 ? (
                         <>
                           {wishlist.map((p) => (
-                            <div className="ty-column4" key={p._id}>
+                            <div className="ty-column4">
                               <div
                                 className="ut2-gl__item "
                                 style={{ height: "418px" }}
@@ -116,7 +116,7 @@ const WishList = () => {
                                           <img
                                             className="ty-pict lazyOwl cm-image abt-ut2-lazy-loaded"
                                             id="det_img_8795desktop"
-                                            src={p.image[1].url}
+                                            src={p.image[0].url}
                                             alt={p.name}
                                             title
                                             style={{ opacity: 1 }}

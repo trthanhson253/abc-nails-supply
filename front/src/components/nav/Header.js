@@ -506,7 +506,7 @@ const Header = () => {
                                             alt={c.product.name}
                                             title
                                             style={{ opacity: "1" }}
-                                            src={c.product.image[1].url}
+                                            src={c.product.image[0].url}
                                           />
                                         </div>
                                         <div className="ty-cart-items__list-item-desc">

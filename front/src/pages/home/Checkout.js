@@ -1135,7 +1135,7 @@ const Checkout = ({ history }) => {
                                             <td width="18%">
                                               <Link to="#">
                                                 <Image
-                                                  src={p.product.image[1].url}
+                                                  src={p.product.image[0].url}
                                                   alt={p.product.name}
                                                   width={60}
                                                   height={60}

@@ -33,7 +33,7 @@ const SideDrawer = () => {
                 <Image
                   width={50}
                   heigth={50}
-                  src={p.product.image[1].url}
+                  src={p.product.image[0].url}
                   style={imageStyle}
                 />
                 <p className="text-center bg-secondary text-light">

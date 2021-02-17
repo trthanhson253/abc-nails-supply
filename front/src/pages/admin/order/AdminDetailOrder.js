@@ -176,7 +176,7 @@ const AdminDetailOrder = (props) => {
                                   <td>
                                     <>
                                       <Avatar
-                                        src={p.product.image[1].url}
+                                        src={p.product.image[0].url}
                                         size={50}
                                         shape="square"
                                       />

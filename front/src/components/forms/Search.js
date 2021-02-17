@@ -135,7 +135,7 @@ const Search = () => {
                               <i class="fa fa-search"></i>
                               <Image
                                 className="ty-pict lazyOwl cm-image abt-ut2-lazy-loaded"
-                                src={c.image[1].url}
+                                src={c.image[0].url}
                                 alt={c.name}
                                 width={30}
                                 height={30}

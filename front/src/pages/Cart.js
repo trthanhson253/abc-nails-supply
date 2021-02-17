@@ -15,9 +15,7 @@ const Cart = ({ history }) => {
     return cart.reduce((currentValue, nextValue) => {
       console.log("currentValue", currentValue);
       console.log("nextValue", nextValue);
-      return (currentValue + nextValue.count * nextValue.product.price).toFixed(
-        2
-      );
+      return currentValue + nextValue.count * nextValue.product.price;
     }, 0);
   };
 
@@ -253,8 +251,8 @@ const Cart = ({ history }) => {
                                           }}
                                         >
                                           <ModalImage
-                                            small={c.product.image[1].url}
-                                            large={c.product.image[1].url}
+                                            small={c.product.image[0].url}
+                                            large={c.product.image[0].url}
                                           />
                                         </div>
                                       </td>
@@ -356,7 +354,7 @@ const Cart = ({ history }) => {
                                 </span>
                                 <span className="ty-cart-statistic__value">
                                   <bdi>
-                                    $<span>{getTotal()}</span>
+                                    $<span>{getTotal().toFixed(2)}</span>
                                   </bdi>
                                 </span>
                               </li>

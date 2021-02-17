@@ -1,124 +1,85 @@
-import { Link } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import UserMenu from '../../components/user/UserMenu';
+import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import UserMenu from "../../components/user/UserMenu";
+import "./style.css";
 
 const UserDashboard = () => {
   const { user } = useSelector((state) => ({ ...state }));
   return (
     <>
-      <div id="wrapper">
-        <UserMenu />
-
-        <div id="page-wrapper">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-lg-12">
-                <h1 className="page-header">Dashboard</h1>
-              </div>
-              {/* /.col-lg-12 */}
+      <div className="Container-itwfbd-0 jFkAwY">
+        <div className="Account__StyledAccountLayout-sc-1d5h8iz-0 iMmpfc">
+          <div className="Account__StyledBreadCrumb-sc-1d5h8iz-1 jPBSaK">
+            <div className="background" />
+            <div className="item">
+              <a href="/">Home</a>
             </div>
-            {/* /.row */}
-            <div className="row">
-              <div className="col-lg-3 col-md-6">
-                <div className="panel panel-primary">
-                  <div className="panel-heading">
-                    <div className="row">
-                      <div className="col-xs-3">
-                        <i className="fa fa-comments fa-5x" />
-                      </div>
-                      <div className="col-xs-9 text-right">
-                        <div className="huge">26</div>
-                        <div>New Comments!</div>
-                      </div>
+            <div className="item active">My Account</div>
+          </div>
+          <UserMenu />
+          <div className="Account__StyledAccountLayoutInner-sc-1d5h8iz-2 edAZXd">
+            <h3 className="styles__StyledHeading-sc-1lrcko9-0 jZJmua">
+              Thông tin tài khoản
+            </h3>
+            <div className="styles__StyledAccountInfo-sc-1lrcko9-1 irgDVD">
+              <form>
+                <div className="form-control-account">
+                  <label className="input-label">Họ tên</label>
+                  <div>
+                    <input
+                      type="text"
+                      name="fullName"
+                      maxLength={128}
+                      className="Input-sc-17i9bto-0 bYlDgr"
+                      defaultValue="Son Tran"
+                    />
+                  </div>
+                </div>
+                <div className="form-control-account">
+                  <label className="input-label">Số điện thoại</label>
+                  <div>
+                    <div className="styles__StyledInputGroup-sc-1lrcko9-3 bHKvLE">
+                      <input
+                        type="tel"
+                        name="phoneNumber"
+                        placeholder="Hãy nhập SĐT để trải nghiệm tốt hơn"
+                        className="Input-sc-17i9bto-0 bYlDgr"
+                      />
+                      <button type="button">Gửi mã xác thực</button>
                     </div>
                   </div>
-                  <a href="#">
-                    <div className="panel-footer">
-                      <span className="pull-left">View Details</span>
-                      <span className="pull-right">
-                        <i className="fa fa-arrow-circle-right" />
-                      </span>
-                      <div className="clearfix" />
-                    </div>
-                  </a>
                 </div>
-              </div>
-              <div className="col-lg-3 col-md-6">
-                <div className="panel panel-green">
-                  <div className="panel-heading">
-                    <div className="row">
-                      <div className="col-xs-3">
-                        <i className="fa fa-tasks fa-5x" />
-                      </div>
-                      <div className="col-xs-9 text-right">
-                        <div className="huge">12</div>
-                        <div>New Tasks!</div>
-                      </div>
-                    </div>
+                <div className="form-control-account">
+                  <label className="input-label">Mã xác thực</label>
+                  <div>
+                    <input
+                      type="text"
+                      name="OTPCode"
+                      placeholder="Nhập mã xác thực gửi tới số điện thoại trên"
+                      className="Input-sc-17i9bto-0 bYlDgr"
+                      defaultValue
+                    />
                   </div>
-                  <a href="#">
-                    <div className="panel-footer">
-                      <span className="pull-left">View Details</span>
-                      <span className="pull-right">
-                        <i className="fa fa-arrow-circle-right" />
-                      </span>
-                      <div className="clearfix" />
-                    </div>
-                  </a>
                 </div>
-              </div>
-              <div className="col-lg-3 col-md-6">
-                <div className="panel panel-yellow">
-                  <div className="panel-heading">
-                    <div className="row">
-                      <div className="col-xs-3">
-                        <i className="fa fa-shopping-cart fa-5x" />
-                      </div>
-                      <div className="col-xs-9 text-right">
-                        <div className="huge">124</div>
-                        <div>New Orders!</div>
-                      </div>
-                    </div>
-                  </div>
-                  <a href="#">
-                    <div className="panel-footer">
-                      <span className="pull-left">View Details</span>
-                      <span className="pull-right">
-                        <i className="fa fa-arrow-circle-right" />
-                      </span>
-                      <div className="clearfix" />
-                    </div>
-                  </a>
+                <div className="form-control-account">
+                  <label className="input-label">Email</label>
+                  <input
+                    type="text"
+                    className="Input-sc-17i9bto-0 bYlDgr"
+                    defaultValue="2670187043007723-facebook@tiki.com.vn"
+                  />
                 </div>
-              </div>
-              <div className="col-lg-3 col-md-6">
-                <div className="panel panel-red">
-                  <div className="panel-heading">
-                    <div className="row">
-                      <div className="col-xs-3">
-                        <i className="fa fa-support fa-5x" />
-                      </div>
-                      <div className="col-xs-9 text-right">
-                        <div className="huge">13</div>
-                        <div>Support Tickets!</div>
-                      </div>
-                    </div>
-                  </div>
-                  <a href="#">
-                    <div className="panel-footer">
-                      <span className="pull-left">View Details</span>
-                      <span className="pull-right">
-                        <i className="fa fa-arrow-circle-right" />
-                      </span>
-                      <div className="clearfix" />
-                    </div>
-                  </a>
+
+                <div className="form-control-account">
+                  <label className="input-label">&nbsp;</label>
+                  <button type="submit" className="btn-submit">
+                    Cập nhật
+                  </button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
-          {/* /.container-fluid */}
         </div>
       </div>
     </>

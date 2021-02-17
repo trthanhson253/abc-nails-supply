@@ -1,15 +1,21 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Badge,Image,Upload,Button,Avatar   } from "antd";
+import { Badge, Image, Upload, Button, Avatar } from "antd";
 import { useSelector } from "react-redux";
 import Resizer from "react-image-file-resizer";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined } from "@ant-design/icons";
 
-const FileMultipleUpload = ({values, setValues,setLoading,loading,token}) => {
+const FileMultipleUpload = ({
+  values,
+  setValues,
+  setLoading,
+  loading,
+  token,
+}) => {
   const { user } = useSelector((state) => ({ ...state }));
-  let token1= user ? token :"";
+  let token1 = user ? token : "";
   const fileUploadAndResize = (e) => {
     // console.log(e.target.files);
     // resize
@@ -34,7 +40,7 @@ const FileMultipleUpload = ({values, setValues,setLoading,loading,token}) => {
                 { image: uri },
                 {
                   headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                   },
                 }
               )
@@ -46,7 +52,7 @@ const FileMultipleUpload = ({values, setValues,setLoading,loading,token}) => {
               })
               .catch((err) => {
                 setLoading(false);
-                
+
                 console.log("CLOUDINARY UPLOAD ERR", err);
               });
           },
@@ -67,7 +73,7 @@ const FileMultipleUpload = ({values, setValues,setLoading,loading,token}) => {
         { public_id },
         {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
         }
       )
@@ -85,36 +91,44 @@ const FileMultipleUpload = ({values, setValues,setLoading,loading,token}) => {
       });
   };
 
-
   return (
-   <>
-   <div className="ty-control-group">
-   <label htmlFor="login_popup685" className="ty-login__filed-label ty-control-group__label cm-trim cm-email">Upload Multiple Images</label>
-   
- </div>    
-   <div className="ty-control-group">
-  
-   {values.images &&
-    values.images.map((image) => (
-      <Badge
-        count="X"
-        key={image.public_id}
-        onClick={() => handleImageRemove(image.public_id)}
-        style={{ cursor: "pointer" }}
-      >
-      <Image
-        src={image.url}
-        width={200}
-        style={{paddingLeft:"30px"}}
-    />
-      </Badge>
-    ))}
-   </div>
-   <div className="ty-control-group">
-   <input type="file" accept="images/*" className="ty-login__input cm-focus" onChange={fileUploadAndResize} disabled={values.images[1]} />
-     
-   </div>            
-   </>
+    <>
+      <div className="ty-control-group">
+        <label
+          htmlFor="login_popup685"
+          className="ty-login__filed-label ty-control-group__label cm-trim cm-email"
+        >
+          Upload Multiple Images
+        </label>
+      </div>
+      <div className="ty-control-group">
+        {values.images &&
+          values.images.map((image) => (
+            <Badge
+              count="X"
+              key={image.public_id}
+              onClick={() => handleImageRemove(image.public_id)}
+              style={{ cursor: "pointer" }}
+            >
+              <Image
+                src={image.url}
+                width={200}
+                style={{ paddingLeft: "30px" }}
+              />
+            </Badge>
+          ))}
+      </div>
+      <div className="ty-control-group">
+        <input
+          type="file"
+          multiple
+          accept="images/*"
+          className="ty-login__input cm-focus"
+          onChange={fileUploadAndResize}
+          disabled={values.images[1]}
+        />
+      </div>
+    </>
   );
 };
 

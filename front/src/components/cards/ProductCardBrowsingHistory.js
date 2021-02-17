@@ -15,7 +15,7 @@ const ProductCardBrowsingHistory = ({ sanpham }) => {
                 <a href="#">
                   {sanpham.image && (
                     <img
-                      src={sanpham.image[1].url}
+                      src={sanpham.image[0].url}
                       className="ty-pict lazyOwl cm-image abt-ut2-lazy-loaded"
                       id="det_img_393"
                       alt=""

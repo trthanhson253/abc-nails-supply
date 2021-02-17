@@ -220,11 +220,12 @@ exports.read = async (req, res) => {
     .populate("category", "name slug")
     .populate("sub", "name slug")
     .populate("subSub", "name slug")
-    // .populate('color', 'name slug')
+    // .populate("verifiedPurchase", "_id")
     // .populate('size', 'name slug')
     // .populate('brand', 'name slug')
     .exec();
   res.json({ product: product });
+  // console.log("product", product);
 };
 
 // exports.update = async (req, res) => {

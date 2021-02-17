@@ -82,14 +82,12 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    // verifiedPurchase: [
-    //   {
-    //     name: {
-    //       type: ObjectId,
-    //       ref: "Product",
-    //     },
-    //   },
-    // ], // mảng push danh sách người đã mua sản phẩm này tạo verified purchase
+    verifiedPurchase: [
+      {
+        type: ObjectId,
+        ref: "User",
+      },
+    ], // mảng push danh sách người đã mua sản phẩm này tạo verified purchase
     clicks: { type: Number, default: 0 },
     // reviews: [reviewSchema],
   },

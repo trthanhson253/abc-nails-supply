@@ -14,6 +14,10 @@ const orderSchema = new mongoose.Schema(
       },
     ],
     paymentIntent: {},
+    shippingAddress: {},
+    billingAddress: {},
+    payment: {},
+    total: { type: Number },
     trackId: String,
     orderStatus: {
       type: Number,

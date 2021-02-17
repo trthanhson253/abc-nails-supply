@@ -4,6 +4,8 @@ import UserMenu from "../../components/user/UserMenu";
 import { getUserOrders } from "../../functions/user";
 import { useSelector } from "react-redux";
 import UserOrderCard from "../../components/user/UserOrderCard";
+import "./style.css";
+import { Helmet } from "react-helmet";
 var moment = require("moment");
 
 const UserOrders = () => {
@@ -13,7 +15,7 @@ const UserOrders = () => {
 
   const loadUserOrders = () =>
     getUserOrders(user.token).then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
       setOrders(res.data);
     });
 
@@ -30,25 +32,54 @@ const UserOrders = () => {
   }, []);
   return (
     <>
-      <div id="wrapper">
-        <UserMenu />
-
-        <div id="page-wrapper">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-lg-12">
-                <h1 className="page-header">Orders</h1>
-              </div>
-              {/* /.col-lg-12 */}
+      <Helmet>
+        <title>My Orders | ABC Nails Supply</title>
+      </Helmet>{" "}
+      <div className="Container-itwfbd-0 jFkAwY">
+        <div className="Account__StyledAccountLayout-sc-1d5h8iz-0 iMmpfc">
+          <div className="Account__StyledBreadCrumb-sc-1d5h8iz-1 jPBSaK">
+            <div className="background" />
+            <div className="item">
+              <a href="/">Home</a>
             </div>
-            {/* /.row */}
-            {orders.map((order) => (
-              <UserOrderCard
-                order={order}
-                loadUserOrders={loadUserOrders}
-                token={token}
-              />
-            ))}
+            <div className="item active">My Orders</div>
+          </div>
+          <UserMenu />
+          <div className="Account__StyledAccountLayoutInner-sc-1d5h8iz-2 edAZXd">
+            <div className="styles__StyledAccountListOrder-sc-6t66uv-0 glOjBk">
+              <div className="heading">🚑 My Orders</div>
+              <div className="inner">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Tracking ID</th>
+                      <th>Order Date</th>
+                      <th>Products</th>
+                      <th>Total</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {orders.map((order) => (
+                      <tr>
+                        <td>
+                          <a href="/sales/order/view/594369504-1">
+                            {order.trackId}
+                          </a>
+                        </td>
+                        <td>21/07/2019</td>
+                        <td>
+                          Combo 5 quần sịp nam siêu thoáng thoát khí xuất Nhật
+                          -size XXL
+                        </td>
+                        <td>130.000 ₫</td>
+                        <td>Đã hủy</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -408,7 +408,7 @@ section.products .product-header .title {
   margin: -3px 4px 0px 0px;
 }
 .dDtAUu {
-  padding: 32px 0px 0px;
+  padding: 0px 0px 0px;
 }
 .review-comment__avatar {
   display: flex;
@@ -530,7 +530,7 @@ section.products .product-header .title {
   color: #4eafff;
 }
 .review-comment__content {
-  font-size: 14px;
+  font-size: 12px;
   line-height: 20px;
   margin: 0px 0px 8px;
 }
@@ -581,12 +581,12 @@ section.products .product-header .title {
   display: inline-block;
   user-select: none;
 }
-.dDtAUu::after {
+/* .dDtAUu::after {
   content: "";
   border-bottom: 1px solid rgb(242, 242, 242);
   display: block;
   margin: 32px -40px 0px;
-}
+} */
 .no-review {
   background: #ffffff;
   border-radius: 2px;
@@ -984,4 +984,54 @@ p.intro {
 }
 .ty-product-detail .ut2-pb__wrapper .ut2-pb__right {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+.review-comment__font {
+  font-size: 12px;
+}
+
+/* PHẦN REVIEW */
+.comments-cell {
+  padding: 30px 15px;
+  border-bottom: 1px solid rgb(242, 242, 242);
+}
+.comments-cell:after,
+.comments-cell:before {
+  content: " ";
+  display: table;
+  clear: both;
+}
+.comments-cell.has-side-left > .comments-cell-side {
+  float: left;
+  width: 175px;
+}
+@media (max-width: 1279px) {
+  .product-contents .comments-cell.has-side-left > .comments-cell-side {
+    float: none;
+    margin: 0 0 20px;
+    width: auto;
+  }
+}
+.comments-name,
+.comments-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.comments-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+element.style {
+}
+.comments-cell.has-side-left > .comments-cell-side > div {
+  margin-bottom: 10px;
+}
+.comments-text {
+  color: #707070;
+  font-size: 12px;
+  text-align: left;
+  vertical-align: middle;
+}
+.comments-cell.has-side-left > .comments-cell-body {
+  margin-left: 205px;
 }

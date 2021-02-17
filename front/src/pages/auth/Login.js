@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -6,6 +6,8 @@ import { login, setCookie, getCookie } from "../../functions/auth";
 import Spinner from "../../components/Spinner";
 import { message, Form, Input, Button } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import SimpleReactValidator from "simple-react-validator";
+
 const Login = ({ history }) => {
   const [state, setState] = useState({
     email: "",
@@ -17,6 +19,7 @@ const Login = ({ history }) => {
   const [loading, setLoading] = useState(false);
   const { email, password, error, success, buttonText } = state;
   const [errors, setErrors] = useState([]);
+  const simpleValidator = useRef(new SimpleReactValidator());
 
   const handleChange = (name) => (e) => {
     setState({
@@ -115,7 +118,6 @@ const Login = ({ history }) => {
       onSubmit={handleSubmit}
       className="cm-processed-form"
     >
-      {errors.email}
       <div className="ty-control-group">
         <label
           htmlFor="login_main_login"
@@ -125,12 +127,9 @@ const Login = ({ history }) => {
         </label>
         <input
           type="text"
-          id="login_main_login"
-          name="user_login"
+          name="email"
           size={30}
-          defaultValue
           className="ty-login__input cm-focus"
-          data-emoji_font="true"
           value={email}
           onChange={handleChange("email")}
           placeholder="Your email"
@@ -138,9 +137,10 @@ const Login = ({ history }) => {
             fontFamily:
               'Arial, Helvetica, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", Symbola, EmojiSymbols !important',
           }}
+          onBlur={simpleValidator.current.showMessageFor("email")}
         />
       </div>
-      {errors.password}
+      {simpleValidator.current.message("email", email, "required|email")}
       <div className="ty-control-group ty-password-forgot">
         <label
           htmlFor="psw_main_login"
@@ -163,9 +163,14 @@ const Login = ({ history }) => {
           value={password}
           onChange={handleChange("password")}
           className="ty-login__input"
-          maxlength="{32}"
+          onBlur={simpleValidator.current.showMessageFor("password")}
           placeholder="Your password"
         />
+        {simpleValidator.current.message(
+          "password",
+          password,
+          "required|min:6"
+        )}
       </div>
       <div className="buttons-container clearfix">
         <div className="ty-float-right">

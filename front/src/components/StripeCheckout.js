@@ -28,7 +28,7 @@ const StripeCheckout = () => {
 
   useEffect(() => {
     createPaymentIntent(coupon, user.token).then((res) => {
-      console.log("create payment intent", res.data);
+      // console.log("create payment intent", res.data);
       setClientSecret(res.data.clientSecret);
       // additional response received on successful payment
       setCartTotal(res.data.cartTotal);
@@ -50,7 +50,7 @@ const StripeCheckout = () => {
       payload: true,
     });
     setProcessing(true);
-    console.log("e.target.name.value", e.target.name.value);
+    // console.log("e.target.name.value", e.target.name.value);
     const payload = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement),
@@ -59,7 +59,7 @@ const StripeCheckout = () => {
         // },
       },
     });
-    console.log("payload", payload);
+    // console.log("payload", payload);
     if (payload.error) {
       setError(`Payment failed ${payload.error.message}`);
       setProcessing(false);

@@ -59,7 +59,7 @@ const ProductCard = ({ product }) => {
                   >
                     <img
                       className="ty-pict lazyOwl cm-image abt-ut2-lazy-loaded"
-                      src={product.image[1].url}
+                      src={product.image[0].url}
                       alt={product.name}
                       title
                       style={{ opacity: 1 }}

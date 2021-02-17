@@ -76,6 +76,7 @@ exports.updateOrderProgress = (req, res) => {
     //   name: req.body.reasonNumber,
     //   date: Date.now(),
     // });
+
     orderUpdate.save((err, result) => {
       if (err) {
         return res.status(400).json({

@@ -31,7 +31,11 @@ import { Editor } from "@tinymce/tinymce-react";
 import { createReview } from "../../functions/review";
 import { toast } from "react-toastify";
 
+import "react-image-gallery/styles/css/image-gallery.css";
+import ImageGallery from "react-image-gallery";
+
 const ProductDetailHome = (props) => {
+  const [images, setImages] = useState(null);
   const [percent, setPercent] = useState({
     one: "",
     two: "",
@@ -47,6 +51,7 @@ const ProductDetailHome = (props) => {
   const [avg, setAvg] = useState(0);
   const [qty, setQty] = useState(1);
   const [reviews, setReviews] = useState([]);
+  const [verifiedPurchase, setVerifiedPurchase] = useState([]);
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(false);
   const [content1, setContent1] = useState("");
@@ -79,11 +84,19 @@ const ProductDetailHome = (props) => {
       payload: true,
     });
     getDetailProduct(props.match.params.pslug).then((data) => {
+      // console.log("data.product", data.product);
       setProduct(data.product);
       setContent1(data.product.description);
       setCategory(data.product.category);
       setSub(data.product.sub);
       setSubSub(data.product.subSub);
+      setVerifiedPurchase(data.product.verifiedPurchase);
+      setImages(
+        data.product.image.map((i) => ({
+          original: `${i.url}`,
+          thumbnail: `${i.url}`,
+        }))
+      );
       // var date = new Date();
       var currentProductId = data.product._id;
       var howManyItems = 5;
@@ -259,7 +272,12 @@ const ProductDetailHome = (props) => {
     loadReviewsBasedOnProduct();
     loadReviewsPercent();
   }, []);
-
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, []);
   return (
     <>
       <Helmet>
@@ -351,18 +369,21 @@ const ProductDetailHome = (props) => {
                                 >
                                   <div
                                     className="owl-item active"
-                                    style={{ width: 575 }}
+                                    style={{ width: 400 }}
                                   >
                                     {product.image && (
                                       <>
                                         {spin ? (
                                           <Loader />
                                         ) : (
-                                          <Image
-                                            src={product.image[1].url}
-                                            alt={product.name}
-                                            title
-                                            style={{ opacity: 1 }}
+                                          <ImageGallery
+                                            items={images}
+                                            showGalleryPlayButton={false}
+                                            showNav={false}
+                                            lazyLoad={true}
+                                            showBullets={false}
+                                            showThumbnails={true}
+                                            showPlayButton={false}
                                           />
                                         )}
                                       </>
@@ -474,25 +495,14 @@ const ProductDetailHome = (props) => {
                               </div>
                             </div>
                             <div className="ut2-pb__sku">
-                              <div
-                                className="ty-control-group ty-sku-item cm-hidden-wrapper"
-                                id="sku_update_9060"
-                              >
-                                <input
-                                  type="hidden"
-                                  name="appearance[show_sku]"
-                                  defaultValue={1}
-                                />
+                              <div className="ty-control-group ty-sku-item cm-hidden-wrapper">
                                 <label
                                   className="ty-control-group__label"
                                   id="sku_9060"
                                 >
                                   Item #:
                                 </label>
-                                <span
-                                  className="ty-control-group__item cm-reload-9060"
-                                  id="product_code_9060"
-                                >
+                                <span className="ty-control-group__item cm-reload-9060">
                                   {product.item}
                                 </span>
                               </div>
@@ -515,23 +525,14 @@ const ProductDetailHome = (props) => {
                               <div className="prices-container price-wrap">
                                 {product.discountPrice ? (
                                   <div className="ty-product-prices">
-                                    <span
-                                      className="cm-reload-9060"
-                                      id="old_price_update_9060"
-                                    >
-                                      <span
-                                        className="ty-list-price ty-nowrap"
-                                        id="line_old_price_9060"
-                                      >
+                                    <span className="cm-reload-9060">
+                                      <span className="ty-list-price ty-nowrap">
                                         <span className="ty-strike">
                                           <bdi>
                                             <span className="ty-list-price ty-nowrap">
                                               $
                                             </span>
-                                            <span
-                                              id="sec_old_price_9060"
-                                              className="ty-list-price ty-nowrap"
-                                            >
+                                            <span className="ty-list-price ty-nowrap">
                                               {product.price}
                                             </span>
                                           </bdi>
@@ -539,10 +540,7 @@ const ProductDetailHome = (props) => {
                                       </span>
                                     </span>
                                     <div className="ut2-pb__price-actual">
-                                      <span
-                                        className="cm-reload-9060 ty-price-update"
-                                        id="price_update_9060"
-                                      >
+                                      <span className="cm-reload-9060 ty-price-update">
                                         <span
                                           className="ty-price"
                                           id="line_discounted_price_9060"
@@ -551,33 +549,21 @@ const ProductDetailHome = (props) => {
                                             <span className="ty-price-num">
                                               $
                                             </span>
-                                            <span
-                                              id="sec_discounted_price_9060"
-                                              className="ty-price-num"
-                                            >
+                                            <span className="ty-price-num">
                                               {product.discountPrice}
                                             </span>
                                           </bdi>
                                         </span>
                                       </span>
                                     </div>
-                                    <span
-                                      className="cm-reload-9060"
-                                      id="line_discount_update_9060"
-                                    >
-                                      <span
-                                        className="ty-list-price ty-save-price ty-nowrap"
-                                        id="line_discount_value_9060"
-                                      >
+                                    <span className="cm-reload-9060">
+                                      <span className="ty-list-price ty-save-price ty-nowrap">
                                         You save:{" "}
                                         <bdi>
                                           <span className="ty-list-price ty-nowrap">
                                             $
                                           </span>
-                                          <span
-                                            id="sec_discount_value_9060"
-                                            className="ty-list-price ty-nowrap"
-                                          >
+                                          <span className="ty-list-price ty-nowrap">
                                             {(
                                               product.price -
                                               product.discountPrice
@@ -590,22 +576,13 @@ const ProductDetailHome = (props) => {
                                 ) : (
                                   <div className="ty-product-prices">
                                     <div className="ut2-pb__price-actual">
-                                      <span
-                                        className="cm-reload-9060 ty-price-update"
-                                        id="price_update_9060"
-                                      >
-                                        <span
-                                          className="ty-price"
-                                          id="line_discounted_price_9060"
-                                        >
+                                      <span className="cm-reload-9060 ty-price-update">
+                                        <span className="ty-price">
                                           <bdi>
                                             <span className="ty-price-num">
                                               $
                                             </span>
-                                            <span
-                                              id="sec_discounted_price_9060"
-                                              className="ty-price-num"
-                                            >
+                                            <span className="ty-price-num">
                                               {product.price}
                                             </span>
                                           </bdi>
@@ -615,15 +592,9 @@ const ProductDetailHome = (props) => {
                                   </div>
                                 )}
                               </div>
-                              <div
-                                className="cm-reload-9060 stock-wrap"
-                                id="product_amount_update_9060"
-                              >
+                              <div className="cm-reload-9060 stock-wrap">
                                 <div className="ty-control-group product-list-field">
-                                  <span
-                                    className="ty-qty-in-stock ty-control-group__item"
-                                    id="in_stock_info_9060"
-                                  >
+                                  <span className="ty-qty-in-stock ty-control-group__item">
                                     {product.quantity > 0 ? (
                                       <>
                                         <i className="ty-icon-ok" />
@@ -640,20 +611,11 @@ const ProductDetailHome = (props) => {
                               </div>
 
                               <div className="ut2-pb__advanced-option clearfix">
-                                <div
-                                  className="cm-reload-9060"
-                                  id="advanced_options_update_9060"
-                                ></div>
+                                <div className="cm-reload-9060"></div>
                               </div>
                               <div className="ut2-qty__wrap  ut2-pb__field-group">
-                                <div
-                                  className="cm-reload-9060"
-                                  id="qty_update_9060"
-                                >
-                                  <div
-                                    className="ty-qty clearfix changer"
-                                    id="qty_9060"
-                                  >
+                                <div className="cm-reload-9060">
+                                  <div className="ty-qty clearfix changer">
                                     <label
                                       className="ty-control-group__label"
                                       htmlFor="qty_count_9060"
@@ -680,10 +642,7 @@ const ProductDetailHome = (props) => {
                                 </div>
                               </div>
                               <div className="ut2-pb__button ty-product-block__button">
-                                <div
-                                  className="cm-reload-9060 "
-                                  id="add_to_cart_update_9060"
-                                >
+                                <div className="cm-reload-9060 ">
                                   <Tooltip title={tooltip}>
                                     <a
                                       className="ty-btn__primary ty-btn__add-to-cart cm-ajax cm-ajax-full-render ty-btn"
@@ -813,7 +772,10 @@ const ProductDetailHome = (props) => {
                   </div>
                   <div className="container-fluid-row container-fluid-row-full-width new-popular-special">
                     <div className="row-fluid ">
-                      <div className="panel-body">
+                      <div
+                        className="panel-body"
+                        style={{ paddingTop: "70px" }}
+                      >
                         {/* Nav tabs */}
                         <ul className="nav nav-pills">
                           <li className="active">
@@ -1141,75 +1103,6 @@ const ProductDetailHome = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className="style__StyledFilter-sc-103p4dk-4 fwZKR filter-review">
-                  <div className="filter-review__label">Filter:</div>
-                  <div className="filter-review__inner">
-                    <div
-                      data-view-id="pdp_review_filter_item"
-                      data-view-index={0}
-                      className="filter-review__item "
-                    >
-                      <span className="filter-review__check" />
-                      <span className="filter-review__text">Newest</span>
-                    </div>
-
-                    <div
-                      data-view-id="pdp_review_filter_item"
-                      data-view-index={2}
-                      className="filter-review__item "
-                    >
-                      <span className="filter-review__check" />
-                      <span className="filter-review__text">
-                        Verified Purchase
-                      </span>
-                    </div>
-                    <div
-                      data-view-id="pdp_review_filter_item"
-                      data-view-index={3}
-                      className="filter-review__item  "
-                    >
-                      <span className="filter-review__check" />
-                      <span className="filter-review__text">5</span>
-                      <i className="fa fa-star-o star-review"></i>
-                    </div>
-                    <div
-                      data-view-id="pdp_review_filter_item"
-                      data-view-index={4}
-                      className="filter-review__item  "
-                    >
-                      <span className="filter-review__check" />
-                      <span className="filter-review__text">4</span>
-                      <i className="fa fa-star-o star-review"></i>
-                    </div>
-                    <div
-                      data-view-id="pdp_review_filter_item"
-                      data-view-index={5}
-                      className="filter-review__item  "
-                    >
-                      <span className="filter-review__check" />
-                      <span className="filter-review__text">3</span>
-                      <i className="fa fa-star-o star-review"></i>
-                    </div>
-                    <div
-                      data-view-id="pdp_review_filter_item"
-                      data-view-index={6}
-                      className="filter-review__item  "
-                    >
-                      <span className="filter-review__check" />
-                      <span className="filter-review__text">2</span>
-                      <i className="fa fa-star-o star-review"></i>
-                    </div>
-                    <div
-                      data-view-id="pdp_review_filter_item"
-                      data-view-index={7}
-                      className="filter-review__item  "
-                    >
-                      <span className="filter-review__check" />
-                      <span className="filter-review__text">1</span>
-                      <i className="fa fa-star-o star-review"></i>
-                    </div>
-                  </div>
-                </div>
 
                 <div />
                 <Collapse defaultActiveKey={["1"]}>
@@ -1308,6 +1201,76 @@ const ProductDetailHome = (props) => {
                     </div>
                   </Panel>
                 </Collapse>
+                <div className="style__StyledFilter-sc-103p4dk-4 fwZKR filter-review">
+                  <div className="filter-review__label">Filter:</div>
+                  <div className="filter-review__inner">
+                    <div
+                      data-view-id="pdp_review_filter_item"
+                      data-view-index={0}
+                      className="filter-review__item "
+                    >
+                      <span className="filter-review__check" />
+                      <span className="filter-review__text">Newest</span>
+                    </div>
+
+                    <div
+                      data-view-id="pdp_review_filter_item"
+                      data-view-index={2}
+                      className="filter-review__item "
+                    >
+                      <span className="filter-review__check" />
+                      <span className="filter-review__text">
+                        Verified Purchase
+                      </span>
+                    </div>
+                    <div
+                      data-view-id="pdp_review_filter_item"
+                      data-view-index={3}
+                      className="filter-review__item  "
+                    >
+                      <span className="filter-review__check" />
+                      <span className="filter-review__text">5</span>
+                      <i className="fa fa-star-o star-review"></i>
+                    </div>
+                    <div
+                      data-view-id="pdp_review_filter_item"
+                      data-view-index={4}
+                      className="filter-review__item  "
+                    >
+                      <span className="filter-review__check" />
+                      <span className="filter-review__text">4</span>
+                      <i className="fa fa-star-o star-review"></i>
+                    </div>
+                    <div
+                      data-view-id="pdp_review_filter_item"
+                      data-view-index={5}
+                      className="filter-review__item  "
+                    >
+                      <span className="filter-review__check" />
+                      <span className="filter-review__text">3</span>
+                      <i className="fa fa-star-o star-review"></i>
+                    </div>
+                    <div
+                      data-view-id="pdp_review_filter_item"
+                      data-view-index={6}
+                      className="filter-review__item  "
+                    >
+                      <span className="filter-review__check" />
+                      <span className="filter-review__text">2</span>
+                      <i className="fa fa-star-o star-review"></i>
+                    </div>
+                    <div
+                      data-view-id="pdp_review_filter_item"
+                      data-view-index={7}
+                      className="filter-review__item  "
+                    >
+                      <span className="filter-review__check" />
+                      <span className="filter-review__text">1</span>
+                      <i className="fa fa-star-o star-review"></i>
+                    </div>
+                  </div>
+                </div>
+
                 {reviews.length > 0 ? (
                   <>
                     {reviews.map((review, i) => (
@@ -1317,6 +1280,7 @@ const ProductDetailHome = (props) => {
                         loadReviewsPercent={loadReviewsPercent}
                         loadDetailProduct={loadDetailProduct}
                         loadReviewsBasedOnProduct={loadReviewsBasedOnProduct}
+                        verifiedPurchase={verifiedPurchase}
                       />
                     ))}
                   </>

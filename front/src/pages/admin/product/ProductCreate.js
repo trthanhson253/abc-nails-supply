@@ -27,12 +27,7 @@ const ProductCreate = ({ history }) => {
     sub: "",
     subSub: "",
     quantity: 50,
-    images: [
-      {
-        public_id: "",
-        url: "",
-      },
-    ],
+    images: [],
     status: 0,
     shipping: 0,
     color: "",

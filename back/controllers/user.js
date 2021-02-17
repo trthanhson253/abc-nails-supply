@@ -248,20 +248,18 @@ exports.createOrder = async (req, res) => {
     return {
       updateOne: {
         filter: { _id: item.product._id }, // IMPORTANT item.product
-        update: { $inc: { quantity: -item.count, sold: +item.count } },
+        update: {
+          $inc: { quantity: -item.count, sold: +item.count },
+          $addToSet: { verifiedPurchase: user._id },
+        },
       },
     };
   });
-
+  console.log("bulkOption", bulkOption);
   let updated = await Product.bulkWrite(bulkOption, {});
-  // console.log('PRODUCT QUANTITY-- AND SOLD++', updated);
 
-  // console.log('NEW ORDER SAVED', newOrder);
-
-  //send email
-
-  const params = orderPlaceEmail(user.name, user.email, newOrder);
-  await ses.sendEmail(params).promise();
+  // const params = orderPlaceEmail(user.name, user.email, newOrder);
+  // await ses.sendEmail(params).promise();
 
   res.json({ order: newOrder });
 };
