@@ -415,13 +415,10 @@ const CategoryHome = (props) => {
                             <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
                               <label>
                                 <input
-                                  style={{ display: "none" }}
+                                  style={{ display: "visible" }}
                                   className="cm-product-filters-checkbox"
                                   type="checkbox"
                                   name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={25}
-                                  id="elm_checkbox_177_2_25"
                                 />
                                 <div
                                   title="Black"

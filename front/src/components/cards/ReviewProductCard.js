@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import renderHTML from "react-render-html";
-import { like, dislike, remove } from "../../functions/review";
+import {
+  like,
+  dislike,
+  remove,
+  getDateOfPurchase,
+} from "../../functions/review";
 import { useSelector } from "react-redux";
+
 var moment = require("moment");
 
 //cha của nó là thẻ ProductDetailHome
@@ -12,7 +18,9 @@ const ReviewProductCard = ({
   loadDetailProduct,
   loadReviewsBasedOnProduct,
   verifiedPurchase,
+  pslug1,
 }) => {
+  const [dateOfPurchase, setDateOfPurchase] = useState("");
   const { user } = useSelector((state) => ({ ...state }));
 
   const handleLike = () => {
@@ -67,6 +75,18 @@ const ReviewProductCard = ({
     }
     return initials.toUpperCase();
   };
+
+  const loadDateOfPurchase = () => {
+    getDateOfPurchase(pslug1, review.user._id).then((res) => {
+      // console.log("res.data.dateOfPurchase", res.data[0]);
+      setDateOfPurchase(res.data[0]);
+      // loadDetailProduct();
+    });
+  };
+  useEffect(() => {
+    loadDateOfPurchase();
+    loadDetailProduct();
+  }, []);
   return (
     <>
       <div className="comments-cell has-side-left is-active">
@@ -87,7 +107,7 @@ const ReviewProductCard = ({
             </div>
           </div>
 
-          <div className="comments-text">Ownership: 1 week to 1 month</div>
+          <div className="comments-text">Joined on </div>
 
           <div className="comments-text comments-verified-owner">
             {getVerifiedPurchaseCustomer()}
@@ -169,9 +189,16 @@ const ReviewProductCard = ({
                       Posted on {moment(review.createdAt).format("hh:mm:ss A")}{" "}
                       {moment(review.createdAt).format("MM/DD/YYYY")}
                     </div>
-                    <div className="review-comment__avatar-options">
-                      <span>Bought this product on 12-2-2020</span>
-                    </div>
+                    {dateOfPurchase && (
+                      <div className="review-comment__avatar-options">
+                        <span>
+                          🕖 Bought this product on{" "}
+                          {moment(dateOfPurchase.createdAt).format(
+                            "MM/DD/YYYY"
+                          )}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

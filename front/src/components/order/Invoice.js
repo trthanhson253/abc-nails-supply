@@ -1,12 +1,12 @@
-import React from 'react';
-import { Document, Page, Text, StyleSheet } from '@react-pdf/renderer';
+import React from "react";
+import { Document, Page, Text, StyleSheet } from "@react-pdf/renderer";
 import {
   Table,
   TableHeader,
   TableCell,
   TableBody,
   DataTableCell,
-} from '@david.kucsai/react-pdf-table';
+} from "@david.kucsai/react-pdf-table";
 
 const Invoice = ({ order }) => (
   <Document>
@@ -40,19 +40,19 @@ const Invoice = ({ order }) => (
 
       <Text style={styles.text}>
         <Text>
-          Date Order: {'               '}
-          {new Date(order.paymentIntent.created * 1000).toLocaleString()}
+          Date Order: {"               "}
+          {order.createdAt}
         </Text>
-        {'\n'}
+        {"\n"}
         <Text>
-          Order Id: {'         '}
+          Order Id: {"         "}
           {order.trackId}
         </Text>
-        {'\n'}
+        {"\n"}
 
-        {'\n'}
+        {"\n"}
         <Text>
-          Total Paid: {'       '}${order.paymentIntent.amount} (in US Dollars)
+          Total Paid: {"       "}${order.total} (in US Dollars)
         </Text>
       </Text>
 
@@ -69,11 +69,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    textAlign: 'center',
+    textAlign: "center",
   },
   author: {
     fontSize: 12,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 40,
   },
   subtitle: {
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   text: {
     margin: 12,
     fontSize: 14,
-    textAlign: 'justify',
+    textAlign: "justify",
   },
   image: {
     marginVertical: 15,
@@ -92,24 +92,24 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 12,
     marginBottom: 20,
-    textAlign: 'center',
-    color: 'grey',
+    textAlign: "center",
+    color: "grey",
   },
   footer: {
-    padding: '100px',
+    padding: "100px",
     fontSize: 12,
     marginBottom: 20,
-    textAlign: 'center',
-    color: 'grey',
+    textAlign: "center",
+    color: "grey",
   },
   pageNumber: {
-    position: 'absolute',
+    position: "absolute",
     fontSize: 12,
     bottom: 30,
     left: 0,
     right: 0,
-    textAlign: 'center',
-    color: 'grey',
+    textAlign: "center",
+    color: "grey",
   },
 });
 

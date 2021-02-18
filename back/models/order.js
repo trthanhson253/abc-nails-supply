@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const { ObjectId } = mongoose.Schema;
+const deepPopulate = require("mongoose-deep-populate")(mongoose);
 
 const orderSchema = new mongoose.Schema(
   {
@@ -14,10 +15,10 @@ const orderSchema = new mongoose.Schema(
       },
     ],
     paymentIntent: {},
-    shippingAddress: {},
-    billingAddress: {},
+    address: {},
     payment: {},
     total: { type: Number },
+    shipOption: { type: Number },
     trackId: String,
     orderStatus: {
       type: Number,
@@ -47,4 +48,5 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+orderSchema.plugin(deepPopulate);
 module.exports = mongoose.model("Order", orderSchema);

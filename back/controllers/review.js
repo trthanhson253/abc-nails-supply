@@ -1,6 +1,7 @@
 const Product = require("../models/product");
 const User = require("../models/user");
 const Review = require("../models/review");
+const Order = require("../models/order");
 
 exports.create = async (req, res) => {
   const { title, rating, content } = req.body;
@@ -202,6 +203,35 @@ exports.dislike = async (req, res) => {
     res.status(404);
     throw new Error("Review not found");
   }
+};
+
+exports.getDateOfPurchase = async (req, res) => {
+  let product = await Product.findOne({ slug: req.params.slug }).select("_id");
+  let order = await Order.find({
+    "products.product": { $in: { _id: product._id } },
+    orderdBy: req.params.userId,
+  })
+    .sort({ createdAt: -1 })
+    .limit(1)
+    .exec();
+
+  let dateOfPurchase;
+  if (order) {
+    // dateOfPurchase = order[0].createdAt;
+    res.json(order);
+  }
+  // console.log("order", order);
+  // console.log("product", product._id);
+  // console.log("user", req.params.userId);
+  // console.log("product", product);
+  // let findProduct = order.products.find(
+  //   (x) => x.product._id.toString() === product._id.toString()
+  // );
+  // if (findProduct) {
+  //   dateOfPurchase = order.createdAt;
+  //   console.log("dateOfPurchase", dateOfPurchase);
+  //   res.json(dateOfPurchase);
+  // }
 };
 
 // exports.reply = async (req, res) => {

@@ -1,6 +1,6 @@
+import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import UserMenu from "../../components/user/UserMenu";
-
 import { getUserOrders } from "../../functions/user";
 import { useSelector } from "react-redux";
 import UserOrderCard from "../../components/user/UserOrderCard";
@@ -63,16 +63,13 @@ const UserOrders = () => {
                     {orders.map((order) => (
                       <tr>
                         <td>
-                          <a href="/sales/order/view/594369504-1">
+                          <Link to={`/user/order/detail/${order.trackId}`}>
                             {order.trackId}
-                          </a>
+                          </Link>
                         </td>
-                        <td>21/07/2019</td>
-                        <td>
-                          Combo 5 quần sịp nam siêu thoáng thoát khí xuất Nhật
-                          -size XXL
-                        </td>
-                        <td>130.000 ₫</td>
+                        <td>{moment(order.createdAt).format("MM/DD/YYYY")}</td>
+                        <td>{order.products.length} items</td>
+                        <td>${order.total}</td>
                         <td>Đã hủy</td>
                       </tr>
                     ))}

@@ -10,10 +10,15 @@ import {
   Progress,
   Modal,
 } from "antd";
-import { getDetailProduct, getRecentlyView } from "../../functions/product";
+import {
+  getDetailProduct,
+  getRecentlyView,
+  getRelated,
+} from "../../functions/product";
 import {
   getReviewsBasedOnProduct,
   getReviewsPercent,
+  createReview,
 } from "../../functions/review";
 import { setCookie, getCookie } from "../../functions/auth";
 import renderHTML from "react-render-html";
@@ -28,13 +33,13 @@ import Spinner from "../../components/Spinner";
 import Loader from "../../components/Loader";
 import ReviewProductCard from "../../components/cards/ReviewProductCard";
 import { Editor } from "@tinymce/tinymce-react";
-import { createReview } from "../../functions/review";
 import { toast } from "react-toastify";
 
 import "react-image-gallery/styles/css/image-gallery.css";
 import ImageGallery from "react-image-gallery";
 
 const ProductDetailHome = (props) => {
+  const [pslug1, setPslug1] = useState(null);
   const [images, setImages] = useState(null);
   const [percent, setPercent] = useState({
     one: "",
@@ -59,6 +64,7 @@ const ProductDetailHome = (props) => {
   const [sub, setSub] = useState({});
   const [subSub, setSubSub] = useState({});
   const [recentProducts, setRecentProducts] = useState([]);
+  const [related, setRelated] = useState([]);
   const { TabPane } = Tabs;
   const { Panel } = Collapse;
   const { user, cart, load, spin } = useSelector((state) => ({ ...state }));
@@ -76,6 +82,13 @@ const ProductDetailHome = (props) => {
   const handleChange = (name) => (e) => {
     const value = name === "content" ? e.target.getContent() : e.target.value;
     setValues({ ...values, [name]: value });
+  };
+
+  const loadRelatedProduct = () => {
+    getRelated(props.match.params.pslug).then((res) => {
+      setRelated(res.data);
+      // console.log("getRelated", res.data)
+    });
   };
 
   const loadDetailProduct = () => {
@@ -258,7 +271,8 @@ const ProductDetailHome = (props) => {
     setVisible(true);
   };
   useEffect(() => {
-    const pslug1 = props.match.params.pslug;
+    // const pslug1 = props.match.params.pslug;
+    setPslug1(props.match.params.pslug);
     if (getCookie("lastVisited")) {
       const recentlyProduct = getCookie("lastVisited").split("-");
 
@@ -271,6 +285,7 @@ const ProductDetailHome = (props) => {
     loadDetailProduct();
     loadReviewsBasedOnProduct();
     loadReviewsPercent();
+    loadRelatedProduct();
   }, []);
   useEffect(() => {
     window.scrollTo({
@@ -306,6 +321,12 @@ const ProductDetailHome = (props) => {
                 style={{ paddingBottom: "0" }}
               >
                 <div className="ut2-pb ty-product-block ty-product-detail">
+                  <div className="alert alert-info">
+                    <b>
+                      <h4>📌 Purchased 4 times.</h4>
+                    </b>
+                    You last purchased this item on November 11, 2020.
+                  </div>
                   <h1 className="ut2-pb__title" style={{ fontSize: "25px" }}>
                     <bdi>{product.name}</bdi>
                   </h1>
@@ -1281,6 +1302,7 @@ const ProductDetailHome = (props) => {
                         loadDetailProduct={loadDetailProduct}
                         loadReviewsBasedOnProduct={loadReviewsBasedOnProduct}
                         verifiedPurchase={verifiedPurchase}
+                        pslug1={pslug1}
                       />
                     ))}
                   </>
@@ -1309,311 +1331,38 @@ const ProductDetailHome = (props) => {
                     <p className="title">
                       <font style={{ verticalAlign: "inherit" }}>
                         <font style={{ verticalAlign: "inherit" }}>
-                          Products Suggestion{" "}
+                          Similar Products{" "}
                         </font>
                       </font>
                     </p>
                   </div>
                   <div className="product-content">
                     <div className="list-products">
-                      <div
-                        className="product-item-list product product-item-list "
-                        data-boxxwi="YQQSHK92"
-                        data-bxwidat='{"wt":"Gợi ý cho bạn","al":[],"rid":"07656ec2efc3488383ad43bca4ec9614","pid":"19278","cid":""}'
-                        data-bxwrap
-                        data-recoedproduct="true"
-                        data-bxrfid="19278~`~PDP-Personalized-SuggestionsForYou~`~00~`~PDP"
-                      >
-                        <div className="product-top">
-                          <div className="pay-0">Trả góp 0%</div>
-                        </div>
-                        <div className="product-mid">
-                          <div className="product-image">
-                            <figure className="image-wrapper">
-                              <a
-                                href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-note-10-plus-5g-256gb-han-quoc-99.19278.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
-                                title="Samsung Galaxy Note 10 Plus 5G 256GB Hàn Quốc 99%"
-                              >
-                                <picture className>
-                                  <source
-                                    data-srcset="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/9838009892-samsung-galaxy-note-10-5g-256gb-han-quoc-99.jpg?v=1611692726"
-                                    srcSet="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/9838009892-samsung-galaxy-note-10-5g-256gb-han-quoc-99.jpg?v=1611692726"
-                                    type="image/png"
-                                  />
-                                  <img
-                                    alt="Samsung Galaxy Note 10 Plus 5G 256GB Hàn Quốc 99%"
-                                    data-src="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/9838009892-samsung-galaxy-note-10-5g-256gb-han-quoc-99.jpg?v=1611692726"
-                                  />
-                                </picture>
-                              </a>
-                            </figure>
+                      {related.map((r) => (
+                        <div className="product-item-list product product-item-list ">
+                          <div className="product-top">
+                            <div className="pay-0">In Stock</div>
                           </div>
-                          <h3 className="product-name">
-                            <a href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-note-10-plus-5g-256gb-han-quoc-99.19278.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize">
-                              Samsung Galaxy Note 10 Plus 5G 256GB Hàn Quốc 99%
-                            </a>
-                          </h3>
-                          <div className="product-price">
-                            <ins>HNAM</ins> 11.399.000đ
-                            <span />
+                          <div className="product-mid">
+                            <div className="product-image">
+                              <figure className="image-wrapper">
+                                <Link to="#" title={r.name}>
+                                  <picture className>
+                                    <img alt={r.name} src={r.image[0].url} />
+                                  </picture>
+                                </Link>
+                              </figure>
+                            </div>
+                            <h3 className="product-name">
+                              <Link to="#">{r.name}</Link>
+                            </h3>
+                            <div className="product-price">
+                              {r.price} USD
+                              <span />
+                            </div>
                           </div>
                         </div>
-                        <div className="product-bottom">
-                          <a
-                            className="btn buy-now"
-                            href="https://www.hnammobile.com/cart/add?itemid=19278"
-                            onclick="addToCart(this)"
-                          >
-                            Mua ngay
-                          </a>
-                          <a
-                            className="btn pay-0"
-                            href="https://www.hnammobile.com/mua-tra-gop/dien-thoai/samsung-galaxy-note-10-plus-5g-256gb-han-quoc-99.19278.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
-                            onclick="addToCart(this,true)"
-                          >
-                            Trả góp 0%
-                          </a>
-                        </div>
-                      </div>
-                      <div
-                        className="product-item-list product product-item-list "
-                        data-boxxwi="YQQSHK92"
-                        data-bxwidat='{"wt":"Gợi ý cho bạn","al":[],"rid":"07656ec2efc3488383ad43bca4ec9614","pid":"17510","cid":""}'
-                        data-bxwrap
-                        data-recoedproduct="true"
-                        data-bxrfid="17510~`~PDP-Personalized-SuggestionsForYou~`~01~`~PDP"
-                      >
-                        <div className="product-top">
-                          <div className="pay-0">Trả góp 0%</div>
-                        </div>
-                        <div className="product-mid">
-                          <div className="product-image">
-                            <figure className="image-wrapper">
-                              <a
-                                href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-note-9-n960-128gb-han-quoc.17510.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
-                                title="Samsung Galaxy Note 9 N960 128Gb Hàn Quốc ( 99% )"
-                              >
-                                <picture className>
-                                  <source
-                                    data-srcset="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/4472706150_samsung-galaxy-note-9-512gb-ram-8gb.jpg?v=1611686803"
-                                    srcSet="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/4472706150_samsung-galaxy-note-9-512gb-ram-8gb.jpg?v=1611686803"
-                                    type="image/png"
-                                  />
-                                  <img
-                                    alt="Samsung Galaxy Note 9 N960 128Gb Hàn Quốc ( 99% )"
-                                    data-src="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/4472706150_samsung-galaxy-note-9-512gb-ram-8gb.jpg?v=1611686803"
-                                  />
-                                </picture>
-                              </a>
-                            </figure>
-                          </div>
-                          <h3 className="product-name">
-                            <a href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-note-9-n960-128gb-han-quoc.17510.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize">
-                              Samsung Galaxy Note 9 N960 128Gb Hàn Quốc ( 99% )
-                            </a>
-                          </h3>
-                          <div className="product-price">
-                            <ins>HNAM</ins> 6.799.000đ
-                            <span />
-                          </div>
-                        </div>
-                        <div className="product-bottom">
-                          <a
-                            className="btn buy-now"
-                            href="https://www.hnammobile.com/cart/add?itemid=17510"
-                            onclick="addToCart(this)"
-                          >
-                            Mua ngay
-                          </a>
-                          <a
-                            className="btn pay-0"
-                            href="https://www.hnammobile.com/mua-tra-gop/dien-thoai/samsung-galaxy-note-9-n960-128gb-han-quoc.17510.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
-                            onclick="addToCart(this,true)"
-                          >
-                            Trả góp 0%
-                          </a>
-                        </div>
-                      </div>
-                      <div
-                        className="product-item-list product product-item-list "
-                        data-boxxwi="YQQSHK92"
-                        data-bxwidat='{"wt":"Gợi ý cho bạn","al":[],"rid":"07656ec2efc3488383ad43bca4ec9614","pid":"20200","cid":""}'
-                        data-bxwrap
-                        data-recoedproduct="true"
-                        data-bxrfid="20200~`~PDP-Personalized-SuggestionsForYou~`~02~`~PDP"
-                      >
-                        <div className="product-top">
-                          <div className="pay-0">Trả góp 0%</div>
-                        </div>
-                        <div className="product-mid">
-                          <div className="product-image">
-                            <figure className="image-wrapper">
-                              <a
-                                href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-note-9-n960-512gb-han-quoc.20200.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
-                                title="Samsung Galaxy Note 9 N960 512Gb Hàn Quốc ( 99% )"
-                              >
-                                <picture className>
-                                  <source
-                                    data-srcset="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/6852787817-samsung-galaxy-note-9-n960-512gb-han-quoc.jpg?v=1611685989"
-                                    srcSet="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/6852787817-samsung-galaxy-note-9-n960-512gb-han-quoc.jpg?v=1611685989"
-                                    type="image/png"
-                                  />
-                                  <img
-                                    alt="Samsung Galaxy Note 9 N960 512Gb Hàn Quốc ( 99% )"
-                                    data-src="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/6852787817-samsung-galaxy-note-9-n960-512gb-han-quoc.jpg?v=1611685989"
-                                  />
-                                </picture>
-                              </a>
-                            </figure>
-                          </div>
-                          <h3 className="product-name">
-                            <a href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-note-9-n960-512gb-han-quoc.20200.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize">
-                              Samsung Galaxy Note 9 N960 512Gb Hàn Quốc ( 99% )
-                            </a>
-                          </h3>
-                          <div className="product-price">
-                            <ins>HNAM</ins> 7.399.000đ
-                            <span />
-                          </div>
-                        </div>
-                        <div className="product-bottom">
-                          <a
-                            className="btn buy-now"
-                            href="https://www.hnammobile.com/cart/add?itemid=20200"
-                            onclick="addToCart(this)"
-                          >
-                            Mua ngay
-                          </a>
-                          <a
-                            className="btn pay-0"
-                            href="https://www.hnammobile.com/mua-tra-gop/dien-thoai/samsung-galaxy-note-9-n960-512gb-han-quoc.20200.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
-                            onclick="addToCart(this,true)"
-                          >
-                            Trả góp 0%
-                          </a>
-                        </div>
-                      </div>
-                      <div
-                        className="product-item-list product product-item-list "
-                        data-boxxwi="YQQSHK92"
-                        data-bxwidat='{"wt":"Gợi ý cho bạn","al":[],"rid":"07656ec2efc3488383ad43bca4ec9614","pid":"19276","cid":""}'
-                        data-bxwrap
-                        data-recoedproduct="true"
-                        data-bxrfid="19276~`~PDP-Personalized-SuggestionsForYou~`~03~`~PDP"
-                      >
-                        <div className="product-top">
-                          <div className="pay-0 label-oustock">
-                            Tạm hết hàng
-                          </div>
-                        </div>
-                        <div className="product-mid">
-                          <div className="product-image">
-                            <figure className="image-wrapper">
-                              <a
-                                href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-s10-5g-256gb-han-quoc-99.19276.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
-                                title="Samsung Galaxy S10 5G 256GB Hàn Quốc 99%"
-                              >
-                                <picture className>
-                                  <source
-                                    data-srcset="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/1910708309-samsung-galaxy-s10-5g-256gb-han-quoc-99.jpg?v=1611685382"
-                                    srcSet="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/1910708309-samsung-galaxy-s10-5g-256gb-han-quoc-99.jpg?v=1611685382"
-                                    type="image/png"
-                                  />
-                                  <img
-                                    alt="Samsung Galaxy S10 5G 256GB Hàn Quốc 99%"
-                                    data-src="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/1910708309-samsung-galaxy-s10-5g-256gb-han-quoc-99.jpg?v=1611685382"
-                                  />
-                                </picture>
-                              </a>
-                            </figure>
-                          </div>
-                          <h3 className="product-name">
-                            <a href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-s10-5g-256gb-han-quoc-99.19276.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize">
-                              Samsung Galaxy S10 5G 256GB Hàn Quốc 99%
-                            </a>
-                          </h3>
-                          <div className="product-price">
-                            <ins>HNAM</ins> 8.599.000đ
-                            <span />
-                          </div>
-                        </div>
-                        <div className="product-bottom">
-                          <a
-                            className="btn buy-now"
-                            href="https://www.hnammobile.com/cart/add?itemid=19276"
-                            onclick="addToCart(this)"
-                          >
-                            Mua ngay
-                          </a>
-                          <a
-                            className="btn pay-0"
-                            href="https://www.hnammobile.com/mua-tra-gop/dien-thoai/samsung-galaxy-s10-5g-256gb-han-quoc-99.19276.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
-                            onclick="addToCart(this,true)"
-                          >
-                            Trả góp 0%
-                          </a>
-                        </div>
-                      </div>
-                      <div
-                        className="product-item-list product product-item-list "
-                        data-boxxwi="YQQSHK92"
-                        data-bxwidat='{"wt":"Gợi ý cho bạn","al":[],"rid":"07656ec2efc3488383ad43bca4ec9614","pid":"20126","cid":""}'
-                        data-bxwrap
-                        data-recoedproduct="true"
-                        data-bxrfid="20126~`~PDP-Personalized-SuggestionsForYou~`~04~`~PDP"
-                      >
-                        <div className="product-top">
-                          <div className="pay-0">In Stock</div>
-                        </div>
-                        <div className="product-mid">
-                          <div className="product-image">
-                            <figure className="image-wrapper">
-                              <a
-                                href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-s20-ultra-g988-5g-256gb-han-quoc-cu-99.20126.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
-                                title="Samsung Galaxy S20 Ultra G988 5G 256GB Hàn Quốc cũ 99%"
-                              >
-                                <picture className>
-                                  <source
-                                    data-srcset="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/6970814308-samsung-galaxy-s20-ultra-g988-5g-256gb-han-quoc-cu-99.jpg?v=1611691957"
-                                    srcSet="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/6970814308-samsung-galaxy-s20-ultra-g988-5g-256gb-han-quoc-cu-99.jpg?v=1611691957"
-                                    type="image/png"
-                                  />
-                                  <img
-                                    alt="Samsung Galaxy S20 Ultra G988 5G 256GB Hàn Quốc cũ 99%"
-                                    data-src="https://stcv4.hnammobile.com/new-uploads/products/thumbnails/6970814308-samsung-galaxy-s20-ultra-g988-5g-256gb-han-quoc-cu-99.jpg?v=1611691957"
-                                  />
-                                </picture>
-                              </a>
-                            </figure>
-                          </div>
-                          <h3 className="product-name">
-                            <a href="https://www.hnammobile.com/dien-thoai/samsung-galaxy-s20-ultra-g988-5g-256gb-han-quoc-cu-99.20126.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize">
-                              Samsung Galaxy S20 Ultra G988 5G 256GB Hàn Quốc cũ
-                              99%
-                            </a>
-                          </h3>
-                          <div className="product-price">
-                            <ins>HNAM</ins> 16.499.000đ
-                            <span />
-                          </div>
-                        </div>
-                        <div className="product-bottom">
-                          <a
-                            className="btn buy-now"
-                            href="https://www.hnammobile.com/cart/add?itemid=20126"
-                            onclick="addToCart(this)"
-                          >
-                            Mua ngay
-                          </a>
-                          <a
-                            className="btn pay-0"
-                            href="https://www.hnammobile.com/mua-tra-gop/dien-thoai/samsung-galaxy-s20-ultra-g988-5g-256gb-han-quoc-cu-99.20126.html?utm_source=smartech&utm_medium=medium&utm_campaign=personalize"
-                            onclick="addToCart(this,true)"
-                          >
-                            Trả góp 0%
-                          </a>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
                 </div>

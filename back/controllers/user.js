@@ -221,9 +221,11 @@ exports.createOrder = async (req, res) => {
   // return;
   const { paymentIntent } = req.body.stripeResponse;
 
-  const user = await User.findOne({ email: req.user.email }).exec();
-
-  let { products } = await Cart.findOne({ orderdBy: user._id }).exec();
+  const user = await User.findOne({ email: req.user.email });
+  let address = await ShippingAndBillingAddress.findOne({ user: user._id });
+  let { products, cartTotal, shipOption } = await Cart.findOne({
+    orderdBy: user._id,
+  });
 
   let newOrder = await new Order({
     products,
@@ -231,6 +233,9 @@ exports.createOrder = async (req, res) => {
     trackId: nanoid(),
     orderdBy: user._id,
     orderStatus: 0,
+    address: address,
+    shipOption: shipOption,
+    total: cartTotal,
   });
   // newOrder.reason.push({
   //   name: 0,
@@ -273,6 +278,14 @@ exports.orders = async (req, res) => {
     .exec();
 
   res.json(userOrders);
+};
+
+exports.userOrderDetail = async (req, res) => {
+  let userOrderDetail = await Order.findOne({ trackId: req.params.trackId })
+    .populate("products.product")
+    .exec();
+
+  res.json(userOrderDetail);
 };
 
 exports.userOrderUpdate = async (req, res) => {

@@ -21,6 +21,7 @@
     "formidable": "^1.2.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.2",
+    "mongoose-deep-populate": "^3.2.0",
     "morgan": "^1.10.0",
     "nanoid": "^2.1.8",
     "nodemon": "^2.0.4",

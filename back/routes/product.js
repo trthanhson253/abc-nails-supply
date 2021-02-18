@@ -25,7 +25,7 @@ const {
   //   list,
   //   productsCount,
   //   productStar,
-  //   listRelated,
+  listRelated,
   searchFilters,
 } = require("../controllers/product");
 
@@ -56,7 +56,7 @@ router.get("/product/:slug", read);
 // rating
 // router.put("/product/reviews/:productId", authCheck, productReview);
 // related
-// router.get("/product/related/:productId", listRelated);
+router.get("/product/related/:slug", listRelated);
 // search
 router.post("/products/search/filters", searchFilters);
 

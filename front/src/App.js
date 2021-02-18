@@ -49,6 +49,7 @@ import Spinner from "./components/Spinner";
 import SubHome from "./pages/home/SubHome";
 import AdminDetailOrder from "./pages/admin/order/AdminDetailOrder";
 import TrackOrder from "./pages/TrackOrder";
+import UserOrderDetail from "./pages/user/UserOrderDetail";
 
 // code tạo animation cho trang chậm để loading
 // $("body").load(function() {
@@ -195,6 +196,11 @@ function App() {
             <UserRoute exact path="/user/wishlist" component={WishList} />
             <UserRoute exact path="/user/history" component={UserDashboard} />
             <UserRoute exact path="/user/orders" component={UserOrders} />
+            <UserRoute
+              exact
+              path="/user/order/detail/:trackId"
+              component={UserOrderDetail}
+            />
 
             <Route component={Error} />
           </Switch>

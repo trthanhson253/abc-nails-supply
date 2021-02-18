@@ -22,6 +22,9 @@ export const createProduct = async (product, token) =>
     },
   });
 
+export const getRelated = async (slug) =>
+  await axios.get(`${process.env.REACT_APP_API}/product/related/${slug}`);
+
 export const getProductBySubSub = (slug) => {
   return fetch(`${process.env.REACT_APP_API}/products/subSub/${slug}`, {
     method: "GET",

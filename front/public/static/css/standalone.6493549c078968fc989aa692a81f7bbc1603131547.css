@@ -20750,11 +20750,12 @@ i.ab__vg-icon-video {
 .ab-fn-first-level {
   display: flex;
   flex-wrap: wrap;
-  border: 1px solid #e1e1e1;
+  /* border: 1px solid #e1e1e1; */
   border-bottom: 0;
 }
 .ab-fn-first-level.one_level {
-  border-bottom: 1px solid #e1e1e1;
+  /* border-bottom: 1px solid #e1e1e1; */
+  
 }
 .ab-fn-first-level.one_level .ab-fn-first-level-item {
   background: #fff;

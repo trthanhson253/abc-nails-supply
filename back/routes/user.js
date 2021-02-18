@@ -30,6 +30,7 @@ const {
   getDetailOrderBaseOnTrackId,
   requestCancelOrder,
   userOrderUpdate,
+  userOrderDetail,
 } = require("../controllers/user");
 
 router.post("/user/cart", requireSignin, authCheck, userCart); // save cart
@@ -68,6 +69,12 @@ router.get(
 
 // FOR ORDERS
 router.post("/user/order", requireSignin, authCheck, createOrder); // stripe
+router.get(
+  "/user/order/detail/:trackId",
+  requireSignin,
+  authCheck,
+  userOrderDetail
+);
 router.get("/user/orders", requireSignin, authCheck, orders);
 router.get(
   "/user/user-order-update/:orderId",

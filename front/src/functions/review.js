@@ -23,6 +23,11 @@ export const remove = async (reviewId, productId, token) =>
 export const getReviewsBasedOnProduct = async (slug) =>
   await axios.get(`${process.env.REACT_APP_API}/review/${slug}`);
 
+export const getDateOfPurchase = async (productId, userId) =>
+  await axios.get(
+    `${process.env.REACT_APP_API}/review/date-of-purchase/${productId}/${userId}`
+  );
+
 export const like = async (reviewId, token) =>
   await axios.get(`${process.env.REACT_APP_API}/like/${reviewId}`, {
     headers: {

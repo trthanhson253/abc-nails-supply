@@ -150,6 +150,19 @@ export const getUserOrders = async (token) =>
     },
   });
 
+export const getUserOrderDetail = async (trackId, token) =>
+  await axios.get(
+    `${process.env.REACT_APP_API}/user/order/detail/${trackId}`,
+
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
 export const getUserOrderUpdate = async (orderId, token) =>
   await axios.get(
     `${process.env.REACT_APP_API}/user/user-order-update/${orderId}`,
