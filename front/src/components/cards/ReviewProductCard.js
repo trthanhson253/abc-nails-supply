@@ -29,7 +29,7 @@ const ReviewProductCard = ({
         loadReviewsBasedOnProduct();
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   };
   const handleDisLike = () => {
@@ -38,7 +38,7 @@ const ReviewProductCard = ({
         loadReviewsBasedOnProduct();
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   };
   const removeReview = () => {
@@ -49,7 +49,7 @@ const ReviewProductCard = ({
         loadDetailProduct();
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   };
 
@@ -92,14 +92,22 @@ const ReviewProductCard = ({
       <div className="comments-cell has-side-left is-active">
         <div className="comments-cell-side">
           <div className="review-comment__avatar">
-            <div
-              className="review-comment__avatar-thumb"
-              style={{
-                backgroundImage: 'url("//tiki.vn/assets/img/avatar.png")',
-              }}
-            >
-              <span>{getInitialAvatar(review.user.name)}</span>
-            </div>
+            {review.user.images && review.user.images.length > 0 ? (
+              <img
+                className="review-comment__avatar-thumb"
+                src={review.user.images[0].url}
+              ></img>
+            ) : (
+              <div
+                className="review-comment__avatar-thumb"
+                style={{
+                  backgroundImage: 'url("//tiki.vn/assets/img/avatar.png")',
+                }}
+              >
+                <span>{getInitialAvatar(review.user.name)}</span>
+              </div>
+            )}
+
             <div className="review-comment__avatar-info">
               <div className="comments-name">
                 <b>{review.user.name} </b>
@@ -107,10 +115,19 @@ const ReviewProductCard = ({
             </div>
           </div>
 
-          <div className="comments-text">Joined on </div>
-
           <div className="comments-text comments-verified-owner">
             {getVerifiedPurchaseCustomer()}
+          </div>
+          <div className="comments-text">
+            {" "}
+            {dateOfPurchase && (
+              <div className="review-comment__avatar-options">
+                <span>
+                  🕖 Purchased this product on{" "}
+                  {moment(dateOfPurchase.createdAt).format("MM/DD/YYYY")}
+                </span>
+              </div>
+            )}{" "}
           </div>
         </div>
         <div className="comments-cell-body">
@@ -189,16 +206,6 @@ const ReviewProductCard = ({
                       Posted on {moment(review.createdAt).format("hh:mm:ss A")}{" "}
                       {moment(review.createdAt).format("MM/DD/YYYY")}
                     </div>
-                    {dateOfPurchase && (
-                      <div className="review-comment__avatar-options">
-                        <span>
-                          🕖 Bought this product on{" "}
-                          {moment(dateOfPurchase.createdAt).format(
-                            "MM/DD/YYYY"
-                          )}
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>

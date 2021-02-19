@@ -77,6 +77,23 @@
         $("#dataTables-example").DataTable({
           responsive: true,
         });
+
+        // $("#vehicle1").change(function () {
+        //   if ($(this).is(":checked")) {
+        //     alert("alo");
+        //   } else {
+        //     alert("hello");
+        //   }
+        // });
+        // $("#vehicle1").change(function () {
+        //   if ($(this).is(":checked")) {
+        //     $("#change-color").addClass("cp_active_filter");
+        //     $("#change-color").removeClass("cp_noactive_filter");
+        //   } else {
+        //     $("#change-color").addClass("cp_noactive_filter");
+        //     $("#change-color").removeClass("cp_active_filter");
+        //   }
+        // });
       });
       $(document).on("click", function (e) {
         if ($(e.target).closest(".live-item-li").length === 0) {

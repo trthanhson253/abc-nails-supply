@@ -69,7 +69,7 @@ exports.updateOrderProgress = (req, res) => {
     orderUpdate.deliveryId = req.body.deliveryId;
     oldOrder.orderStatus = req.body.orderStatus;
     oldOrder.save();
-    console.log("oldOrder", oldOrder);
+    // console.log("oldOrder", oldOrder);
     // oldOrder.orderStatus = req.body.orderStatus;
     // oldOrder.deliveryId = req.body.deliveryId;
     // oldOrder.reason.push({

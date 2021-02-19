@@ -199,7 +199,7 @@ const Checkout = ({ history }) => {
           }, 1000);
         })
         .catch((err) => {
-          console.log(err);
+          // console.log(err);
           toast.error(err.response.data.error);
           const delayed = setTimeout(() => {
             dispatch({
@@ -220,7 +220,7 @@ const Checkout = ({ history }) => {
           }, 1000);
         })
         .catch((err) => {
-          console.log(err);
+          // console.log(err);
           toast.error(err.response.data.error);
           const delayed = setTimeout(() => {
             dispatch({

@@ -7,7 +7,7 @@ const { requireSignin, adminCheck } = require("../middlewares/auth");
 // controllers
 const { upload, remove } = require("../controllers/cloudinary");
 
-router.post("/uploadimages", requireSignin, adminCheck, upload);
-router.post("/removeimage", requireSignin, adminCheck, remove);
+router.post("/uploadimages", requireSignin, upload);
+router.post("/removeimage", requireSignin, remove);
 
 module.exports = router;

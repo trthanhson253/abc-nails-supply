@@ -15,12 +15,7 @@ const CategoryCreateModal = ({
   setRemoveImage,
 }) => {
   const initialState = {
-    images: [
-      {
-        public_id: "",
-        url: "",
-      },
-    ],
+    images: [],
     name: "",
     description: "",
   };

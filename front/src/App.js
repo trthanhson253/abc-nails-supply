@@ -73,6 +73,8 @@ function App() {
               token: userToken,
               role: res.data.role,
               _id: res.data._id,
+              wishlist: res.data.wishlist,
+              images: res.data.images,
             },
           });
         })
@@ -194,7 +196,7 @@ function App() {
             />
 
             <UserRoute exact path="/user/wishlist" component={WishList} />
-            <UserRoute exact path="/user/history" component={UserDashboard} />
+            <UserRoute exact path="/user/account" component={UserDashboard} />
             <UserRoute exact path="/user/orders" component={UserOrders} />
             <UserRoute
               exact

@@ -39,7 +39,7 @@ const StripeCheckout = () => {
   }, []);
 
   const handleChange = async (e) => {
-    console.log(e);
+    // console.log(e);
     setDisabled(e.empty); // disable pay button if errors
     setError(e.error ? e.error.message : ""); // show error message
   };

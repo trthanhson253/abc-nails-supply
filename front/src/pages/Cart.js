@@ -13,8 +13,8 @@ const Cart = ({ history }) => {
 
   const getTotal = () => {
     return cart.reduce((currentValue, nextValue) => {
-      console.log("currentValue", currentValue);
-      console.log("nextValue", nextValue);
+      // console.log("currentValue", currentValue);
+      // console.log("nextValue", nextValue);
       return currentValue + nextValue.count * nextValue.product.price;
     }, 0);
   };

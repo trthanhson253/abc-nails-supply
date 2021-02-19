@@ -8,6 +8,7 @@ import { Steps } from "antd";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import Invoice from "../../components/order/Invoice";
 import { getUserOrderUpdate } from "../../functions/user";
+import { useHistory } from "react-router-dom";
 
 var moment = require("moment");
 
@@ -19,17 +20,27 @@ const UserOrderDetail = (props) => {
   const [products, setProducts] = useState([]);
   const { user } = useSelector((state) => ({ ...state }));
   const token = user.token;
+  const history = useHistory();
+  // const [error, setError] = useState(false);
   const loadUserOrderDetail = () =>
     getUserOrderDetail(props.match.params.trackId, token).then((res) => {
-      setOrder(res.data);
-      setAddress(res.data.address);
-      setProducts(res.data.products);
-      console.log("res.data", res.data);
+      if (res.data.success === false) {
+        // setError(true);
+        // console.log("error1", error);
+        history.push("/");
+      } else {
+        // setError(false);
+        setOrder(res.data);
+        setAddress(res.data.address);
+        setProducts(res.data.products);
+        // console.log("res.data", res.data.success);
+        // console.log("error2", error);
+      }
     });
   const loadUserOrderUpdate = () =>
     getUserOrderUpdate(props.match.params.trackId, token).then((res) => {
       setOrderUpdates(res.data);
-      console.log("setOrderUpdate", res.data);
+      // console.log("setOrderUpdate", res.data);
     });
   const showDownloadLink = (order) => (
     <>

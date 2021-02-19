@@ -53,7 +53,7 @@ const Login = ({ history }) => {
       if (res.data.user.role == 0) {
         history.push("/admin");
       } else {
-        history.push("/user/history");
+        history.push("/user/account");
       }
     }
   };
@@ -82,6 +82,8 @@ const Login = ({ history }) => {
             token: res.data.token,
             role: res.data.user.role,
             _id: res.data.user._id,
+            wishlist: res.data.wishlist,
+            images: res.data.images,
           },
         });
         setLoading(false);
@@ -108,7 +110,7 @@ const Login = ({ history }) => {
           ...state,
           password: "",
         });
-        toast.error(error.response.data.error);
+        // toast.error(error.response.data.error);
       });
   };
 

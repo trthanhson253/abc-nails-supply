@@ -203,9 +203,9 @@ exports.applyCouponToUserCart = async (req, res) => {
     cartTotal = (totalAfterDiscount * 1.08).toFixed(2);
   }
 
-  console.log("totalAfterDiscount ", totalAfterDiscount);
-  console.log("cartTotal ", cartTotal);
-  console.log("shipOption ", shipOption);
+  // console.log("totalAfterDiscount ", totalAfterDiscount);
+  // console.log("cartTotal ", cartTotal);
+  // console.log("shipOption ", shipOption);
 
   Cart.findOneAndUpdate(
     { orderdBy: user._id },
@@ -260,7 +260,7 @@ exports.createOrder = async (req, res) => {
       },
     };
   });
-  console.log("bulkOption", bulkOption);
+  // console.log("bulkOption", bulkOption);
   let updated = await Product.bulkWrite(bulkOption, {});
 
   // const params = orderPlaceEmail(user.name, user.email, newOrder);
@@ -281,11 +281,20 @@ exports.orders = async (req, res) => {
 };
 
 exports.userOrderDetail = async (req, res) => {
-  let userOrderDetail = await Order.findOne({ trackId: req.params.trackId })
+  let userOrderDetail = await Order.findOne({
+    trackId: req.params.trackId,
+    orderdBy: req.user._id,
+  })
     .populate("products.product")
     .exec();
-
-  res.json(userOrderDetail);
+  if (userOrderDetail) {
+    res.json(userOrderDetail);
+  } else {
+    res.json({
+      success: false,
+      message: "You cannot access to this page",
+    });
+  }
 };
 
 exports.userOrderUpdate = async (req, res) => {
@@ -470,7 +479,7 @@ exports.getBillingAndShippingAddress = async (req, res) => {
   let shippingAndBillingAddress = await ShippingAndBillingAddress.findOne({
     user: req.user._id,
   }).exec();
-
+  // console.log("shippingAndBillingAddress", shippingAndBillingAddress);
   res.json({
     shippingAndBillingAddress,
   });

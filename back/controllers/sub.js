@@ -8,16 +8,20 @@ exports.create = async (req, res) => {
     const { name, category } = req.body;
     res.json(await new Sub({ name, category, slug: slugify(name) }).save());
   } catch (err) {
-    console.log("SUB CREATE ERR ----->", err);
+    // console.log("SUB CREATE ERR ----->", err);
     res.status(400).send("Create sub failed");
   }
 };
 
 exports.list = async (req, res) =>
-  res.json(await Sub.find({})
-  .populate("category", "_id name slug")
-  .collation({locale:'en',strength: 2}).sort({ category:-1,name: 1, })  
-  .sort({ createdAt: -1 }).exec());
+  res.json(
+    await Sub.find({})
+      .populate("category", "_id name slug")
+      .collation({ locale: "en", strength: 2 })
+      .sort({ category: -1, name: 1 })
+      .sort({ createdAt: -1 })
+      .exec()
+  );
 
 // exports.read = async (req, res) => {
 //   let sub = await Sub.findOne({ slug: req.params.slug }).exec();
@@ -47,10 +51,10 @@ exports.list = async (req, res) =>
 
 exports.remove = async (req, res) => {
   try {
-    console.log(req.params.subId);
-    console.log(req.params.slug);
-    await Product.deleteMany({ sub : req.params.subId});
-    await SubSub.deleteMany({ sub : req.params.subId});
+    // console.log(req.params.subId);
+    // console.log(req.params.slug);
+    await Product.deleteMany({ sub: req.params.subId });
+    await SubSub.deleteMany({ sub: req.params.subId });
     const deletedSub = await Sub.findOneAndDelete({ slug: req.params.slug });
     res.json(deletedSub);
   } catch (err) {

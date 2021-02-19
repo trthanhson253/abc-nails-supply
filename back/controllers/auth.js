@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const ShippingAndBillingAddress = require("../models/shippingAndBillingAddress");
 const AWS = require("aws-sdk");
 const jwt = require("jsonwebtoken");
 const {
@@ -49,13 +50,13 @@ exports.register = (req, res) => {
 
     sendEmailOnRegister
       .then((data) => {
-        console.log("email submitted to SES", data);
+        // console.log("email submitted to SES", data);
         res.json({
           message: `An activation link has been sent to ${email}, please follow the instructions to activate your account.`,
         });
       })
       .catch((error) => {
-        console.log("ses email on register", error);
+        // console.log("ses email on register", error);
         res.json({
           error: `We can not verify your email. Please try again`,
         });
@@ -127,7 +128,7 @@ exports.login = (req, res) => {
       expiresIn: "7d",
     });
     const { email, name, role, _id } = user;
-    console.log(user);
+    // console.log(user);
     return res.json({
       token,
       user: { email, name, role, _id },
@@ -163,7 +164,7 @@ exports.forgotPassword = (req, res) => {
       const sendEmail = ses.sendEmail(params).promise();
       sendEmail
         .then((data) => {
-          console.log("ses reset pw success", data);
+          // console.log("ses reset pw success", data);
           return res.json({
             message: `Email has been sent to ${email}. Click on the link to reset your password`,
           });
@@ -225,7 +226,38 @@ exports.resetPassword = (req, res) => {
 
 exports.currentUser = async (req, res) => {
   User.findOne({ _id: req.user._id }).exec((err, user) => {
+    // console.log("user", user);
     if (err) throw new Error(err);
     res.json(user);
+  });
+};
+
+exports.updateUser = async (req, res) => {
+  const {
+    name,
+    images,
+    phone,
+    ship_address,
+    ship_city,
+    ship_state,
+    ship_zip,
+  } = req.body;
+  // console.log("req.body", req.body);
+  const user = await User.findById(req.user._id);
+  user.name = name;
+  if (images.length > 0) {
+    user.images = images;
+  }
+
+  await user.save();
+
+  await ShippingAndBillingAddress.findOneAndUpdate(
+    { user: req.user._id },
+    { ship_phone: phone, ship_address, ship_city, ship_state, ship_zip }
+  );
+  // console.log("user", user);
+  res.json({
+    success: true,
+    message: "Successfully update user",
   });
 };

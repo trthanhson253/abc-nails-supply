@@ -1,45 +1,48 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import AdminMenu from "../../../components/admin/AdminMenu";
 import SubCreateModal from "../../../components/admin/SubCreateModal";
-import { getSubs,removeSub } from "../../../functions/sub";
+import { getSubs, removeSub } from "../../../functions/sub";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { Steps  } from 'antd';
+import { Steps } from "antd";
 
 const SubList = () => {
+  const [open, setOpen] = useState(false);
+  const [subs, setSubs] = useState([]);
+  const { Step } = Steps;
+  const { user } = useSelector((state) => ({ ...state }));
+  const token = user.token;
 
-const [open, setOpen] = useState(false);
-const [subs, setSubs] = useState([]);
-const { Step } = Steps;
-const { user } = useSelector((state) => ({ ...state }));
-const token = user.token;
-
- const handleClickOpen = () => {
+  const handleClickOpen = () => {
     setOpen(true);
-};
-const handleClose = () => {
+  };
+  const handleClose = () => {
     setOpen(false);
   };
 
-  const loadSubs= () => {
+  const loadSubs = () => {
     getSubs().then((data) => {
       if (data.error) {
         toast.error(data.error);
       } else {
-          console.log(data.data)
+        // console.log(data.data)
         setSubs(data.data);
       }
     });
   };
 
-  const handleRemove = async (slug,subId) => {
+  const handleRemove = async (slug, subId) => {
     // let answer = window.confirm("Delete?");
     // console.log(answer, slug);
-    if (window.confirm("ATTENTION! When this sub-category is deleted, all of its products will be deleted also. The data will be deleted permanently and cannot be recovered .Are you sure you want to continue this process ?")) {
-    //   setLoading(true);
-      removeSub(slug,subId,token)
+    if (
+      window.confirm(
+        "ATTENTION! When this sub-category is deleted, all of its products will be deleted also. The data will be deleted permanently and cannot be recovered .Are you sure you want to continue this process ?"
+      )
+    ) {
+      //   setLoading(true);
+      removeSub(slug, subId, token)
         .then((res) => {
-        //   setLoading(false);
+          //   setLoading(false);
           toast.error(`${res.data.name} is deleted`);
           loadSubs();
         })
@@ -55,92 +58,108 @@ const handleClose = () => {
   useEffect(() => {
     loadSubs();
   }, []);
-  
+
   return (
-   <>
-   <div id="wrapper">
-   
-   <AdminMenu />
-   <div id="page-wrapper">
-   
-   <SubCreateModal open={open} handleClose={handleClose} loadSubs={loadSubs} token={token}/>
-   <div className="container-fluid">
-       <div className="row"> 
+    <>
+      <div id="wrapper">
+        <AdminMenu />
+        <div id="page-wrapper">
+          <SubCreateModal
+            open={open}
+            handleClose={handleClose}
+            loadSubs={loadSubs}
+            token={token}
+          />
+          <div className="container-fluid">
+            <div className="row">
               <div className="col-lg-12">
-              <Steps size="small" current={1}>
-              <Step title="Category" />
-              <Step title="Sub-Category" />
-              <Step title="Sub-Sub Category" />
-              <Step title="Brand" />
-              <Step title="Color"  />
-              <Step title="Size"  />
-          </Steps>
+                <Steps size="small" current={1}>
+                  <Step title="Category" />
+                  <Step title="Sub-Category" />
+                  <Step title="Sub-Sub Category" />
+                  <Step title="Brand" />
+                  <Step title="Color" />
+                  <Step title="Size" />
+                </Steps>
               </div>
-           <div className="col-lg-12">
-               <h1 className="page-header">Sub-Category</h1>
-           </div>
-          
-       </div>
-       
-       <div className="row">
-       <div className="col-lg-12">
-           <div className="panel panel-default">
-               <div className="panel-heading">
-               <i className="fa fa-align-justify fa-fw" /> List of Sub-Category
-               &nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-primary" onClick={handleClickOpen} ><i className="fa fa-plus fa-fw" /> New</button>                
-               </div>                 
-               {/* /.panel-heading */}
-               <div className="panel-body">
-                   <div className="table-responsive">
-                       <table className="table table-striped table-bordered table-hover" id="dataTables-example">
-                           <thead>
-                               <tr>
-                                   <th></th>
-                                   <th>Name</th>
-                                   <th>Category Parent</th>
-                                   <th>Action</th>
-                                  
-                               </tr>
-                           </thead>
-                           <tbody>
-                           {subs.map((c) => (
+              <div className="col-lg-12">
+                <h1 className="page-header">Sub-Category</h1>
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-lg-12">
+                <div className="panel panel-default">
+                  <div className="panel-heading">
+                    <i className="fa fa-align-justify fa-fw" /> List of
+                    Sub-Category &nbsp;&nbsp;&nbsp;
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      onClick={handleClickOpen}
+                    >
+                      <i className="fa fa-plus fa-fw" /> New
+                    </button>
+                  </div>
+                  {/* /.panel-heading */}
+                  <div className="panel-body">
+                    <div className="table-responsive">
+                      <table
+                        className="table table-striped table-bordered table-hover"
+                        id="dataTables-example"
+                      >
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Category Parent</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {subs.map((c) => (
                             <tr className="odd gradeX" key={c._id}>
-                                <td>1</td>
-                                <td>{c.name}</td>                                     
-                                <td><b>{c.category.name}</b>
-                                    
-                                </td>
-                                <td className="center">
+                              <td>1</td>
+                              <td>{c.name}</td>
+                              <td>
+                                <b>{c.category.name}</b>
+                              </td>
+                              <td className="center">
                                 <div className="text-center">
-                                <button type="button" class="btn btn-primary btn-circle"><i class="fa fa-edit"></i></button>&nbsp;
-                                <button type="button" class="btn btn-danger btn-circle" onClick={() => handleRemove(c.slug,c._id)} ><i class="fa fa-trash-o"></i></button></div>                            
-                                </td>
+                                  <button
+                                    type="button"
+                                    class="btn btn-primary btn-circle"
+                                  >
+                                    <i class="fa fa-edit"></i>
+                                  </button>
+                                  &nbsp;
+                                  <button
+                                    type="button"
+                                    class="btn btn-danger btn-circle"
+                                    onClick={() => handleRemove(c.slug, c._id)}
+                                  >
+                                    <i class="fa fa-trash-o"></i>
+                                  </button>
+                                </div>
+                              </td>
                             </tr>
-                          ))}          
-                           </tbody>
-                       </table>
-                   </div>
-                   {/* /.table-responsive */}
-                   
-               </div>
-               {/* /.panel-body */}
-           </div>
-           {/* /.panel */}
-       </div>
-       {/* /.col-lg-12 */}
-   </div>
-   {/* /.row */}
-   
-   </div>
-</div>
-
-
-</div>
- 
-
-   
-  
-   </>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    {/* /.table-responsive */}
+                  </div>
+                  {/* /.panel-body */}
+                </div>
+                {/* /.panel */}
+              </div>
+              {/* /.col-lg-12 */}
+            </div>
+            {/* /.row */}
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

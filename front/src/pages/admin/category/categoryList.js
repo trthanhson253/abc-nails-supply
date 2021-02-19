@@ -28,7 +28,7 @@ const CategoryList = () => {
       if (data.error) {
         toast.error(data.error);
       } else {
-        console.log(data.data);
+        // console.log(data.data);
         setCategories(data.data);
       }
     });

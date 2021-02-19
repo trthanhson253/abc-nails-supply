@@ -142,7 +142,6 @@ const Home = () => {
                                     {" "}
                                     <img
                                       className="ty-pict ty-banner__image cm-image"
-                                      id="det_img_156352866"
                                       src={require("../assets/img/e.jpg")}
                                       alt
                                       title

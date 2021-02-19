@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import AdminMenu from '../../../components/admin/AdminMenu';
+import React, { useState, useEffect } from "react";
+import AdminMenu from "../../../components/admin/AdminMenu";
 import {
   getProducts,
   getDetailProduct,
   removeProduct,
-} from '../../../functions/product';
-import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import { Steps, Avatar } from 'antd';
-import renderHTML from 'react-render-html';
-import ProductDetailModal from '../../../components/admin/ProductDetailModal';
+} from "../../../functions/product";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { Steps, Avatar } from "antd";
+import renderHTML from "react-render-html";
+import ProductDetailModal from "../../../components/admin/ProductDetailModal";
 
 const ProductList = ({ history }) => {
   const [products, setProducts] = useState([]);
@@ -19,10 +19,10 @@ const ProductList = ({ history }) => {
   const token = user.token;
   const [open, setOpen] = useState(false);
   // const [slug, setSlug] = useState("");
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
 
   const handleClickOpen = () => {
-    history.push('/admin/product/create');
+    history.push("/admin/product/create");
   };
 
   function handleClickDetailOpen(slg) {
@@ -35,7 +35,7 @@ const ProductList = ({ history }) => {
   const loadDetailProduct = (slug) => {
     getDetailProduct(slug).then((data) => {
       // setValue(data.product);
-      console.log('STEP100', data.product);
+      // console.log('STEP100', data.product);
       setProduct(data.product);
       setContent(data.product.description);
     });
@@ -60,7 +60,7 @@ const ProductList = ({ history }) => {
     // console.log(answer, slug);
     if (
       window.confirm(
-        'ATTENTION! This product will be deleted permanently and cannot be recovered .Are you sure you want to continue this process ?'
+        "ATTENTION! This product will be deleted permanently and cannot be recovered .Are you sure you want to continue this process ?"
       )
     ) {
       //   setLoading(true);
@@ -175,7 +175,7 @@ const ProductList = ({ history }) => {
 
                               <td className="center">
                                 <div className="text-center">
-                                  {' '}
+                                  {" "}
                                   <button
                                     type="button"
                                     class="btn btn-default btn-circle"

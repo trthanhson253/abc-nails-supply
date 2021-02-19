@@ -7,7 +7,7 @@ const {
 } = require("../validators/product");
 
 const { runValidation } = require("../validators");
-const { requireSignin, adminCheck } = require("../middlewares/auth");
+const { requireSignin, authCheck, adminCheck } = require("../middlewares/auth");
 
 // controller
 const {
@@ -27,6 +27,7 @@ const {
   //   productStar,
   listRelated,
   searchFilters,
+  getCountOfPurchase,
 } = require("../controllers/product");
 
 // routes
@@ -61,5 +62,12 @@ router.get("/product/related/:slug", listRelated);
 router.post("/products/search/filters", searchFilters);
 
 router.post("/products/by/search", listByFilters);
+
+router.get(
+  "/product/count-of-purchase/:slug",
+  requireSignin,
+  authCheck,
+  getCountOfPurchase
+);
 
 module.exports = router;

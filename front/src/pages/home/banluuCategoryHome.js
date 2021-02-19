@@ -29,7 +29,21 @@ const CategoryHome = (props) => {
   const [myFilters, setMyFilters] = useState({
     filters: { brand: [], size: [] },
   });
+  const [blue, setBlue] = useState(false);
+  const [green, setGreen] = useState(false);
+  const [black, setBlack] = useState(false);
+  const [white, setWhite] = useState(false);
+  const [red, setRed] = useState(false);
+  const [pink, setPink] = useState(false);
+  const [purple, setPurple] = useState(false);
+  const [yellow, setYellow] = useState(false);
+  const [orange, setOrange] = useState(false);
+  const [brown, setBrown] = useState(false);
 
+  const [silver, setSilver] = useState(false);
+  const [grey, setGrey] = useState(false);
+  const [clear, setClear] = useState(false);
+  const [gold, setGold] = useState(false);
   const loadProductByCategory = (cslug) => {
     dispatch({
       type: "SET_SPIN",
@@ -72,7 +86,8 @@ const CategoryHome = (props) => {
       let uniqueColor = _.uniqWith(color, _.isEqual);
       let uniqueBrand = _.uniqWith(brand, _.isEqual);
       let uniqueSize = _.uniqWith(size, _.isEqual);
-      // console.log('colorUnique', unique);
+      // console.log("colorUnique", uniqueColor);
+
       setColors(uniqueColor);
       setBrands(uniqueBrand);
       setSizes(uniqueSize);
@@ -190,9 +205,41 @@ const CategoryHome = (props) => {
     loadMenuByCategory(cslug);
     setFlag(false);
   };
+
+  const changeColor = (x) => {
+    if (x == 1) {
+      setBlue(!blue);
+    } else if (x == 2) {
+      setGreen(!green);
+    } else if (x == 3) {
+      setBlack(!black);
+    } else if (x == 4) {
+      setWhite(!white);
+    } else if (x == 5) {
+      setRed(!red);
+    } else if (x == 6) {
+      setPink(!pink);
+    } else if (x == 7) {
+      setPurple(!purple);
+    } else if (x == 8) {
+      setYellow(!yellow);
+    } else if (x == 9) {
+      setOrange(!orange);
+    } else if (x == 10) {
+      setBrown(!brown);
+    } else if (x == 11) {
+      setSilver(!clear);
+    } else if (x == 12) {
+      setGrey(!grey);
+    } else if (x == 13) {
+      setClear(!clear);
+    } else if (x == 14) {
+      setGold(!gold);
+    }
+  };
+
   useEffect(() => {
     const cslug = props.match.params.cslug;
-
     loadProductByCategory(cslug);
     loadMenuByCategory(cslug);
   }, []);
@@ -203,6 +250,7 @@ const CategoryHome = (props) => {
         <title>{cate.name}</title>
       </Helmet>
       {JSON.stringify(myFilters)}
+      {colors}
       <div className="tygh-content clearfix">
         <div className="container-fluid  cat-content-grid">
           <div className="container-fluid-row container-fluid-row-full-width ut2__subcategories">
@@ -213,6 +261,7 @@ const CategoryHome = (props) => {
                   <h1 className="ty-mainbox-title">
                     <span>Category::{cate.name}</span>
                   </h1>
+
                   <div id="breadcrumbs_167">
                     <div className="ty-breadcrumbs clearfix">
                       <Link to="/" className="ty-breadcrumbs__a">
@@ -228,26 +277,6 @@ const CategoryHome = (props) => {
               </div>
             </div>
           </div>
-          <div className="container-fluid-row">
-            <div className="row-fluid ">
-              {cate.description ? (
-                <>
-                  <div
-                    style={{
-                      borderStyle: "solid",
-                      padding: "15px",
-                      borderColor: "#F0F0F0",
-                    }}
-                  >
-                    {renderHTML(cate.description)}
-                  </div>{" "}
-                  <hr />
-                </>
-              ) : (
-                <hr></hr>
-              )}
-            </div>
-          </div>
 
           <div className="container-fluid-row">
             <div className="row-fluid ">
@@ -259,7 +288,14 @@ const CategoryHome = (props) => {
                       className="ty-pagination-container cm-pagination-container"
                       id="pagination_contents"
                     >
-                      <div></div>
+                      {cate.description ? (
+                        <>
+                          <div>{renderHTML(cate.description)}</div>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+
                       <div className="ty-sort-container">
                         <div
                           className="ut2-selected-product-filters cm-product-filters"
@@ -335,17 +371,10 @@ const CategoryHome = (props) => {
                   </div>
                   <div className="ty-sidebox__body" id="sidebox_177">
                     {/* Inline script moved to the bottom of the page */}
-                    <div
-                      className="cm-product-filters"
-                      data-ca-target-id="product_filters_*,products_search_*,category_products_*,product_features_*,breadcrumbs_*,currencies_*,languages_*,selected_filters_*"
-                      id="product_filters_177"
-                    >
+                    <div className="cm-product-filters">
                       <div className="ty-product-filters__wrapper">
                         <div className="ty-product-filters__block">
-                          <div
-                            id="sw_content_177_1"
-                            className="ty-product-filters__switch cm-combination-filter_177_1 open cm-save-state cm-ss-reverse"
-                          >
+                          <div className="ty-product-filters__switch cm-combination-filter_177_1 open cm-save-state cm-ss-reverse">
                             <span className="ty-product-filters__title">
                               Sub-Category
                             </span>
@@ -358,13 +387,7 @@ const CategoryHome = (props) => {
                                 <li className="cm-product-filters-checkbox-container ty-product-filters__group">
                                   {subCates.map((c) => (
                                     <li className="cm-product-filters-checkbox-container ty-product-filters__group">
-                                      <Checkbox
-                                        // onChange={handleChangeBrand(c)}
-                                        name="subCates"
-                                        // value={checkedBrand.indexOf(c === -1)}
-                                      >
-                                        {c.name}
-                                      </Checkbox>
+                                      <b>{c.name}</b>
                                     </li>
                                   ))}
                                 </li>
@@ -379,10 +402,7 @@ const CategoryHome = (props) => {
                           </ul>
                         </div>
                         <div className="ty-product-filters__block">
-                          <div
-                            id="sw_content_177_1"
-                            className="ty-product-filters__switch cm-combination-filter_177_1 open cm-save-state cm-ss-reverse"
-                          >
+                          <div className="ty-product-filters__switch cm-combination-filter_177_1 open cm-save-state cm-ss-reverse">
                             <span className="ty-product-filters__title">
                               Brand
                             </span>
@@ -417,472 +437,487 @@ const CategoryHome = (props) => {
                         </div>
                         {/* Inline script moved to the bottom of the page */}
                         <div className="ty-product-filters__block">
-                          <div
-                            id="sw_content_177_2"
-                            className="ty-product-filters__switch cm-combination-filter_177_2 open cm-save-state cm-ss-reverse"
-                          >
+                          <div className="ty-product-filters__switch cm-combination-filter_177_2 open cm-save-state cm-ss-reverse">
                             <span className="ty-product-filters__title">
                               Color
                             </span>
+
                             <i className="ty-product-filters__switch-down ty-icon-down-open" />
                             <i className="ty-product-filters__switch-right ty-icon-up-open" />
                           </div>
-                          <ul
-                            className="ty-product-filters "
-                            id="content_177_2"
-                          >
-                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                              <label>
-                                <input
-                                  style={{ display: "none" }}
-                                  className="cm-product-filters-checkbox"
-                                  type="checkbox"
-                                  name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={25}
-                                  id="elm_checkbox_177_2_25"
-                                />
-                                <div
-                                  title="Black"
-                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: "#000000" }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="ci_color_checked"
-                                    width={1024}
-                                    height={1024}
-                                    viewBox="0 0 1024 1024"
-                                  >
-                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
-                                  </svg>
-                                </div>
-                              </label>
-                            </li>
-                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                              <label>
-                                <input
-                                  style={{ display: "none" }}
-                                  className="cm-product-filters-checkbox"
-                                  type="checkbox"
-                                  name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={14}
-                                  id="elm_checkbox_177_2_14"
-                                />
-                                <div
-                                  title="White"
-                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: "#ffffff" }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="ci_color_checked"
-                                    width={1024}
-                                    height={1024}
-                                    viewBox="0 0 1024 1024"
-                                  >
-                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
-                                  </svg>
-                                </div>
-                              </label>
-                            </li>
-                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                              <label>
-                                <input
-                                  style={{ display: "none" }}
-                                  className="cm-product-filters-checkbox"
-                                  type="checkbox"
-                                  name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={7}
-                                  id="elm_checkbox_177_2_7"
-                                />
-                                <div
-                                  title="Red"
-                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: "#ff0000" }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="ci_color_checked"
-                                    width={1024}
-                                    height={1024}
-                                    viewBox="0 0 1024 1024"
-                                  >
-                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
-                                  </svg>
-                                </div>
-                              </label>
-                            </li>
-                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                              <label>
-                                <input
-                                  style={{ display: "none" }}
-                                  className="cm-product-filters-checkbox"
-                                  type="checkbox"
-                                  name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={22}
-                                  id="elm_checkbox_177_2_22"
-                                />
-                                <div
-                                  title="Blue"
-                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: "#0000ff" }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="ci_color_checked"
-                                    width={1024}
-                                    height={1024}
-                                    viewBox="0 0 1024 1024"
-                                  >
-                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
-                                  </svg>
-                                </div>
-                              </label>
-                            </li>
-                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                              <label>
-                                <input
-                                  style={{ display: "none" }}
-                                  className="cm-product-filters-checkbox"
-                                  type="checkbox"
-                                  name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={12}
-                                  id="elm_checkbox_177_2_12"
-                                />
-                                <div
-                                  title="Pink"
-                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: "#ff00ff" }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="ci_color_checked"
-                                    width={1024}
-                                    height={1024}
-                                    viewBox="0 0 1024 1024"
-                                  >
-                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
-                                  </svg>
-                                </div>
-                              </label>
-                            </li>
-                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                              <label>
-                                <input
-                                  style={{ display: "none" }}
-                                  className="cm-product-filters-checkbox"
-                                  type="checkbox"
-                                  name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={18}
-                                  id="elm_checkbox_177_2_18"
-                                />
-                                <div
-                                  title="Purple"
-                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: "#9900ff" }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="ci_color_checked"
-                                    width={1024}
-                                    height={1024}
-                                    viewBox="0 0 1024 1024"
-                                  >
-                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
-                                  </svg>
-                                </div>
-                              </label>
-                            </li>
-                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                              <label>
-                                <input
-                                  style={{ display: "none" }}
-                                  className="cm-product-filters-checkbox"
-                                  type="checkbox"
-                                  name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={20}
-                                  id="elm_checkbox_177_2_20"
-                                />
-                                <div
-                                  title="Green"
-                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: "#38761d" }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="ci_color_checked"
-                                    width={1024}
-                                    height={1024}
-                                    viewBox="0 0 1024 1024"
-                                  >
-                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
-                                  </svg>
-                                </div>
-                              </label>
-                            </li>
-                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                              <label>
-                                <input
-                                  style={{ display: "none" }}
-                                  className="cm-product-filters-checkbox"
-                                  type="checkbox"
-                                  name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={21}
-                                  id="elm_checkbox_177_2_21"
-                                />
-                                <div
-                                  title="Yellow"
-                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: "#ffff00" }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="ci_color_checked"
-                                    width={1024}
-                                    height={1024}
-                                    viewBox="0 0 1024 1024"
-                                  >
-                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
-                                  </svg>
-                                </div>
-                              </label>
-                            </li>
-                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                              <label>
-                                <input
-                                  style={{ display: "none" }}
-                                  className="cm-product-filters-checkbox"
-                                  type="checkbox"
-                                  name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={17}
-                                  id="elm_checkbox_177_2_17"
-                                />
-                                <div
-                                  title="Neutral"
-                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: "#e3b28b" }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="ci_color_checked"
-                                    width={1024}
-                                    height={1024}
-                                    viewBox="0 0 1024 1024"
-                                  >
-                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
-                                  </svg>
-                                </div>
-                              </label>
-                            </li>
-                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                              <label>
-                                <input
-                                  style={{ display: "none" }}
-                                  className="cm-product-filters-checkbox"
-                                  type="checkbox"
-                                  name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={6}
-                                  id="elm_checkbox_177_2_6"
-                                />
-                                <div
-                                  title="Orange"
-                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: "#ff9900" }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="ci_color_checked"
-                                    width={1024}
-                                    height={1024}
-                                    viewBox="0 0 1024 1024"
-                                  >
-                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
-                                  </svg>
-                                </div>
-                              </label>
-                            </li>
-                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                              <label>
-                                <input
-                                  style={{ display: "none" }}
-                                  className="cm-product-filters-checkbox"
-                                  type="checkbox"
-                                  name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={26}
-                                  id="elm_checkbox_177_2_26"
-                                />
-                                <div
-                                  title="Brown"
-                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: "#804c2f" }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="ci_color_checked"
-                                    width={1024}
-                                    height={1024}
-                                    viewBox="0 0 1024 1024"
-                                  >
-                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
-                                  </svg>
-                                </div>
-                              </label>
-                            </li>
-                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                              <label>
-                                <input
-                                  style={{ display: "none" }}
-                                  className="cm-product-filters-checkbox"
-                                  type="checkbox"
-                                  name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={15}
-                                  id="elm_checkbox_177_2_15"
-                                />
-                                <div
-                                  title="Silver"
-                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: "#d9d9d9" }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="ci_color_checked"
-                                    width={1024}
-                                    height={1024}
-                                    viewBox="0 0 1024 1024"
-                                  >
-                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
-                                  </svg>
-                                </div>
-                              </label>
-                            </li>
-                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                              <label>
-                                <input
-                                  style={{ display: "none" }}
-                                  className="cm-product-filters-checkbox"
-                                  type="checkbox"
-                                  name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={28}
-                                  id="elm_checkbox_177_2_28"
-                                />
-                                <div
-                                  title="Gray"
-                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: "#434343" }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="ci_color_checked"
-                                    width={1024}
-                                    height={1024}
-                                    viewBox="0 0 1024 1024"
-                                  >
-                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
-                                  </svg>
-                                </div>
-                              </label>
-                            </li>
-                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                              <label>
-                                <input
-                                  style={{ display: "none" }}
-                                  className="cm-product-filters-checkbox"
-                                  type="checkbox"
-                                  name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={31}
-                                  id="elm_checkbox_177_2_31"
-                                />
-                                <div
-                                  title="Clear"
-                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: "#ffffff" }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="ci_color_checked"
-                                    width={1024}
-                                    height={1024}
-                                    viewBox="0 0 1024 1024"
-                                  >
-                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
-                                  </svg>
-                                </div>
-                              </label>
-                            </li>
-                            <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
-                              <label>
-                                <input
-                                  style={{ display: "none" }}
-                                  className="cm-product-filters-checkbox"
-                                  type="checkbox"
-                                  name="product_filters[2]"
-                                  data-ca-filter-id={2}
-                                  defaultValue={34}
-                                  id="elm_checkbox_177_2_34"
-                                />
-                                <div
-                                  title="Gold"
-                                  className="cp_noactive_filter ci_color_icon cp_ci_icon_round"
-                                  style={{ background: "#f1c232" }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="ci_color_checked"
-                                    width={1024}
-                                    height={1024}
-                                    viewBox="0 0 1024 1024"
-                                  >
-                                    <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
-                                  </svg>
-                                </div>
-                              </label>
-                            </li>
-                            <p
-                              id="elm_search_empty_177_2"
-                              className="ty-product-filters__no-items-found hidden"
-                            >
+                          <ul className="ty-product-filters">
+                            {colors.map((c) => (
+                              <>
+                                {c.toString() === "Blue" && (
+                                  <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                                    <label>
+                                      <input
+                                        type="checkbox"
+                                        style={{ display: "none" }}
+                                        className="cm-product-filters-checkbox"
+                                        name="checkbox"
+                                        onClick={() => changeColor(1)}
+                                      />
+                                      <div
+                                        title="Blue"
+                                        className={
+                                          blue
+                                            ? "cp_active_filter ci_color_icon cp_ci_icon_round"
+                                            : "cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                        }
+                                        style={{ background: "#0000ff" }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="ci_color_checked"
+                                          width={1024}
+                                          height={1024}
+                                          viewBox="0 0 1024 1024"
+                                        >
+                                          <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                        </svg>
+                                      </div>
+                                    </label>
+                                  </li>
+                                )}
+                                {c.toString() === "Green" && (
+                                  <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                                    <label>
+                                      <input
+                                        style={{ display: "none" }}
+                                        className="cm-product-filters-checkbox"
+                                        type="checkbox"
+                                        name="checkbox"
+                                        onClick={() => changeColor(2)}
+                                      />
+                                      <div
+                                        title="Green"
+                                        className={
+                                          green
+                                            ? "cp_active_filter ci_color_icon cp_ci_icon_round"
+                                            : "cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                        }
+                                        style={{ background: "#38761d" }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="ci_color_checked"
+                                          width={1024}
+                                          height={1024}
+                                          viewBox="0 0 1024 1024"
+                                        >
+                                          <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                        </svg>
+                                      </div>
+                                    </label>
+                                  </li>
+                                )}
+                                {c.toString() === "Black" && (
+                                  <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                                    <label>
+                                      <input
+                                        style={{ display: "none" }}
+                                        className="cm-product-filters-checkbox"
+                                        type="checkbox"
+                                        onClick={() => changeColor(3)}
+                                      />
+                                      <div
+                                        title="Black"
+                                        className={
+                                          black
+                                            ? "cp_active_filter ci_color_icon cp_ci_icon_round"
+                                            : "cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                        }
+                                        style={{ background: "#000000" }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="ci_color_checked"
+                                          width={1024}
+                                          height={1024}
+                                          viewBox="0 0 1024 1024"
+                                        >
+                                          <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                        </svg>
+                                      </div>
+                                    </label>
+                                  </li>
+                                )}
+                                {c.toString() === "White" && (
+                                  <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                                    <label>
+                                      <input
+                                        style={{ display: "none" }}
+                                        className="cm-product-filters-checkbox"
+                                        type="checkbox"
+                                        name="product_filters[2]"
+                                        onClick={() => changeColor(4)}
+                                      />
+                                      <div
+                                        title="White"
+                                        className={
+                                          white
+                                            ? "cp_active_filter ci_color_icon cp_ci_icon_round"
+                                            : "cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                        }
+                                        style={{ background: "#ffffff" }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="ci_color_checked"
+                                          width={1024}
+                                          height={1024}
+                                          viewBox="0 0 1024 1024"
+                                        >
+                                          <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                        </svg>
+                                      </div>
+                                    </label>
+                                  </li>
+                                )}
+                                {c.toString() === "Red" && (
+                                  <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                                    <label>
+                                      <input
+                                        style={{ display: "none" }}
+                                        className="cm-product-filters-checkbox"
+                                        type="checkbox"
+                                        name="product_filters[2]"
+                                        onClick={() => changeColor(5)}
+                                      />
+                                      <div
+                                        title="Red"
+                                        className={
+                                          red
+                                            ? "cp_active_filter ci_color_icon cp_ci_icon_round"
+                                            : "cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                        }
+                                        style={{ background: "#ff0000" }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="ci_color_checked"
+                                          width={1024}
+                                          height={1024}
+                                          viewBox="0 0 1024 1024"
+                                        >
+                                          <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                        </svg>
+                                      </div>
+                                    </label>
+                                  </li>
+                                )}
+                                {c.toString() === "Pink" && (
+                                  <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                                    <label>
+                                      <input
+                                        style={{ display: "none" }}
+                                        className="cm-product-filters-checkbox"
+                                        type="checkbox"
+                                        name="product_filters[2]"
+                                        onClick={() => changeColor(6)}
+                                      />
+                                      <div
+                                        title="Pink"
+                                        className={
+                                          pink
+                                            ? "cp_active_filter ci_color_icon cp_ci_icon_round"
+                                            : "cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                        }
+                                        style={{ background: "#ff00ff" }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="ci_color_checked"
+                                          width={1024}
+                                          height={1024}
+                                          viewBox="0 0 1024 1024"
+                                        >
+                                          <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                        </svg>
+                                      </div>
+                                    </label>
+                                  </li>
+                                )}
+                                {c.toString() === "Purple" && (
+                                  <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                                    <label>
+                                      <input
+                                        style={{ display: "none" }}
+                                        className="cm-product-filters-checkbox"
+                                        type="checkbox"
+                                        name="product_filters[2]"
+                                        onClick={() => changeColor(7)}
+                                      />
+                                      <div
+                                        title="Purple"
+                                        className={
+                                          purple
+                                            ? "cp_active_filter ci_color_icon cp_ci_icon_round"
+                                            : "cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                        }
+                                        style={{ background: "#9900ff" }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="ci_color_checked"
+                                          width={1024}
+                                          height={1024}
+                                          viewBox="0 0 1024 1024"
+                                        >
+                                          <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                        </svg>
+                                      </div>
+                                    </label>
+                                  </li>
+                                )}
+                                {c.toString() === "Yellow" && (
+                                  <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                                    <label>
+                                      <input
+                                        style={{ display: "none" }}
+                                        className="cm-product-filters-checkbox"
+                                        type="checkbox"
+                                        name="product_filters[2]"
+                                        onClick={() => changeColor(8)}
+                                      />
+                                      <div
+                                        title="Yellow"
+                                        className={
+                                          yellow
+                                            ? "cp_active_filter ci_color_icon cp_ci_icon_round"
+                                            : "cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                        }
+                                        style={{ background: "#ffff00" }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="ci_color_checked"
+                                          width={1024}
+                                          height={1024}
+                                          viewBox="0 0 1024 1024"
+                                        >
+                                          <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                        </svg>
+                                      </div>
+                                    </label>
+                                  </li>
+                                )}
+                                {c.toString() === "Orange" && (
+                                  <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                                    <label>
+                                      <input
+                                        style={{ display: "none" }}
+                                        className="cm-product-filters-checkbox"
+                                        type="checkbox"
+                                        name="product_filters[2]"
+                                        onClick={() => changeColor(9)}
+                                      />
+                                      <div
+                                        title="Orange"
+                                        className={
+                                          orange
+                                            ? "cp_active_filter ci_color_icon cp_ci_icon_round"
+                                            : "cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                        }
+                                        style={{ background: "#ff9900" }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="ci_color_checked"
+                                          width={1024}
+                                          height={1024}
+                                          viewBox="0 0 1024 1024"
+                                        >
+                                          <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                        </svg>
+                                      </div>
+                                    </label>
+                                  </li>
+                                )}
+                                {c.toString() === "Brown" && (
+                                  <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                                    <label>
+                                      <input
+                                        style={{ display: "none" }}
+                                        className="cm-product-filters-checkbox"
+                                        type="checkbox"
+                                        name="product_filters[2]"
+                                        onClick={() => changeColor(10)}
+                                      />
+                                      <div
+                                        title="Brown"
+                                        className={
+                                          brown
+                                            ? "cp_active_filter ci_color_icon cp_ci_icon_round"
+                                            : "cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                        }
+                                        style={{ background: "#804c2f" }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="ci_color_checked"
+                                          width={1024}
+                                          height={1024}
+                                          viewBox="0 0 1024 1024"
+                                        >
+                                          <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                        </svg>
+                                      </div>
+                                    </label>
+                                  </li>
+                                )}
+
+                                {c.toString() === "Silver" && (
+                                  <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                                    <label>
+                                      <input
+                                        style={{ display: "none" }}
+                                        className="cm-product-filters-checkbox"
+                                        type="checkbox"
+                                        name="product_filters[2]"
+                                        onClick={() => changeColor(11)}
+                                      />
+                                      <div
+                                        title="Silver"
+                                        className={
+                                          silver
+                                            ? "cp_active_filter ci_color_icon cp_ci_icon_round"
+                                            : "cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                        }
+                                        style={{ background: "#d9d9d9" }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="ci_color_checked"
+                                          width={1024}
+                                          height={1024}
+                                          viewBox="0 0 1024 1024"
+                                        >
+                                          <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                        </svg>
+                                      </div>
+                                    </label>
+                                  </li>
+                                )}
+                                {c.toString() === "Grey" && (
+                                  <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                                    <label>
+                                      <input
+                                        style={{ display: "none" }}
+                                        className="cm-product-filters-checkbox"
+                                        type="checkbox"
+                                        name="product_filters[2]"
+                                        onClick={() => changeColor(12)}
+                                      />
+                                      <div
+                                        title="Gray"
+                                        className={
+                                          grey
+                                            ? "cp_active_filter ci_color_icon cp_ci_icon_round"
+                                            : "cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                        }
+                                        style={{ background: "#434343" }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="ci_color_checked"
+                                          width={1024}
+                                          height={1024}
+                                          viewBox="0 0 1024 1024"
+                                        >
+                                          <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                        </svg>
+                                      </div>
+                                    </label>
+                                  </li>
+                                )}
+                                {c.toString() === "Clear" && (
+                                  <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                                    <label>
+                                      <input
+                                        style={{ display: "none" }}
+                                        className="cm-product-filters-checkbox"
+                                        type="checkbox"
+                                        name="product_filters[2]"
+                                        onClick={() => changeColor(13)}
+                                      />
+                                      <div
+                                        title="Clear"
+                                        className={
+                                          clear
+                                            ? "cp_active_filter ci_color_icon cp_ci_icon_round"
+                                            : "cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                        }
+                                        style={{ background: "#ffffff" }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="ci_color_checked"
+                                          width={1024}
+                                          height={1024}
+                                          viewBox="0 0 1024 1024"
+                                        >
+                                          <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                        </svg>
+                                      </div>
+                                    </label>
+                                  </li>
+                                )}
+                                {c.toString() === "Gold" && (
+                                  <li className="cm-product-filters-checkbox-container ty-product-filters__group cp_inline_block ">
+                                    <label>
+                                      <input
+                                        style={{ display: "none" }}
+                                        className="cm-product-filters-checkbox"
+                                        type="checkbox"
+                                        name="product_filters[2]"
+                                        onClick={() => changeColor(14)}
+                                      />
+                                      <div
+                                        title="Gold"
+                                        className={
+                                          gold
+                                            ? "cp_active_filter ci_color_icon cp_ci_icon_round"
+                                            : "cp_noactive_filter ci_color_icon cp_ci_icon_round"
+                                        }
+                                        style={{ background: "#f1c232" }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="ci_color_checked"
+                                          width={1024}
+                                          height={1024}
+                                          viewBox="0 0 1024 1024"
+                                        >
+                                          <path d="M954.9 323.4q0 22.9-16 38.9l-491.4 491.4q-16 16-38.9 16t-38.9-16l-284.6-284.6q-16-16-16-38.9t16-38.9l77.7-77.7q16-16 38.9-16t38.9 16l168 168.6 374.9-375.4q16-16 38.9-16t38.9 16l77.7 77.7q16 16 16 38.9z" />
+                                        </svg>
+                                      </div>
+                                    </label>
+                                  </li>
+                                )}
+                              </>
+                            ))}
+
+                            <p className="ty-product-filters__no-items-found hidden">
                               No items found matching the search criteria
                             </p>
                           </ul>
                         </div>
 
                         <div className="ty-product-filters__block">
-                          <div
-                            id="sw_content_177_4"
-                            className="ty-product-filters__switch cm-combination-filter_177_4 open cm-save-state cm-ss-reverse"
-                          >
+                          <div className="ty-product-filters__switch cm-combination-filter_177_4 open cm-save-state cm-ss-reverse">
                             <span className="ty-product-filters__title">
                               Size
                             </span>
                             <i className="ty-product-filters__switch-down ty-icon-down-open" />
                             <i className="ty-product-filters__switch-right ty-icon-up-open" />
                           </div>
-                          <ul
-                            className="ty-product-filters "
-                            id="content_177_4"
-                          >
+                          <ul className="ty-product-filters ">
                             <li className="ty-product-filters__item-more">
                               <ul
-                                id="ranges_177_4"
                                 style={{ maxHeight: "310px" }}
                                 className="ty-product-filters__variants cm-filter-table"
-                                data-ca-input-id="elm_search_177_4"
-                                data-ca-clear-id="elm_search_clear_177_4"
-                                data-ca-empty-id="elm_search_empty_177_4"
                               >
                                 {sizes.map((c) => (
                                   <li className="cm-product-filters-checkbox-container ty-product-filters__group">
@@ -897,10 +932,7 @@ const CategoryHome = (props) => {
                                 ))}
                               </ul>
                             </li>
-                            <p
-                              id="elm_search_empty_177_4"
-                              className="ty-product-filters__no-items-found hidden"
-                            >
+                            <p className="ty-product-filters__no-items-found hidden">
                               No items found matching the search criteria
                             </p>
                           </ul>
@@ -908,10 +940,7 @@ const CategoryHome = (props) => {
                         {/* Inline script moved to the bottom of the page */}
 
                         <div className="ty-product-filters__block">
-                          <div
-                            id="sw_content_177_9"
-                            className="ty-product-filters__switch cm-combination-filter_177_9 open cm-save-state cm-ss-reverse"
-                          >
+                          <div className="ty-product-filters__switch cm-combination-filter_177_9 open cm-save-state cm-ss-reverse">
                             <span className="ty-product-filters__title">
                               <i class="fa fa-dollar" /> Price
                             </span>
@@ -919,10 +948,7 @@ const CategoryHome = (props) => {
                             <i className="ty-product-filters__switch-right ty-icon-up-open" />
                           </div>
                           {/* Inline script moved to the bottom of the page */}
-                          <div
-                            id="content_177_9"
-                            className="cm-product-filters-checkbox-container"
-                          ></div>
+                          <div className="cm-product-filters-checkbox-container"></div>
                         </div>
                         {/* Inline script moved to the bottom of the page */}
                       </div>

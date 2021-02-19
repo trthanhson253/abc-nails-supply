@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 const userSchema = new mongoose.Schema(
   {
@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema(
     salt: String,
     resetPasswordLink: {
       data: String,
-      default: '',
+      default: "",
     },
     cart: {
       type: Array,
@@ -60,13 +60,16 @@ const userSchema = new mongoose.Schema(
     // shippingAddress: [{ type: ObjectId, ref: 'ShippingAddress' }],
     // billingAddress: [{ type: ObjectId, ref: 'BillingAddress' }],
     // payment: [{ type: ObjectId, ref: 'Payment' }],
-    wishlist: [{ type: ObjectId, ref: 'Product' }],
+    wishlist: [{ type: ObjectId, ref: "Product" }],
+    images: {
+      type: Array,
+    },
   },
   { timestamps: true }
 );
 
 userSchema
-  .virtual('password')
+  .virtual("password")
   .set(function (password) {
     // create temp variable called _password
     this._password = password;
@@ -85,20 +88,20 @@ userSchema.methods = {
   },
 
   encryptPassword: function (password) {
-    if (!password) return '';
+    if (!password) return "";
     try {
       return crypto
-        .createHmac('sha1', this.salt)
+        .createHmac("sha1", this.salt)
         .update(password)
-        .digest('hex');
+        .digest("hex");
     } catch (err) {
-      return '';
+      return "";
     }
   },
 
   makeSalt: function () {
-    return Math.round(new Date().valueOf() * Math.random()) + '';
+    return Math.round(new Date().valueOf() * Math.random()) + "";
   },
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);

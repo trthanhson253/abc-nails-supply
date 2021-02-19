@@ -1,6 +1,7 @@
 const Product = require("../models/product");
 const Category = require("../models/category");
 // const User = require("../models/user");
+const Order = require("../models/order");
 const slugify = require("slugify");
 const Sub = require("../models/sub");
 const SubSub = require("../models/subSub");
@@ -63,7 +64,7 @@ exports.create = (req, res) => {
   product.brand = brand;
   product.save((err, result) => {
     if (err) {
-      console.log(err);
+      // console.log(err);
       return res.status(400).json({
         error: "Cannot Create Product",
       });
@@ -110,7 +111,7 @@ exports.listProductBySubSub = (req, res) => {
           error: "Do not find sub-sub",
         });
       }
-      console.log(subSub[0]._id);
+      // console.log(subSub[0]._id);
       Product.find({ subSub: subSub[0]._id })
         .populate("category")
         .populate("sub")
@@ -210,7 +211,7 @@ exports.remove = async (req, res) => {
     }).exec();
     res.json(deleted);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return res.staus(400).send("Product delete failed");
   }
 };
@@ -314,7 +315,7 @@ exports.productReview = async (req, res) => {
       },
       { new: true }
     ).exec();
-    console.log("ratingAdded", ratingAdded);
+    // console.log("ratingAdded", ratingAdded);
     res.json(ratingAdded);
   } else {
     // if user have already left rating, update it
@@ -325,7 +326,7 @@ exports.productReview = async (req, res) => {
       { $set: { "ratings.$.star": star } },
       { new: true }
     ).exec();
-    console.log("ratingUpdated", ratingUpdated);
+    // console.log("ratingUpdated", ratingUpdated);
     res.json(ratingUpdated);
   }
 };
@@ -354,7 +355,7 @@ exports.listRelated = async (req, res) => {
 //   res.json(products);
 // };
 const handleQuery = (req, res, query) => {
-  console.log("query", query);
+  // console.log("query", query);
   Product.find({ name: { $regex: query, $options: "i" }, status: 0 })
     .populate("category", "_id name slug")
     .populate("sub", "_id name slug")
@@ -385,7 +386,7 @@ const handlePrice = async (req, res, price) => {
 
     res.json(products);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 };
 
@@ -481,9 +482,9 @@ exports.searchFilters = async (req, res) => {
     // color,
     brand,
   } = req.body;
-  console.log("req.body", req.body);
+  // console.log("req.body", req.body);
   if (query) {
-    console.log("query --->", query);
+    // console.log("query --->", query);
     await handleQuery(req, res, query);
   }
 
@@ -519,7 +520,7 @@ exports.searchFilters = async (req, res) => {
   // }
 
   if (brand) {
-    console.log("brand ---> ", brand);
+    // console.log("brand ---> ", brand);
     await handleBrand(req, res, brand);
   }
 };
@@ -532,12 +533,12 @@ exports.listByFilters = (req, res) => {
   let findArgs = {};
 
   // console.log(order, sortBy, limit, skip, req.body.filters);
-  console.log("findArgs", findArgs);
+  // console.log("findArgs", findArgs);
 
   for (let key in req.body.filters) {
     if (req.body.filters[key].length > 0) {
       findArgs[key] = req.body.filters[key];
-      console.log("findArgs", findArgs[key]);
+      // console.log("findArgs", findArgs[key]);
     }
   }
 
@@ -557,4 +558,23 @@ exports.listByFilters = (req, res) => {
         data,
       });
     });
+};
+
+exports.getCountOfPurchase = async (req, res) => {
+  // console.log("req.user._id", req.user._id);
+  let product = await Product.findOne({ slug: req.params.slug }).select("_id");
+  let lastOrder = await Order.find({
+    "products.product": { $in: { _id: product._id } },
+    orderdBy: req.user._id,
+  })
+    .sort({ createdAt: -1 })
+    .limit(1);
+  let totalOrder = await Order.find({
+    "products.product": { $in: { _id: product._id } },
+    orderdBy: req.user._id,
+  });
+
+  if (lastOrder) {
+    res.json({ lastOrder, totalOrder: totalOrder.length });
+  }
 };

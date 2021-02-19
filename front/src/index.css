@@ -368,7 +368,7 @@ section.products .product-header .title {
 .fwZKR {
   display: flex;
   padding: 20px 0px 8px;
-  /* border-bottom: 1px solid rgb(238, 238, 238); */
+  border-bottom: 1px solid rgb(238, 238, 238);
 }
 .filter-review__label {
   flex-shrink: 0;
@@ -493,9 +493,9 @@ section.products .product-header .title {
   padding: 4px 8px;
   font-size: 12px;
   line-height: 20px;
-  margin: 0px 0px 0px 7px;
+  margin: 0px 0px 0px 0px;
   border-radius: 4px;
-  white-space: nowrap;
+  /* white-space: nowrap; */
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 580px;
@@ -1279,4 +1279,12 @@ element.style {
   color: rgb(13, 92, 182);
   font-size: 13px;
   text-align: center;
+}
+.review-comment__image {
+  width: 158px;
+  height: 158px;
+  border-radius: 4px;
+  background-size: cover;
+  margin: 0px 6px 16px;
+  cursor: pointer;
 }

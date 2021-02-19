@@ -77,7 +77,7 @@ exports.remove = async (req, res) => {
 exports.getReviewsBasedOnProduct = async (req, res) => {
   const product = await Product.findOne({ slug: req.params.slug });
   const reviews = await Review.find({ product: product._id })
-    .populate("user", "_id name")
+    .populate("user", "_id name images")
     .sort({
       createdAt: -1,
     });

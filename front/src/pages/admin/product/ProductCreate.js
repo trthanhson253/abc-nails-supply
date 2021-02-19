@@ -188,7 +188,7 @@ const ProductCreate = ({ history }) => {
         history.push("/admin/product/list");
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         toast.error(err.response.data.error);
       });
   };

@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Badge,Image,Upload,Button   } from "antd";
+import { Badge, Image, Upload, Button, Avatar } from "antd";
 import { useSelector } from "react-redux";
 import Resizer from "react-image-file-resizer";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined } from "@ant-design/icons";
 
-const FileUpload = ({values, setValues,setLoading,loading,token,removeImage,setRemoveImage}) => {
+const FileUpload = ({ values, setValues, setLoading, loading, token }) => {
   const { user } = useSelector((state) => ({ ...state }));
-  let token1= user ? token :"";
+  let token1 = user ? token : "";
   const fileUploadAndResize = (e) => {
     // console.log(e.target.files);
     // resize
@@ -34,20 +34,20 @@ const FileUpload = ({values, setValues,setLoading,loading,token,removeImage,setR
                 { image: uri },
                 {
                   headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                   },
                 }
               )
               .then((res) => {
-                console.log("IMAGE UPLOAD RES DATA", res);
+                // console.log("IMAGE UPLOAD RES DATA", res);
                 setLoading(false);
                 allUploadedFiles.push(res.data);
                 setValues({ ...values, images: allUploadedFiles });
               })
               .catch((err) => {
                 setLoading(false);
-                
-                console.log("CLOUDINARY UPLOAD ERR", err);
+
+                // console.log("CLOUDINARY UPLOAD ERR", err);
               });
           },
           "base64"
@@ -58,7 +58,6 @@ const FileUpload = ({values, setValues,setLoading,loading,token,removeImage,setR
     // set url to images[] in the parent component state - ProductCreate
   };
 
-
   const handleImageRemove = (public_id) => {
     // setLoading(true);
     // console.log("remove image", public_id);
@@ -68,7 +67,7 @@ const FileUpload = ({values, setValues,setLoading,loading,token,removeImage,setR
         { public_id },
         {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
         }
       )
@@ -81,54 +80,48 @@ const FileUpload = ({values, setValues,setLoading,loading,token,removeImage,setR
         setValues({ ...values, images: filteredImages });
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         // setLoading(false);
       });
   };
 
-  if(removeImage && values.images[1]){
-    handleImageRemove(values.images[1].public_id);
-    setRemoveImage(false);
-  }
-  
-  // const checkRemove = () => {
-  //   if(removeImage && values.images[1]){
-  //     handleImageRemove(values.images[1].public_id);
-  //   }
-  // };
-  // useEffect(() => {
-  //  loadCategories();
-  // }, []);
-
   return (
-   <>
-   <div className="ty-control-group">
-   <label htmlFor="login_popup685" className="ty-login__filed-label ty-control-group__label cm-trim cm-email">Upload Image</label>
-   
- </div>    
-   <div className="ty-control-group">
-   
-   {values.images[1] &&
-    
-    (<Badge
-      count="X"
-      key={values.images[1].public_id}
-      onClick={() => handleImageRemove(values.images[1].public_id)}
-      style={{ cursor: "pointer" }}
-    >
-      <Image
-          src={values.images[1].url}
-          width={200}
+    <>
+      <div className="ty-control-group">
+        <label
+          htmlFor="login_popup685"
+          className="ty-login__filed-label ty-control-group__label cm-trim cm-email"
+        >
+          Upload an Image
+        </label>
+      </div>
+      <div className="ty-control-group">
+        {values.images &&
+          values.images.map((image) => (
+            <Badge
+              count="X"
+              key={image.public_id}
+              onClick={() => handleImageRemove(image.public_id)}
+              style={{ cursor: "pointer" }}
+            >
+              <Image
+                src={image.url}
+                width={200}
+                style={{ paddingLeft: "30px" }}
+              />
+            </Badge>
+          ))}
+      </div>
+      <div className="ty-control-group">
+        <input
+          type="file"
+          accept="images/*"
+          className="ty-login__input cm-focus"
+          onChange={fileUploadAndResize}
+          disabled={values.images[0]}
         />
-    </Badge>)
-    
-  }
-   </div>
-   <div className="ty-control-group">
-   <input type="file" accept="images/*" className="ty-login__input cm-focus" onChange={fileUploadAndResize} disabled={values.images[1]} />
-     
-   </div>            
-   </>
+      </div>
+    </>
   );
 };
 

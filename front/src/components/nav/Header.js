@@ -251,7 +251,7 @@ const Header = () => {
                       rel="nofollow"
                     >
                       <i class="ut2-icon-baseline-favorite-border"></i>
-                      <span class="count">5</span>
+                      <span class="count">3</span>
                     </Link>
                   </div>
                 </div>
@@ -616,7 +616,7 @@ const Header = () => {
                                 <li className="ty-account-info__item ty-dropdown-box__item">
                                   <Link
                                     className="ty-account-info__a underlined"
-                                    to="/my-account"
+                                    to="/user/account"
                                     rel="nofollow"
                                   >
                                     <i className="fa fa-bell fa-fw" /> My

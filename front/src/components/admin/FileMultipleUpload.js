@@ -45,7 +45,7 @@ const FileMultipleUpload = ({
                 }
               )
               .then((res) => {
-                console.log("IMAGE UPLOAD RES DATA", res);
+                // console.log("IMAGE UPLOAD RES DATA", res); df
                 setLoading(false);
                 allUploadedFiles.push(res.data);
                 setValues({ ...values, images: allUploadedFiles });
@@ -53,7 +53,7 @@ const FileMultipleUpload = ({
               .catch((err) => {
                 setLoading(false);
 
-                console.log("CLOUDINARY UPLOAD ERR", err);
+                // console.log("CLOUDINARY UPLOAD ERR", err);
               });
           },
           "base64"
@@ -86,7 +86,7 @@ const FileMultipleUpload = ({
         setValues({ ...values, images: filteredImages });
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         // setLoading(false);
       });
   };

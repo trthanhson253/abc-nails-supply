@@ -49,7 +49,7 @@ const ProductFilterMenu = ({
     } else {
       newCheckedSize.splice(currentSize, 1);
     }
-    console.log(newCheckedSize);
+    // console.log(newCheckedSize);
     setCheckedSize(newCheckedSize);
     handleFilters(newCheckedSize, "size");
   };

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import AdminMenu from '../../../components/admin/AdminMenu';
-import CouponCreateModal from '../../../components/admin/CouponCreateModal';
+import React, { useState, useEffect } from "react";
+import AdminMenu from "../../../components/admin/AdminMenu";
+import CouponCreateModal from "../../../components/admin/CouponCreateModal";
 import {
   getCoupons,
   loadCoupons,
   removeCoupon,
-} from '../../../functions/coupon';
-import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
+} from "../../../functions/coupon";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const CouponList = () => {
   const [open, setOpen] = useState(false);
@@ -33,7 +33,7 @@ const CouponList = () => {
   };
 
   const handleRemove = (couponId) => {
-    if (window.confirm('Are you sure you want to delete this coupon?')) {
+    if (window.confirm("Are you sure you want to delete this coupon?")) {
       // setLoading(true);
       removeCoupon(couponId, token)
         .then((res) => {

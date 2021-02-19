@@ -14,6 +14,7 @@ import {
   getDetailProduct,
   getRecentlyView,
   getRelated,
+  getCountOfPurchase,
 } from "../../functions/product";
 import {
   getReviewsBasedOnProduct,
@@ -67,7 +68,7 @@ const ProductDetailHome = (props) => {
   const [related, setRelated] = useState([]);
   const { TabPane } = Tabs;
   const { Panel } = Collapse;
-  const { user, cart, load, spin } = useSelector((state) => ({ ...state }));
+  const { user } = useSelector((state) => ({ ...state }));
   const dispatch = useDispatch();
   const [tooltip, setTooltip] = useState("Click to add this product");
   const initialState = {
@@ -78,7 +79,9 @@ const ProductDetailHome = (props) => {
   const [values, setValues] = useState(initialState);
   const { content, title, rating } = values;
   const [visible, setVisible] = useState(false);
-
+  const [totalOrder, setTotalOrder] = useState("");
+  const [lastOrder, setLastOrder] = useState({});
+  const [callUser, setCallUser] = useState({});
   const handleChange = (name) => (e) => {
     const value = name === "content" ? e.target.getContent() : e.target.value;
     setValues({ ...values, [name]: value });
@@ -92,10 +95,7 @@ const ProductDetailHome = (props) => {
   };
 
   const loadDetailProduct = () => {
-    dispatch({
-      type: "SET_SPIN",
-      payload: true,
-    });
+    setLoading(true);
     getDetailProduct(props.match.params.pslug).then((data) => {
       // console.log("data.product", data.product);
       setProduct(data.product);
@@ -114,11 +114,8 @@ const ProductDetailHome = (props) => {
       var currentProductId = data.product._id;
       var howManyItems = 5;
       const delayed = setTimeout(() => {
-        dispatch({
-          type: "SET_SPIN",
-          payload: false,
-        });
-      }, 200);
+        setLoading(false);
+      }, 800);
       // currentValues=[];
       if (currentProductId && !getCookie("lastVisited")) {
         setCookie("lastVisited", data.product._id);
@@ -270,9 +267,19 @@ const ProductDetailHome = (props) => {
   const needLogin = () => {
     setVisible(true);
   };
+
+  const loadCountOfPurchase = () => {
+    getCountOfPurchase(props.match.params.pslug, user.token).then((res) => {
+      // console.log("getCountOfPurchase", res.data);
+      setTotalOrder(res.data.totalOrder);
+      setLastOrder(res.data.lastOrder[0]);
+    });
+  };
+
   useEffect(() => {
     // const pslug1 = props.match.params.pslug;
     setPslug1(props.match.params.pslug);
+    setCallUser(user);
     if (getCookie("lastVisited")) {
       const recentlyProduct = getCookie("lastVisited").split("-");
 
@@ -286,13 +293,16 @@ const ProductDetailHome = (props) => {
     loadReviewsBasedOnProduct();
     loadReviewsPercent();
     loadRelatedProduct();
-  }, []);
-  useEffect(() => {
+    // console.log("user", user);
+    if (user) {
+      loadCountOfPurchase();
+    }
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
-  }, []);
+  }, [props]);
+
   return (
     <>
       <Helmet>
@@ -321,12 +331,15 @@ const ProductDetailHome = (props) => {
                 style={{ paddingBottom: "0" }}
               >
                 <div className="ut2-pb ty-product-block ty-product-detail">
-                  <div className="alert alert-info">
-                    <b>
-                      <h4>📌 Purchased 4 times.</h4>
-                    </b>
-                    You last purchased this item on November 11, 2020.
-                  </div>
+                  {lastOrder && totalOrder && (
+                    <div className="alert alert-info">
+                      <b>
+                        <h4>📌 Purchased {totalOrder} times.</h4>
+                      </b>
+                      You last purchased this item on{" "}
+                      {moment(lastOrder.createdAt).format("MM/DD/YYYY")}.
+                    </div>
+                  )}
                   <h1 className="ut2-pb__title" style={{ fontSize: "25px" }}>
                     <bdi>{product.name}</bdi>
                   </h1>
@@ -336,28 +349,28 @@ const ProductDetailHome = (props) => {
                         <Link to="/" className="ty-breadcrumbs__a">
                           <bdi>Home</bdi>
                         </Link>
-                        <span className="ty-breadcrumbs__slash">/</span>
+                        <span className="ty-breadcrumbs__slash">></span>
                         <Link
                           to={`/${category.slug}/product`}
                           className="ty-breadcrumbs__a"
                         >
                           <bdi>{category.name}</bdi>
                         </Link>
-                        <span className="ty-breadcrumbs__slash">/</span>
+                        <span className="ty-breadcrumbs__slash">></span>
                         <Link
                           to={`/${category.slug}/${sub.slug}/product`}
                           className="ty-breadcrumbs__a"
                         >
                           <bdi>{sub.name}</bdi>
                         </Link>
-                        <span className="ty-breadcrumbs__slash">/</span>
+                        <span className="ty-breadcrumbs__slash">></span>
                         <Link
                           to={`/${category.slug}/${sub.slug}/${subSub.slug}/product`}
                           className="ty-breadcrumbs__a"
                         >
                           <bdi>{subSub.name}</bdi>
                         </Link>
-                        <span className="ty-breadcrumbs__slash">/</span>
+                        <span className="ty-breadcrumbs__slash">></span>
                         <span className="ty-breadcrumbs__current">
                           <bdi>{product.name}</bdi>
                         </span>
@@ -365,67 +378,68 @@ const ProductDetailHome = (props) => {
                     </div>
                   </div>
                   <div className="ut2-pb__wrapper clearfix">
-                    <div className="ut2-pb__img-wrapper ty-product-block__img-wrapper">
-                      <div
-                        className="ut2-pb__img cm-reload-9060"
-                        data-ca-previewer="true"
-                      >
-                        <div
-                          className="ab_vg-images-wrapper clearfix"
-                          data-ca-previewer="true"
-                        >
-                          <div style={{ position: "relative", maxHeight: 420 }}>
+                    {loading ? (
+                      <Spinner />
+                    ) : (
+                      <>
+                        <div className="ut2-pb__img-wrapper ty-product-block__img-wrapper">
+                          <div
+                            className="ut2-pb__img cm-reload-9060"
+                            data-ca-previewer="true"
+                          >
                             <div
-                              className="ty-product-img cm-preview-wrapper ab-vertical owl-carousel owl-theme"
-                              style={{ opacity: 1, display: "block" }}
+                              className="ab_vg-images-wrapper clearfix"
+                              data-ca-previewer="true"
                             >
-                              <div className="owl-wrapper-outer">
+                              <div
+                                style={{ position: "relative", maxHeight: 420 }}
+                              >
                                 <div
-                                  className="owl-wrapper"
-                                  style={{
-                                    width: 1150,
-                                    left: 0,
-                                    display: "block",
-                                  }}
+                                  className="ty-product-img cm-preview-wrapper ab-vertical owl-carousel owl-theme"
+                                  style={{ opacity: 1, display: "block" }}
                                 >
-                                  <div
-                                    className="owl-item active"
-                                    style={{ width: 400 }}
-                                  >
-                                    {product.image && (
-                                      <>
-                                        {spin ? (
-                                          <Loader />
-                                        ) : (
-                                          <ImageGallery
-                                            items={images}
-                                            showGalleryPlayButton={false}
-                                            showNav={false}
-                                            lazyLoad={true}
-                                            showBullets={false}
-                                            showThumbnails={true}
-                                            showPlayButton={false}
-                                          />
+                                  <div className="owl-wrapper-outer">
+                                    <div
+                                      className="owl-wrapper"
+                                      style={{
+                                        width: 1150,
+                                        left: 0,
+                                        display: "block",
+                                      }}
+                                    >
+                                      <div
+                                        className="owl-item active"
+                                        style={{ width: 400 }}
+                                      >
+                                        {product.image && (
+                                          <>
+                                            {loading ? (
+                                              <Loader />
+                                            ) : (
+                                              <ImageGallery
+                                                items={images}
+                                                showGalleryPlayButton={false}
+                                                showNav={false}
+                                                lazyLoad={true}
+                                                showBullets={false}
+                                                showThumbnails={true}
+                                                showPlayButton={false}
+                                              />
+                                            )}
+                                          </>
                                         )}
-                                      </>
-                                    )}
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                    <div
-                      className="ut2-pb__right"
-                      style={{ borderRadius: "3px" }}
-                    >
-                      {spin ? (
-                        <Loader />
-                      ) : (
-                        <>
-                          {" "}
+                        <div
+                          className="ut2-pb__right"
+                          style={{ borderRadius: "3px" }}
+                        >
                           <div className="top-product-layer">
                             <div className="ut2-pb__rating">
                               <div className="ty-discussion__rating-wrapper">
@@ -506,7 +520,7 @@ const ProductDetailHome = (props) => {
                                     </span>
                                   )}
                                 </span>
-                                <b>({reviews.length})</b>&nbsp;&nbsp;
+                                <b>({reviews.length} 📝)</b>&nbsp;&nbsp;
                                 <a
                                   className="cm-dialog-opener cm-dialog-auto-size ty-discussion__review-write"
                                   href="/"
@@ -738,59 +752,66 @@ const ProductDetailHome = (props) => {
                               <div></div>
                             </div>
                           </div>
-                        </>
-                      )}
-                    </div>
-                    <div className="rightInfo phone">
-                      <ul className="policy ">
-                        <li className="inpr">
-                          <span>
-                            This product includes:{" "}
-                            <a className="stdImg">Box, Product, Warranty </a>
-                          </span>
-                        </li>
-                        <li className="wrpr">
-                          <span>
-                            <b>Returns:</b>&nbsp;100% Satisfaction Guarantee -
-                            If for some reason you are not satisfied with your
-                            purchase, you may return it for refund.&nbsp;
-                            <a>Details</a>
-                          </span>
-                        </li>
-                        <li className="chpr">
-                          <b>Exchanges:</b>&nbsp; If you received an item and
-                          need to exchange it for a different item, you need to
-                          follow the guidelines &nbsp;<a>Details</a>
-                        </li>
-                      </ul>
-                      <div className="promotion-bonus" data-scenario={20201210}>
-                        <b>Payment</b>
-                        <ul>
-                          <li>
-                            <div className="promo_BHX">
-                              <div className="l2">
-                                <span>We Accept Credit Cards.</span>
-                                <div className="content">
-                                  <p className="first-pap">
-                                    <img
-                                      src="https://www.happynailsupply.com/images/companies/1/pages/payment/cards.jpg"
-                                      width="180px"
-                                    />
-                                  </p>
+                        </div>
+                        <div className="rightInfo phone">
+                          <ul className="policy ">
+                            <li className="inpr">
+                              <span>
+                                This product includes:{" "}
+                                <a className="stdImg">
+                                  Box, Product, Warranty{" "}
+                                </a>
+                              </span>
+                            </li>
+                            <li className="wrpr">
+                              <span>
+                                <b>Returns:</b>&nbsp;100% Satisfaction Guarantee
+                                - If for some reason you are not satisfied with
+                                your purchase, you may return it for
+                                refund.&nbsp;
+                                <a>Details</a>
+                              </span>
+                            </li>
+                            <li className="chpr">
+                              <b>Exchanges:</b>&nbsp; If you received an item
+                              and need to exchange it for a different item, you
+                              need to follow the guidelines &nbsp;<a>Details</a>
+                            </li>
+                          </ul>
+                          <div
+                            className="promotion-bonus"
+                            data-scenario={20201210}
+                          >
+                            <b>Payment</b>
+                            <ul>
+                              <li>
+                                <div className="promo_BHX">
+                                  <div className="l2">
+                                    <span>We Accept Credit Cards.</span>
+                                    <div className="content">
+                                      <p className="first-pap">
+                                        <img
+                                          src="https://www.happynailsupply.com/images/companies/1/pages/payment/cards.jpg"
+                                          width="180px"
+                                        />
+                                      </p>
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                        <style
-                          dangerouslySetInnerHTML={{
-                            __html:
-                              "\n        .promotion-bonus {border:1px solid #ddd;border-radius:4px;clear:both;margin-bottom:10px;}\n        .promotion-bonus>b {\n            display: block;\n            overflow: hidden;\n            font-size: 15px;\n            color: #333;\n            padding: 10px 15px 8px 15px;\n            text-transform: uppercase;\n            background-color: #f6f6f6;\n            border-bottom: 1px solid #ddd;\n        }\n        .promotion-bonus>b>i {\n            font-style: normal;\n            font-weight: normal;\n            font-size: 12px;\n            color: #666;\n            display: block;\n            text-transform: none;\n            padding-top: 1px;\n        }\n        .promotion-bonus>ul {padding:10px;}\n        .promotion-bonus>ul>li {position:relative;padding-left:20px;margin-bottom:10px;}\n        .promotion-bonus>ul>li:last-child {margin-bottom:0;}\n        .promotion-bonus>ul>li>i {position:absolute;width:18px;height:18px;background-color:#4A90E2;line-height:19px;color:#fff;text-align:center;left:0;top:0;font-style:normal;border-radius:50%;font-size:11px;}\n        .promotion-bonus>b>i {display:inline-block;vertical-align:bottom;}\n        .promotion-bonus>ul>li>span {line-height:1.4;display:block;}\n        .promotion-bonus>ul>li.last {color:#4A90E2;cursor:pointer;text-align:center;padding-left:0;}\n        .promotion-bonus>ul>li.last:after {\n            content:'';\n            border-top: 1px solid #4A90E2 !important;\n            border-right: 1px solid #4A90E2;\n            transform: rotate(140deg) skew(12deg);\n            width: 6px;\n            height: 6px;\n            margin-bottom: 6px;\n            border-left: none;\n            display: inline-block;\n            vertical-align: middle;\n            margin-left: 8px;\n        }\n        .promotion-bonus>ul>li>div.promo_BHX {border:none;margin:0;padding:0;}\n        .promotion-bonus>ul>li>.promo_BHX .l1 {display:none;}\n        .promotion-bonus>ul>li>.promo_BHX .l2 {width:auto;float:left;}\n        .promotion-bonus>ul>li>i {\n            background: url(/Content/desktop/images/V4/game/check@2x.png);\n            width: 14px;\n            height: 14px;\n            background-size: 14px 14px;\n            text-indent:-9999px;\n            top:3px;\n        }\n\n        .rightInfo.fashion .promotion-bonus {margin-left:15px;margin-right:5px;}\n\n        @media screen and (max-width:640px){\n            .promotion-bonus {margin:10px 10px 0 10px;}\n            .promotion-bonus>b>i {margin-left:5px;}\n        }\n    ",
-                          }}
-                        />
-                      </div>
-                    </div>
+                              </li>
+                            </ul>
+                            <style
+                              dangerouslySetInnerHTML={{
+                                __html:
+                                  "\n        .promotion-bonus {border:1px solid #ddd;border-radius:4px;clear:both;margin-bottom:10px;}\n        .promotion-bonus>b {\n            display: block;\n            overflow: hidden;\n            font-size: 15px;\n            color: #333;\n            padding: 10px 15px 8px 15px;\n            text-transform: uppercase;\n            background-color: #f6f6f6;\n            border-bottom: 1px solid #ddd;\n        }\n        .promotion-bonus>b>i {\n            font-style: normal;\n            font-weight: normal;\n            font-size: 12px;\n            color: #666;\n            display: block;\n            text-transform: none;\n            padding-top: 1px;\n        }\n        .promotion-bonus>ul {padding:10px;}\n        .promotion-bonus>ul>li {position:relative;padding-left:20px;margin-bottom:10px;}\n        .promotion-bonus>ul>li:last-child {margin-bottom:0;}\n        .promotion-bonus>ul>li>i {position:absolute;width:18px;height:18px;background-color:#4A90E2;line-height:19px;color:#fff;text-align:center;left:0;top:0;font-style:normal;border-radius:50%;font-size:11px;}\n        .promotion-bonus>b>i {display:inline-block;vertical-align:bottom;}\n        .promotion-bonus>ul>li>span {line-height:1.4;display:block;}\n        .promotion-bonus>ul>li.last {color:#4A90E2;cursor:pointer;text-align:center;padding-left:0;}\n        .promotion-bonus>ul>li.last:after {\n            content:'';\n            border-top: 1px solid #4A90E2 !important;\n            border-right: 1px solid #4A90E2;\n            transform: rotate(140deg) skew(12deg);\n            width: 6px;\n            height: 6px;\n            margin-bottom: 6px;\n            border-left: none;\n            display: inline-block;\n            vertical-align: middle;\n            margin-left: 8px;\n        }\n        .promotion-bonus>ul>li>div.promo_BHX {border:none;margin:0;padding:0;}\n        .promotion-bonus>ul>li>.promo_BHX .l1 {display:none;}\n        .promotion-bonus>ul>li>.promo_BHX .l2 {width:auto;float:left;}\n        .promotion-bonus>ul>li>i {\n            background: url(/Content/desktop/images/V4/game/check@2x.png);\n            width: 14px;\n            height: 14px;\n            background-size: 14px 14px;\n            text-indent:-9999px;\n            top:3px;\n        }\n\n        .rightInfo.fashion .promotion-bonus {margin-left:15px;margin-right:5px;}\n\n        @media screen and (max-width:640px){\n            .promotion-bonus {margin:10px 10px 0 10px;}\n            .promotion-bonus>b>i {margin-left:5px;}\n        }\n    ",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
+
                   <div className="container-fluid-row container-fluid-row-full-width new-popular-special">
                     <div className="row-fluid ">
                       <div
@@ -1346,7 +1367,10 @@ const ProductDetailHome = (props) => {
                           <div className="product-mid">
                             <div className="product-image">
                               <figure className="image-wrapper">
-                                <Link to="#" title={r.name}>
+                                <Link
+                                  to={`/${r.category.slug}/${r.sub.slug}/${r.subSub.slug}/${r.name}/product`}
+                                  title={r.name}
+                                >
                                   <picture className>
                                     <img alt={r.name} src={r.image[0].url} />
                                   </picture>

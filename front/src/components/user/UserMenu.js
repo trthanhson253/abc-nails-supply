@@ -15,7 +15,7 @@ const UserMenu = () => {
         </div>
         <ul className="Account__StyledNav-sc-1d5h8iz-5 uSLJP">
           <li>
-            <a className="is-active" href="/customer/account/edit">
+            <Link className="is-active" to="/user/account">
               <svg
                 stroke="currentColor"
                 fill="currentColor"
@@ -28,7 +28,7 @@ const UserMenu = () => {
                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
               </svg>
               <span>My Account</span>
-            </a>
+            </Link>
           </li>
           <li>
             <a className href="/customer/notification">
@@ -150,7 +150,7 @@ const UserMenu = () => {
               >
                 <path d="M19 2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h4l3 3 3-3h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-6 16h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 11.9 13 12.5 13 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" />
               </svg>
-              <span>Q & A</span>
+              <span>Change Password</span>
             </a>
           </li>
 

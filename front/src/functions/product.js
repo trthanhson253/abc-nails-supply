@@ -121,3 +121,15 @@ export const getProductByCategory = (skip, limit, cslug) => {
       console.log(err);
     });
 };
+
+export const getCountOfPurchase = async (slug, token) =>
+  await axios.get(
+    `${process.env.REACT_APP_API}/product/count-of-purchase/${slug}`,
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
